@@ -143,7 +143,7 @@ Click any question to jump straight to the answer.
 ---
 
 ## 🛠 Xcode & Tools
-> [`xcode-tools/xcode-fundamentals.md`](./xcode-tools/xcode-fundamentals.md)
+> [`xcode-tools/xcode-fundamentals.md`](./xcode-tools/xcode-fundamentals.md) · [`xcode-tools/fastlane-firebase-distribution.md`](./xcode-tools/fastlane-firebase-distribution.md)
 
 - [What is Swift Package Manager (SPM)?](./xcode-tools/xcode-fundamentals.md#q-what-is-swift-package-manager-spm)
 - [What is the difference between `Debug` and `Release` build configurations?](./xcode-tools/xcode-fundamentals.md#q-what-is-the-difference-between-debug-and-release-build-configurations)
@@ -155,6 +155,7 @@ Click any question to jump straight to the answer.
 - [What is `OSLog` and how is it better than `print`?](./xcode-tools/xcode-fundamentals.md#q-what-is-oslog-and-how-is-it-better-than-print)
 - [What is `xcconfig` and when would you use it?](./xcode-tools/xcode-fundamentals.md#q-what-is-xcconfig-and-when-would-you-use-it)
 - [How do you set up CI/CD for an iOS project?](./xcode-tools/xcode-fundamentals.md#q-how-do-you-set-up-cicd-for-an-ios-project)
+- [How do you set up CI/CD for an iOS project?](./xcode-tools/xcode-fundamentals.md#q-how-do-you-set-up-cicd-for-an-ios-project) → [Full setup guide](./xcode-tools/fastlane-firebase-distribution.md)
 
 ---
 
