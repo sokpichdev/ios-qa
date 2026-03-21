@@ -155,12 +155,12 @@ Click any question to jump straight to the answer.
 - [What is `OSLog` and how is it better than `print`?](./xcode-tools/xcode-fundamentals.md#q-what-is-oslog-and-how-is-it-better-than-print)
 - [What is `xcconfig` and when would you use it?](./xcode-tools/xcode-fundamentals.md#q-what-is-xcconfig-and-when-would-you-use-it)
 - [How do you set up CI/CD for an iOS project?](./xcode-tools/xcode-fundamentals.md#q-how-do-you-set-up-cicd-for-an-ios-project)
-- [How do you set up CI/CD for an iOS project?](./xcode-tools/xcode-fundamentals.md#q-how-do-you-set-up-cicd-for-an-ios-project) → [Full setup guide](./xcode-tools/fastlane-firebase-distribution.md)
+- [How do you set up CI/CD for an iOS project?](./xcode-tools/xcode-fundamentals.md#q-how-do-you-set-up-cicd-for-an-ios-project) → [Full setup guide](./xcode-tools/iOS_Fastlane_Firebase_Setup_Guide.md)
 
 ---
 
 ## 🎯 Interview Prep
-> [`interview-prep/common-questions.md`](./interview-prep/common-questions.md)
+> [`interview-prep/common-questions.md`](./iOS_Fastlane_Firebase_Setup_Guide.md)
 
 - [Explain the iOS app lifecycle](./interview-prep/common-questions.md#q-explain-the-ios-app-lifecycle)
 - [What is a retain cycle and how do you prevent it?](./interview-prep/common-questions.md#q-what-is-retain-cycle-and-how-do-you-prevent-it)
