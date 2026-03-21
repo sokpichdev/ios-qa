@@ -186,6 +186,10 @@ firebase login:ci
 
 ### 4.5 Create Environment File
 
+```bash
+touch fastlane/.env
+open fastlane/.env
+```
 Store the Firebase token in a local `.env` file that is excluded from version control:
 
 ```bash
@@ -193,7 +197,7 @@ Store the Firebase token in a local `.env` file that is excluded from version co
 FIREBASE_TOKEN=your_firebase_ci_token_here
 ```
 
-Add the following to your `.gitignore`:
+Add the following to your `.gitignore` — see [GitHub Commands](#github-commands):
 
 ```
 fastlane/.env
@@ -535,6 +539,20 @@ firebase login:ci
 
 # Switch accounts
 firebase logout && firebase login
+```
+
+### GitHub Commands
+
+```bash
+# Add files to .gitignore
+echo "fastlane/.env" >> .gitignore
+echo "build/" >> .gitignore
+
+# Verify .gitignore is working
+git check-ignore -v fastlane/.env
+
+# If the file was already tracked, untrack it without deleting
+git rm --cached fastlane/.env
 ```
 
 ### Key Files
