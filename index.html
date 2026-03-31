@@ -361,6 +361,9 @@ canvas#wheel{border-radius:50%;box-shadow:0 0 36px rgba(240,90,40,.25)}
   <div style="width:36px"></div>
 </header>
 
+<!-- ── Main ── -->
+<div class="app-body">
+
 <!-- ── Sidebar ── -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
@@ -384,8 +387,6 @@ canvas#wheel{border-radius:50%;box-shadow:0 0 36px rgba(240,90,40,.25)}
   </div>
 </nav>
 
-<!-- ── Main ── -->
-<div class="app-body">
 <div class="main">
 
   <!-- HOME -->
@@ -559,26 +560,35 @@ function fmt(t) {
   return t.replace(/`([^`]+)`/g,'<code>$1</code>');
 }
 function renderMarkdown(md) {
-  let html = md
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/```(\w+)?\n([\s\S]*?)```/g,(_, lang, code) => {
-      const trimmed = code.trim();
-      const langKey = lang || '';
-      const langLabel = langKey ? langKey.charAt(0).toUpperCase() + langKey.slice(1) : 'Code';
-      const langClass = langKey ? `language-${langKey}` : '';
-      const lines = trimmed.split('\n');
-      const nums = lines.map((_,i) => `<span>${i+1}</span>`).join('');
-      return `<div class="code-block">
-        <div class="code-header">
-          <span class="code-lang">${langLabel}</span>
-          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-        <div class="code-line-nums">
-          <div class="code-nums">${nums}</div>
-          <pre><code class="${langClass}">${trimmed}</code></pre>
-        </div>
-      </div>`;
-    })
+  // Step 1: Escape HTML entities
+  let text = md
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  // Step 2: Extract code blocks into placeholders so newlines inside them are preserved
+  const codeBlocks = [];
+  text = text.replace(/```(\w+)?\n([\s\S]*?)```/g,(_, lang, code) => {
+    const trimmed = code.trim();
+    const langKey = lang || '';
+    const langLabel = langKey ? langKey.charAt(0).toUpperCase() + langKey.slice(1) : 'Code';
+    const langClass = langKey ? `language-${langKey}` : '';
+    const lines = trimmed.split('\n');
+    const nums = lines.map((_,i) => `<span>${i+1}</span>`).join('');
+    const block = `<div class="code-block">
+      <div class="code-header">
+        <span class="code-lang">${langLabel}</span>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      </div>
+      <div class="code-line-nums">
+        <div class="code-nums">${nums}</div>
+        <pre><code class="${langClass}">${trimmed}</code></pre>
+      </div>
+    </div>`;
+    codeBlocks.push(block);
+    return `\x00CODEBLOCK${codeBlocks.length - 1}\x00`;
+  });
+
+  // Step 3: Apply remaining Markdown transforms (safe — no code blocks present)
+  let html = text
     .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
     .replace(/`([^`]+)`/g,'<code>$1</code>')
     .replace(/^\|(.+)\|$/gm, row => {
@@ -593,6 +603,10 @@ function renderMarkdown(md) {
     .replace(/(<oli>.*<\/oli>\n?)+/g, t => `<ol>${t.replace(/<oli>/g,'<li>').replace(/<\/oli>/g,'</li>')}</ol>`)
     .replace(/\n\n/g,'</p><p>')
     .replace(/\n/g,' ');
+
+  // Step 4: Restore code blocks
+  html = html.replace(/\x00CODEBLOCK(\d+)\x00/g, (_, i) => codeBlocks[parseInt(i)]);
+
   return `<p>${html}</p>`;
 }
 
