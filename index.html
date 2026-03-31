@@ -22,7 +22,8 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
 
 /* ── Layout ── */
-.app{display:flex;min-height:100vh}
+.app{display:flex;flex-direction:column;min-height:100vh}
+.app-body{display:flex;flex:1;min-height:0}
 .sidebar{
   width:220px;flex-shrink:0;background:var(--surface);
   border-right:1px solid var(--border);display:flex;flex-direction:column;
@@ -257,21 +258,111 @@ canvas#wheel{border-radius:50%;box-shadow:0 0 36px rgba(240,90,40,.25)}
 /* ── Bookmarks ── */
 .bm-empty{color:var(--muted);font-size:14px;text-align:center;padding:40px 0}
 
+/* ── Code Block ── */
+.code-block{margin:14px 0;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:#1a1d27}
+.code-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 14px;background:#12141e;border-bottom:1px solid rgba(255,255,255,.07);
+}
+.code-lang{
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--orange);display:flex;align-items:center;gap:6px;
+}
+.code-lang::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--orange);opacity:.7}
+.code-line-nums{display:flex;overflow:auto}
+.code-nums{
+  display:flex;flex-direction:column;align-items:flex-end;padding:14px 10px 14px 14px;
+  background:rgba(0,0,0,.2);user-select:none;flex-shrink:0;
+  font-family:var(--mono);font-size:12.5px;line-height:1.7;color:rgba(255,255,255,.2);min-width:40px;
+}
+.code-line-nums pre{flex:1;margin:0;padding:14px 16px 14px 10px;border-radius:0;overflow:visible;background:transparent;border:none}
+.code-line-nums pre code{background:transparent;padding:0;font-size:12.5px;line-height:1.7}
+.copy-btn{
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.5px;
+  padding:4px 10px;border-radius:6px;cursor:pointer;border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);color:var(--muted);transition:all .15s;text-transform:uppercase;
+}
+.copy-btn:hover{background:rgba(240,90,40,.15);border-color:var(--orange);color:var(--orange)}
+.copy-btn.copied{background:rgba(48,209,88,.15);border-color:var(--green);color:var(--green)}
+/* simple pre fallback (non-code-block) */
+.q-answer pre:not(.code-block pre){padding:14px;border-radius:10px;background:#1a1d27;border:1px solid rgba(255,255,255,.08);overflow-x:auto}
+
+/* ── Mobile top bar ── */
+.topbar{
+  display:none;position:sticky;top:0;z-index:200;
+  height:56px;background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 16px;align-items:center;justify-content:space-between;
+}
+.topbar-title{font-size:14px;font-weight:800;letter-spacing:-.2px}
+.hamburger{
+  width:36px;height:36px;border-radius:10px;border:1px solid var(--border);
+  background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:5px;padding:8px;
+}
+.hamburger span{display:block;height:2px;background:var(--text);border-radius:2px;width:100%;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;
+  backdrop-filter:blur(2px);
+}
+.sidebar-overlay.visible{display:block}
+
 /* ── Responsive ── */
 @media(max-width:700px){
-  .sidebar{width:60px}
-  .sidebar-logo,.nav-item span,.sidebar-stats{display:none}
-  .nav-item{padding:14px;justify-content:center}
-  .nav-item .icon{width:auto}
-  .page{padding:20px 16px}
+  .topbar{display:flex}
+  .sidebar{
+    position:fixed;left:0;top:0;bottom:0;z-index:160;width:240px;
+    transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .main{width:100%}
+  .page{padding:20px 14px;max-width:100%}
+  .page-title{font-size:20px}
+  .stats-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+  .category-overview{grid-template-columns:1fr 1fr;gap:10px}
+  .home-actions{flex-direction:column}
+  .action-btn{width:100%;text-align:center}
+  .q-header{padding:14px 16px;gap:10px}
+  .q-header .q-text{font-size:13px}
+  .q-answer{padding:0 14px 16px;font-size:13px}
+  .answer-actions{flex-wrap:wrap;gap:6px}
+  .ans-btn{flex:1;min-width:80px;text-align:center}
+  .spin-row{flex-direction:column;align-items:center;gap:20px}
+  .spin-card{max-width:100%;min-width:0;width:100%}
+  .quiz-wrap{max-width:100%}
+  .quiz-question{font-size:16px}
+  .score-grid{gap:10px}
+  .filter-row{gap:6px}
+  .pill{font-size:11px;padding:4px 10px}
+  .code-block{border-radius:8px}
+  .code-nums{display:none}
+  .code-line-nums pre{padding:12px 14px}
+  .progress-summary{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+}
+@media(max-width:380px){
+  .category-overview{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
 <body>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
 <div class="app">
 
+<!-- ── Mobile Top Bar ── -->
+<header class="topbar">
+  <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="topbar-title">📱 iOS Q&A</div>
+  <div style="width:36px"></div>
+</header>
+
 <!-- ── Sidebar ── -->
-<nav class="sidebar">
+<nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <h1>📱 iOS Q&A</h1>
     <p>cobra-PICH/ios-qa</p>
@@ -294,6 +385,7 @@ canvas#wheel{border-radius:50%;box-shadow:0 0 36px rgba(240,90,40,.25)}
 </nav>
 
 <!-- ── Main ── -->
+<div class="app-body">
 <div class="main">
 
   <!-- HOME -->
@@ -373,9 +465,45 @@ canvas#wheel{border-radius:50%;box-shadow:0 0 36px rgba(240,90,40,.25)}
   </div>
 
 </div><!-- /main -->
+</div><!-- /app-body -->
 </div><!-- /app -->
 
 <script>
+// ─────────────────────────────────────────────
+//  MOBILE SIDEBAR
+// ─────────────────────────────────────────────
+function toggleSidebar(){
+  const s=document.getElementById('sidebar');
+  const h=document.getElementById('hamburger');
+  const o=document.getElementById('sidebar-overlay');
+  const open=s.classList.toggle('open');
+  h.classList.toggle('open',open);
+  o.classList.toggle('visible',open);
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('visible');
+}
+
+// ─────────────────────────────────────────────
+//  COPY CODE
+// ─────────────────────────────────────────────
+function copyCode(btn){
+  const pre=btn.closest('.code-block').querySelector('pre');
+  const text=pre.textContent||pre.innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=text;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent='Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000);
+  });
+}
+
 // ─────────────────────────────────────────────
 //  DATA
 // ─────────────────────────────────────────────
@@ -421,6 +549,7 @@ function nav(page) {
   if(page==='bookmarks') renderBookmarks();
   if(page==='home') renderHome();
   if(page==='quiz') renderQuizFilters();
+  closeSidebar();
 }
 
 // ─────────────────────────────────────────────
@@ -432,10 +561,24 @@ function fmt(t) {
 function renderMarkdown(md) {
   let html = md
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/```swift\n([\s\S]*?)```/g,(_, code) =>
-      `<pre><code class="language-swift">${code.trim()}</code></pre>`)
-    .replace(/```([\s\S]*?)```/g,(_, code) =>
-      `<pre><code>${code.trim()}</code></pre>`)
+    .replace(/```(\w+)?\n([\s\S]*?)```/g,(_, lang, code) => {
+      const trimmed = code.trim();
+      const langKey = lang || '';
+      const langLabel = langKey ? langKey.charAt(0).toUpperCase() + langKey.slice(1) : 'Code';
+      const langClass = langKey ? `language-${langKey}` : '';
+      const lines = trimmed.split('\n');
+      const nums = lines.map((_,i) => `<span>${i+1}</span>`).join('');
+      return `<div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">${langLabel}</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-line-nums">
+          <div class="code-nums">${nums}</div>
+          <pre><code class="${langClass}">${trimmed}</code></pre>
+        </div>
+      </div>`;
+    })
     .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
     .replace(/`([^`]+)`/g,'<code>$1</code>')
     .replace(/^\|(.+)\|$/gm, row => {
