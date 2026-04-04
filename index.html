@@ -4,1016 +4,263 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>iOS Developer Q&A</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Sora:wght@300;600;800&display=swap');
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#0d0f14;--surface:#151821;--card:#1c2030;--border:#252a3a;
-  --orange:#f05a28;--og:rgba(240,90,40,.12);
-  --blue:#4a9eff;--green:#30d158;--purple:#bf5af2;--yellow:#ffd60a;
-  --pink:#ff375f;--cyan:#5ac8fa;
-  --text:#e8eaf0;--muted:#6b7280;--dimmed:#9ca3af;
+  --orange:#f05a28;--og:rgba(240,90,40,.15);
+  --text:#e8eaf0;--muted:#6b7280;--cyan:#5ac8fa;
   --mono:'JetBrains Mono',monospace;--sans:'Sora',sans-serif;
 }
-html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
 
-/* ── Layout ── */
-.app{display:flex;flex-direction:column;min-height:100vh}
-.app-body{display:flex;flex:1;min-height:0}
-.sidebar{
-  width:220px;flex-shrink:0;background:var(--surface);
-  border-right:1px solid var(--border);display:flex;flex-direction:column;
-  position:sticky;top:0;height:100vh;overflow-y:auto;
+/* ── Header ── */
+header{
+  padding:28px 40px 22px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;
 }
-.main{flex:1;min-width:0;overflow-x:hidden}
+header::before{
+  content:'';position:absolute;top:-60px;left:-60px;
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(240,90,40,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.logo{
+  width:44px;height:44px;background:var(--orange);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+  flex-shrink:0;box-shadow:0 0 20px rgba(240,90,40,.4);
+}
+header h1{font-size:20px;font-weight:800;letter-spacing:-.5px}
+header p{font-size:13px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
+.tag-count{
+  margin-left:auto;background:var(--og);border:1px solid var(--orange);
+  color:var(--orange);font-family:var(--mono);font-size:12px;
+  padding:4px 12px;border-radius:20px;white-space:nowrap;
+}
 
-/* ── Sidebar ── */
-.sidebar-logo{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
-.sidebar-logo h1{font-size:15px;font-weight:800;letter-spacing:-.3px;line-height:1.3}
-.sidebar-logo p{font-size:11px;color:var(--muted);margin-top:3px;font-family:var(--mono)}
-.nav{padding:12px 0}
-.nav-item{
-  display:flex;align-items:center;gap:10px;padding:10px 20px;
-  font-size:13px;font-weight:600;color:var(--dimmed);cursor:pointer;
-  transition:all .15s;border-left:3px solid transparent;
+/* ── Spin Section ── */
+.spin-section{
+  margin:32px 40px;background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:36px;text-align:center;position:relative;overflow:hidden;
 }
-.nav-item:hover{color:var(--text);background:var(--card)}
-.nav-item.active{color:var(--orange);border-left-color:var(--orange);background:var(--og)}
-.nav-item .icon{font-size:16px;width:20px;text-align:center}
-.nav-divider{height:1px;background:var(--border);margin:8px 20px}
-.sidebar-stats{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border)}
-.stat-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
-.stat-row span:first-child{color:var(--muted)}
-.stat-row span:last-child{font-family:var(--mono);font-weight:700;color:var(--orange)}
+.spin-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(240,90,40,.08) 0%,transparent 60%);
+  pointer-events:none;
+}
+.spin-label{font-family:var(--mono);font-size:11px;color:var(--orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.spin-section h2{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.spin-section>p{color:var(--muted);font-size:14px;margin-bottom:28px}
 
-/* ── Pages ── */
-.page{display:none;padding:32px 40px;max-width:1100px}
-.page.active{display:block}
-.page-title{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
-.page-sub{font-size:14px;color:var(--muted);margin-bottom:28px}
-
-/* ── Shared components ── */
-.badge{
-  display:inline-block;padding:3px 10px;border-radius:20px;
-  font-family:var(--mono);font-size:11px;font-weight:700;
-  letter-spacing:.5px;
-}
-.pill{
-  padding:5px 12px;border-radius:20px;font-family:var(--mono);font-size:12px;
-  cursor:pointer;transition:all .15s;
-  background:var(--surface);border:1px solid var(--border);color:var(--muted);
-}
-.pill:hover,.pill.active{color:#fff;border-color:var(--orange);background:var(--og)}
-.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
-
-/* ── Home ── */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;margin-bottom:32px}
-.stat-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:14px;
-  padding:20px;text-align:center;transition:all .2s;
-}
-.stat-card:hover{border-color:var(--orange);transform:translateY(-2px)}
-.stat-card .num{font-size:32px;font-weight:800;font-family:var(--mono);line-height:1}
-.stat-card .lbl{font-size:12px;color:var(--muted);margin-top:6px}
-.home-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px}
-.action-btn{
-  padding:12px 24px;border-radius:12px;font-family:var(--sans);font-size:14px;
-  font-weight:700;cursor:pointer;border:none;transition:all .2s;
-}
-.action-btn.primary{background:var(--orange);color:#fff;box-shadow:0 4px 16px rgba(240,90,40,.35)}
-.action-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(240,90,40,.5)}
-.action-btn.secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
-.action-btn.secondary:hover{border-color:var(--orange);background:var(--card)}
-.category-overview{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.cat-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:14px;
-  padding:16px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px;
-}
-.cat-card:hover{border-color:var(--orange);transform:translateY(-2px);background:var(--card)}
-.cat-card .emoji{font-size:24px}
-.cat-card .info h3{font-size:14px;font-weight:700}
-.cat-card .info p{font-size:12px;color:var(--muted);margin-top:2px;font-family:var(--mono)}
-.progress-bar-wrap{height:4px;background:var(--border);border-radius:2px;margin-top:8px}
-.progress-bar{height:100%;border-radius:2px;transition:width .4s ease}
-
-/* ── Browse ── */
-.q-list{display:flex;flex-direction:column;gap:10px}
-.q-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:14px;
-  overflow:hidden;transition:border-color .2s;
-}
-.q-card:hover{border-color:rgba(240,90,40,.4)}
-.q-header{
-  display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;
-  user-select:none;
-}
-.q-header .cat-badge{flex-shrink:0;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.06)}
-.q-header .q-text{font-size:14px;font-weight:600;line-height:1.4;flex:1}
-.q-header .chevron{color:var(--muted);font-size:12px;transition:transform .25s;flex-shrink:0}
-.q-card.open .chevron{transform:rotate(180deg)}
-.q-status{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--border)}
-.q-status.got-it{background:var(--green)}
-.q-status.almost{background:var(--yellow)}
-.q-status.nope{background:var(--pink)}
-.q-answer{
-  display:none;padding:0 20px 20px;border-top:1px solid var(--border);
-  font-size:14px;line-height:1.7;color:var(--dimmed);
-}
-.q-card.open .q-answer{display:block}
-.q-answer p{margin-bottom:10px}
-.q-answer strong{color:var(--text)}
-.q-answer code{font-family:var(--mono);background:rgba(255,255,255,.07);padding:1px 6px;border-radius:4px;font-size:.88em;color:var(--cyan)}
-.q-answer pre{margin:12px 0;border-radius:10px;overflow:auto}
-.q-answer pre code{background:transparent;padding:0;color:inherit;font-size:13px}
-.q-answer table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
-.q-answer th{background:var(--card);padding:8px 12px;text-align:left;color:var(--text);font-family:var(--mono);font-size:11px;letter-spacing:.5px}
-.q-answer td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--dimmed)}
-.q-answer ul,.q-answer ol{padding-left:20px;margin-bottom:10px}
-.q-answer li{margin-bottom:4px}
-.answer-actions{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
-.ans-btn{
-  padding:7px 16px;border-radius:8px;font-family:var(--sans);font-size:12px;
-  font-weight:700;cursor:pointer;border:1px solid var(--border);
-  background:var(--card);color:var(--muted);transition:all .15s;
-}
-.ans-btn:hover{transform:translateY(-1px)}
-.ans-btn.got-it:hover,.ans-btn.got-it.selected{background:rgba(48,209,88,.15);border-color:var(--green);color:var(--green)}
-.ans-btn.almost:hover,.ans-btn.almost.selected{background:rgba(255,214,10,.15);border-color:var(--yellow);color:var(--yellow)}
-.ans-btn.nope:hover,.ans-btn.nope.selected{background:rgba(255,55,95,.15);border-color:var(--pink);color:var(--pink)}
-.bm-btn{margin-left:auto;padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--muted);transition:all .15s}
-.bm-btn.saved{color:var(--yellow);border-color:var(--yellow)}
-
-/* ── Spin ── */
-.spin-wrap{text-align:center;padding:12px 0}
-.spin-label{font-family:var(--mono);font-size:11px;color:var(--orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
-.spin-wrap h2{font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:6px}
-.spin-wrap>p{color:var(--muted);font-size:13px;margin-bottom:24px}
-.spin-row{display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap}
-.wheel-outer{position:relative;width:200px;height:200px;flex-shrink:0}
-canvas#wheel{border-radius:50%;box-shadow:0 0 36px rgba(240,90,40,.25)}
-.wheel-ptr{
-  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+.wheel-wrap{display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap}
+.wheel-outer{position:relative;width:220px;height:220px;flex-shrink:0}
+.wheel-pointer{
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
   width:0;height:0;
-  border-left:9px solid transparent;border-right:9px solid transparent;
-  border-top:18px solid var(--orange);
-  filter:drop-shadow(0 0 5px rgba(240,90,40,.8));z-index:2;
+  border-left:10px solid transparent;border-right:10px solid transparent;
+  border-top:20px solid var(--orange);
+  filter:drop-shadow(0 0 6px rgba(240,90,40,.8));z-index:2;
 }
-.spin-card{
-  flex:1;min-width:220px;max-width:380px;background:var(--card);
-  border:1px solid var(--border);border-radius:16px;padding:22px;
-  text-align:left;min-height:150px;display:flex;flex-direction:column;
+
+.question-card{
+  flex:1;min-width:240px;max-width:400px;background:var(--card);
+  border:1px solid var(--border);border-radius:16px;padding:24px;
+  text-align:left;min-height:160px;display:flex;flex-direction:column;
   justify-content:center;transition:border-color .3s,box-shadow .3s;
 }
-.spin-card.lit{border-color:var(--orange);box-shadow:0 0 18px rgba(240,90,40,.12)}
-.spin-cat{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
-.spin-q{font-size:15px;font-weight:600;line-height:1.5;margin-bottom:14px}
-.spin-hint{font-family:var(--mono);font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:10px;margin-top:auto}
-.spin-placeholder{color:var(--muted);font-size:13px;text-align:center;width:100%}
-.spin-btn-row{display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.question-card.revealed{border-color:var(--orange);box-shadow:0 0 20px rgba(240,90,40,.1)}
+.q-category{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.q-text{font-size:16px;font-weight:600;line-height:1.5;margin-bottom:16px}
+.q-placeholder{color:var(--muted);font-size:14px;text-align:center;width:100%}
+.q-hint{font-family:var(--mono);font-size:12px;color:var(--muted);border-top:1px solid var(--border);padding-top:12px;margin-top:auto}
+
 .spin-btn{
-  padding:13px 32px;border-radius:12px;font-family:var(--sans);font-size:14px;
-  font-weight:700;cursor:pointer;border:none;transition:all .2s;
-  background:var(--orange);color:#fff;box-shadow:0 4px 16px rgba(240,90,40,.35);
+  display:block;margin:24px auto 0;background:var(--orange);color:#fff;border:none;
+  padding:14px 36px;border-radius:12px;font-family:var(--sans);font-size:15px;
+  font-weight:700;cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 20px rgba(240,90,40,.35);letter-spacing:.3px;
 }
-.spin-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(240,90,40,.5)}
-.spin-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.spin-go-btn{
-  padding:13px 24px;border-radius:12px;font-family:var(--sans);font-size:14px;
-  font-weight:700;cursor:pointer;border:1px solid var(--border);transition:all .2s;
-  background:var(--surface);color:var(--text);display:none;
-}
-.spin-go-btn:hover{border-color:var(--orange);background:var(--card)}
+.spin-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(240,90,40,.5)}
+.spin-btn:active{transform:translateY(0)}
+.spin-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
-/* ── Quiz ── */
-.quiz-wrap{max-width:640px}
-.quiz-progress-bar{height:6px;background:var(--border);border-radius:3px;margin-bottom:24px;overflow:hidden}
-.quiz-progress-fill{height:100%;background:var(--orange);border-radius:3px;transition:width .4s ease}
-.quiz-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-.quiz-meta span{font-family:var(--mono);font-size:12px;color:var(--muted)}
-.quiz-q-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px}
-.quiz-cat{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px}
-.quiz-question{font-size:18px;font-weight:700;line-height:1.5}
-.quiz-question code{font-family:var(--mono);background:rgba(255,255,255,.08);padding:2px 7px;border-radius:5px;font-size:.88em;color:var(--cyan)}
-.quiz-answer-panel{
-  background:var(--card);border:1px solid var(--border);border-radius:14px;
-  padding:22px;margin-bottom:20px;display:none;
+/* ── Filters ── */
+.filters{padding:0 40px 20px;display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{
+  background:var(--surface);border:1px solid var(--border);color:var(--muted);
+  padding:6px 14px;border-radius:20px;font-family:var(--mono);font-size:12px;
+  cursor:pointer;transition:all .2s;
 }
-.quiz-answer-panel.show{display:block}
-.quiz-answer-panel .q-answer{padding:0;border:none}
-.quiz-actions{display:flex;gap:10px;flex-wrap:wrap}
-.quiz-btn{
-  flex:1;min-width:120px;padding:13px;border-radius:12px;
-  font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;
-  border:1px solid var(--border);background:var(--surface);color:var(--muted);
-  transition:all .2s;text-align:center;
-}
-.quiz-btn.reveal{background:var(--orange);color:#fff;border-color:var(--orange);box-shadow:0 4px 16px rgba(240,90,40,.3)}
-.quiz-btn.reveal:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(240,90,40,.45)}
-.quiz-btn.got-it:hover{background:rgba(48,209,88,.15);border-color:var(--green);color:var(--green)}
-.quiz-btn.almost:hover{background:rgba(255,214,10,.15);border-color:var(--yellow);color:var(--yellow)}
-.quiz-btn.nope:hover{background:rgba(255,55,95,.15);border-color:var(--pink);color:var(--pink)}
-.quiz-done{text-align:center;padding:40px 20px}
-.quiz-done h2{font-size:28px;font-weight:800;margin-bottom:12px}
-.quiz-done p{color:var(--muted);margin-bottom:24px}
-.score-grid{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
-.score-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 24px;text-align:center}
-.score-item .n{font-size:28px;font-weight:800;font-family:var(--mono)}
-.score-item .l{font-size:12px;color:var(--muted);margin-top:4px}
+.filter-btn:hover,.filter-btn.active{color:#fff;border-color:var(--orange);background:var(--og)}
 
-/* ── Search ── */
-.search-box{
-  width:100%;padding:14px 18px;border-radius:12px;font-family:var(--sans);
-  font-size:15px;background:var(--surface);border:1px solid var(--border);
-  color:var(--text);outline:none;margin-bottom:20px;transition:border-color .2s;
+/* ── Grid ── */
+.grid-section{padding:0 40px 40px}
+.grid-section h3{font-size:13px;font-family:var(--mono);color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.q-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.q-item{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:16px;cursor:default;transition:all .2s;
 }
-.search-box:focus{border-color:var(--orange)}
-.search-box::placeholder{color:var(--muted)}
-.search-results{display:flex;flex-direction:column;gap:8px}
-.search-hit mark{background:rgba(240,90,40,.3);color:var(--orange);border-radius:3px;padding:0 2px}
-.no-results{color:var(--muted);font-size:14px;text-align:center;padding:40px 0}
+.q-item:hover{border-color:var(--orange);background:var(--card);transform:translateY(-2px)}
+.q-item-cat{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.q-item-text{font-size:13px;line-height:1.5;color:#c8ccd8}
+code{font-family:var(--mono);background:rgba(255,255,255,.07);padding:1px 5px;border-radius:4px;font-size:.9em;color:var(--cyan)}
 
-/* ── Progress ── */
-.progress-summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;margin-bottom:32px}
-.prog-stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center}
-.prog-stat .n{font-size:28px;font-weight:800;font-family:var(--mono);line-height:1}
-.prog-stat .l{font-size:12px;color:var(--muted);margin-top:5px}
-.prog-cat-list{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
-.prog-cat-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px}
-.prog-cat-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.prog-cat-top .name{font-weight:700;font-size:14px;flex:1}
-.prog-cat-top .count{font-family:var(--mono);font-size:12px;color:var(--muted)}
-.prog-segments{display:flex;height:8px;border-radius:4px;overflow:hidden;gap:2px}
-.seg{border-radius:2px;transition:width .4s ease}
-.reset-btn{
-  padding:10px 20px;border-radius:10px;font-family:var(--sans);font-size:13px;
-  font-weight:700;cursor:pointer;border:1px solid var(--border);
-  background:var(--surface);color:var(--muted);transition:all .2s;
+/* ── Footer ── */
+footer{
+  text-align:center;padding:24px 40px;border-top:1px solid var(--border);
+  font-family:var(--mono);font-size:12px;color:var(--muted);
 }
-.reset-btn:hover{border-color:var(--pink);color:var(--pink)}
-
-/* ── Bookmarks ── */
-.bm-empty{color:var(--muted);font-size:14px;text-align:center;padding:40px 0}
-
-/* ── Code Block ── */
-.code-block{margin:14px 0;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:#1a1d27}
-.code-header{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:8px 14px;background:#12141e;border-bottom:1px solid rgba(255,255,255,.07);
-}
-.code-lang{
-  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:1.5px;
-  text-transform:uppercase;color:var(--orange);display:flex;align-items:center;gap:6px;
-}
-.code-lang::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--orange);opacity:.7}
-.code-line-nums{display:flex;overflow:auto}
-.code-nums{
-  display:flex;flex-direction:column;align-items:flex-end;padding:14px 10px 14px 14px;
-  background:rgba(0,0,0,.2);user-select:none;flex-shrink:0;
-  font-family:var(--mono);font-size:12.5px;line-height:1.7;color:rgba(255,255,255,.2);min-width:40px;
-}
-.code-line-nums pre{flex:1;margin:0;padding:14px 16px 14px 10px;border-radius:0;overflow:visible;background:transparent;border:none}
-.code-line-nums pre code{background:transparent;padding:0;font-size:12.5px;line-height:1.7}
-.copy-btn{
-  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.5px;
-  padding:4px 10px;border-radius:6px;cursor:pointer;border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.05);color:var(--muted);transition:all .15s;text-transform:uppercase;
-}
-.copy-btn:hover{background:rgba(240,90,40,.15);border-color:var(--orange);color:var(--orange)}
-.copy-btn.copied{background:rgba(48,209,88,.15);border-color:var(--green);color:var(--green)}
-/* simple pre fallback (non-code-block) */
-.q-answer pre:not(.code-block pre){padding:14px;border-radius:10px;background:#1a1d27;border:1px solid rgba(255,255,255,.08);overflow-x:auto}
-
-/* ── Mobile top bar ── */
-.topbar{
-  display:none;position:sticky;top:0;z-index:200;
-  height:56px;background:var(--surface);border-bottom:1px solid var(--border);
-  padding:0 16px;align-items:center;justify-content:space-between;
-}
-.topbar-title{font-size:14px;font-weight:800;letter-spacing:-.2px}
-.hamburger{
-  width:36px;height:36px;border-radius:10px;border:1px solid var(--border);
-  background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:5px;padding:8px;
-}
-.hamburger span{display:block;height:2px;background:var(--text);border-radius:2px;width:100%;transition:all .25s}
-.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.hamburger.open span:nth-child(2){opacity:0}
-.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-.sidebar-overlay{
-  display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;
-  backdrop-filter:blur(2px);
-}
-.sidebar-overlay.visible{display:block}
-
-/* ── Responsive ── */
-@media(max-width:700px){
-  .topbar{display:flex}
-  .sidebar{
-    position:fixed;left:0;top:0;bottom:0;z-index:160;width:240px;
-    transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
-  }
-  .sidebar.open{transform:translateX(0)}
-  .main{width:100%}
-  .page{padding:20px 14px;max-width:100%}
-  .page-title{font-size:20px}
-  .stats-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
-  .category-overview{grid-template-columns:1fr 1fr;gap:10px}
-  .home-actions{flex-direction:column}
-  .action-btn{width:100%;text-align:center}
-  .q-header{padding:14px 16px;gap:10px}
-  .q-header .q-text{font-size:13px}
-  .q-answer{padding:0 14px 16px;font-size:13px}
-  .answer-actions{flex-wrap:wrap;gap:6px}
-  .ans-btn{flex:1;min-width:80px;text-align:center}
-  .spin-row{flex-direction:column;align-items:center;gap:20px}
-  .spin-card{max-width:100%;min-width:0;width:100%}
-  .quiz-wrap{max-width:100%}
-  .quiz-question{font-size:16px}
-  .score-grid{gap:10px}
-  .filter-row{gap:6px}
-  .pill{font-size:11px;padding:4px 10px}
-  .code-block{border-radius:8px}
-  .code-nums{display:none}
-  .code-line-nums pre{padding:12px 14px}
-  .progress-summary{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
-}
-@media(max-width:380px){
-  .category-overview{grid-template-columns:1fr}
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-}
+footer a{color:var(--orange);text-decoration:none}
+footer a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-<div class="app">
-
-<!-- ── Mobile Top Bar ── -->
-<header class="topbar">
-  <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-  <div class="topbar-title">📱 iOS Q&A</div>
-  <div style="width:36px"></div>
+<header>
+  <div class="logo">📱</div>
+  <div>
+    <h1>iOS Developer Q&A</h1>
+    <p>cobra-PICH/ios-qa · interview prep knowledge base</p>
+  </div>
+  <div class="tag-count">105 questions</div>
 </header>
 
-<!-- ── Main ── -->
-<div class="app-body">
-
-<!-- ── Sidebar ── -->
-<nav class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <h1>📱 iOS Q&A</h1>
-    <p>cobra-PICH/ios-qa</p>
-  </div>
-  <div class="nav">
-    <div class="nav-item active" onclick="nav('home')"    id="nav-home">    <span class="icon">🏠</span><span>Home</span></div>
-    <div class="nav-item"        onclick="nav('browse')"  id="nav-browse">  <span class="icon">📚</span><span>Browse</span></div>
-    <div class="nav-item"        onclick="nav('spin')"    id="nav-spin">    <span class="icon">🎰</span><span>Spin</span></div>
-    <div class="nav-item"        onclick="nav('quiz')"    id="nav-quiz">    <span class="icon">🧠</span><span>Quiz</span></div>
-    <div class="nav-divider"></div>
-    <div class="nav-item"        onclick="nav('search')"  id="nav-search">  <span class="icon">🔍</span><span>Search</span></div>
-    <div class="nav-item"        onclick="nav('progress')" id="nav-progress"><span class="icon">📊</span><span>Progress</span></div>
-    <div class="nav-item"        onclick="nav('bookmarks')" id="nav-bookmarks"><span class="icon">⭐</span><span>Stars</span></div>
-  </div>
-  <div class="sidebar-stats">
-    <div class="stat-row"><span>Total</span><span id="s-total">0</span></div>
-    <div class="stat-row"><span>Reviewed</span><span id="s-reviewed">0</span></div>
-    <div class="stat-row"><span>Got it ✅</span><span id="s-gotit">0</span></div>
-  </div>
-</nav>
-
-<div class="main">
-
-  <!-- HOME -->
-  <div class="page active" id="page-home">
-    <div class="page-title">Welcome back 👋</div>
-    <div class="page-sub">Your iOS interview prep hub · <span id="h-total">0</span> questions across 9 categories</div>
-    <div class="stats-grid" id="home-stats"></div>
-    <div class="home-actions">
-      <button class="action-btn primary" onclick="nav('quiz')">🧠 Start Quiz</button>
-      <button class="action-btn secondary" onclick="nav('spin')">🎰 Spin the Wheel</button>
-      <button class="action-btn secondary" onclick="nav('browse')">📚 Browse All</button>
+<!-- Spin -->
+<div class="spin-section">
+  <div class="spin-label">🎰 Random Challenge Mode</div>
+  <h2>Spin the Wheel</h2>
+  <p>Pick a random iOS interview question from your knowledge base</p>
+  <div class="wheel-wrap">
+    <div class="wheel-outer">
+      <div class="wheel-pointer"></div>
+      <canvas id="wheel" width="220" height="220"></canvas>
     </div>
-    <div style="font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px">Categories</div>
-    <div class="category-overview" id="home-cats"></div>
-  </div>
-
-  <!-- BROWSE -->
-  <div class="page" id="page-browse">
-    <div class="page-title">Browse Questions</div>
-    <div class="page-sub">Click any question to reveal the answer · mark yourself to track progress</div>
-    <div class="filter-row" id="browse-filters"></div>
-    <div class="q-list" id="browse-list"></div>
-  </div>
-
-  <!-- SPIN -->
-  <div class="page" id="page-spin">
-    <div class="page-title">Spin the Wheel 🎰</div>
-    <div class="page-sub">Pick a random category, get a random question</div>
-    <div class="spin-wrap">
-      <div class="spin-row">
-        <div class="wheel-outer">
-          <div class="wheel-ptr"></div>
-          <canvas id="wheel" width="200" height="200"></canvas>
-        </div>
-        <div class="spin-card" id="spin-card">
-          <p class="spin-placeholder">🎯 Spin the wheel to get a question</p>
-        </div>
-      </div>
-      <div class="spin-btn-row">
-        <button class="spin-btn" id="spin-btn" onclick="spinWheel()">🎰 Spin!</button>
-        <button class="spin-go-btn" id="spin-go-btn">📖 See Answer</button>
-      </div>
+    <div class="question-card" id="qCard">
+      <p class="q-placeholder">🎯 Spin the wheel to get a random question</p>
     </div>
   </div>
+  <button class="spin-btn" id="spinBtn" onclick="spinWheel()">🎰 Spin!</button>
+</div>
 
-  <!-- QUIZ -->
-  <div class="page" id="page-quiz">
-    <div class="page-title">Quiz Mode 🧠</div>
-    <div class="page-sub">Answer each question in your head, then reveal and rate yourself</div>
-    <div class="filter-row" id="quiz-filters"></div>
-    <div class="quiz-wrap" id="quiz-wrap"></div>
-  </div>
+<div class="filters" id="filters"></div>
+<div class="grid-section">
+  <h3 id="gridLabel">All Questions</h3>
+  <div class="q-grid" id="qGrid"></div>
+</div>
 
-  <!-- SEARCH -->
-  <div class="page" id="page-search">
-    <div class="page-title">Search</div>
-    <div class="page-sub">Find questions across all categories</div>
-    <input type="text" class="search-box" placeholder="Search questions and answers…" id="search-input" oninput="doSearch()">
-    <div class="search-results" id="search-results"></div>
-  </div>
-
-  <!-- PROGRESS -->
-  <div class="page" id="page-progress">
-    <div class="page-title">Progress 📊</div>
-    <div class="page-sub">Track your interview readiness by category</div>
-    <div class="progress-summary" id="prog-summary"></div>
-    <div style="font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:14px">By Category</div>
-    <div class="prog-cat-list" id="prog-cats"></div>
-    <button class="reset-btn" onclick="resetProgress()">🗑 Reset all progress</button>
-  </div>
-
-  <!-- BOOKMARKS -->
-  <div class="page" id="page-bookmarks">
-    <div class="page-title">Starred ⭐</div>
-    <div class="page-sub">Questions you've bookmarked for quick review</div>
-    <div class="q-list" id="bm-list"></div>
-  </div>
-
-</div><!-- /main -->
-</div><!-- /app-body -->
-</div><!-- /app -->
+<footer>
+  <p>Auto-generated from <a href="https://github.com/cobra-PICH/ios-qa">cobra-PICH/ios-qa</a> · Built with GitHub Actions</p>
+</footer>
 
 <script>
-// ─────────────────────────────────────────────
-//  MOBILE SIDEBAR
-// ─────────────────────────────────────────────
-function toggleSidebar(){
-  const s=document.getElementById('sidebar');
-  const h=document.getElementById('hamburger');
-  const o=document.getElementById('sidebar-overlay');
-  const open=s.classList.toggle('open');
-  h.classList.toggle('open',open);
-  o.classList.toggle('visible',open);
-}
-function closeSidebar(){
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('hamburger').classList.remove('open');
-  document.getElementById('sidebar-overlay').classList.remove('visible');
-}
+const QUESTIONS = [{"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is the difference between `strong`, `weak`, and `unowned` references?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is a protocol extension and why is it powerful?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is `@escaping` in a closure?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is the difference between `struct` and `class` in Swift?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is `Optional` and how does it work?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is `guard let` vs `if let`?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is `Codable` and how does it work?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is the difference between `map`, `flatMap`, and `compactMap`?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is `lazy` property and when is it useful?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is `Result` type and when should you use it?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is `Hashable`, `Equatable`, and `Comparable`?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is `@propertyWrapper` and how do you create one?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is `some` keyword (opaque types)?"}, {"cat": "Swift", "key": "swift", "emoji": "🔷", "color": "#4a9eff", "q": "What is copy-on-write (COW) and which types use it?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "What is the difference between `FlowLayout` and `WrapHStack` for wrapping tag-style views in SwiftUI?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "Why does `FlowLayout` (using the `Layout` protocol) break inside a `ScrollView`?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "How do you implement a wrapping flow layout using the SwiftUI `Layout` protocol?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "How do you implement `WrapHStack` — a flow layout that reliably wraps inside a `ScrollView`?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "What is the difference between `@State`, `@Binding`, `@ObservedObject`, and `@StateObject`?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "What is `ViewBuilder` and how does it work?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "When should you use `task {}` vs `onAppear {}` in SwiftUI?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "What is the difference between `@Environment` and `@EnvironmentObject`?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "How does SwiftUI's diffing algorithm work?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "What is `GeometryReader` and what are its pitfalls?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "How do you animate transitions between views in SwiftUI?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "What is `LazyVStack` vs `VStack` — when does it matter?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "How do you handle navigation in SwiftUI using `NavigationStack`?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "What is `@AppStorage` and when would you use it?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "How do you create a custom `ViewModifier`?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "How do you pass data between a sheet and the parent view?"}, {"cat": "SwiftUI", "key": "swiftui", "emoji": "🔶", "color": "#f05a28", "q": "What is the `Identifiable` protocol and why does SwiftUI need it?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "What is the difference between `async/await` and GCD (Grand Central Dispatch)?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "What is an `Actor` and when should you use one?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "What is `MainActor` and when do you use it?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "What is a `Task` and how is it different from a `Thread`?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "What is `TaskGroup` and when would you use it?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "What is `async let` and when is it useful?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "What is `withCheckedContinuation` and why is it needed?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "How do you cancel a running `Task`?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "What is `Sendable` and why does it matter?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "What is the difference between a `serial` and `concurrent` queue in GCD?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "What is a race condition and how do you prevent it?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "What is `OperationQueue` and how is it different from GCD?"}, {"cat": "Concurrency", "key": "concurrency", "emoji": "⚡", "color": "#ffd60a", "q": "What is `AsyncStream` and what problem does it solve?"}, {"cat": "Architecture", "key": "architecture", "emoji": "🏗", "color": "#bf5af2", "q": "What is the difference between MVC, MVVM, and MVP?"}, {"cat": "Architecture", "key": "architecture", "emoji": "🏗", "color": "#bf5af2", "q": "What is Dependency Injection and why is it important?"}, {"cat": "Architecture", "key": "architecture", "emoji": "🏗", "color": "#bf5af2", "q": "What is the Repository pattern?"}, {"cat": "Architecture", "key": "architecture", "emoji": "🏗", "color": "#bf5af2", "q": "What is the Singleton pattern and what are its downsides?"}, {"cat": "Architecture", "key": "architecture", "emoji": "🏗", "color": "#bf5af2", "q": "What is the difference between composition and inheritance?"}, {"cat": "Architecture", "key": "architecture", "emoji": "🏗", "color": "#bf5af2", "q": "What is SOLID and how does it apply to Swift?"}, {"cat": "Architecture", "key": "architecture", "emoji": "🏗", "color": "#bf5af2", "q": "What is the Observer pattern and how is it used in iOS?"}, {"cat": "Architecture", "key": "architecture", "emoji": "🏗", "color": "#bf5af2", "q": "What is the Factory pattern?"}, {"cat": "Architecture", "key": "architecture", "emoji": "🏗", "color": "#bf5af2", "q": "What is Clean Architecture in iOS?"}, {"cat": "Architecture", "key": "architecture", "emoji": "🏗", "color": "#bf5af2", "q": "What is TCA (The Composable Architecture)?"}, {"cat": "Architecture", "key": "architecture", "emoji": "🏗", "color": "#bf5af2", "q": "What is MVVM and how does it work in iOS?"}, {"cat": "Architecture", "key": "architecture", "emoji": "🏗", "color": "#bf5af2", "q": "What is the Coordinator pattern and why use it?"}, {"cat": "Networking", "key": "networking", "emoji": "🌐", "color": "#30d158", "q": "How does `URLSession` work?"}, {"cat": "Networking", "key": "networking", "emoji": "🌐", "color": "#30d158", "q": "What is the difference between `dataTask`, `downloadTask`, and `uploadTask`?"}, {"cat": "Networking", "key": "networking", "emoji": "🌐", "color": "#30d158", "q": "How do you handle API errors gracefully?"}, {"cat": "Networking", "key": "networking", "emoji": "🌐", "color": "#30d158", "q": "How do you implement retry logic for failed network calls?"}, {"cat": "Networking", "key": "networking", "emoji": "🌐", "color": "#30d158", "q": "How do you handle authentication tokens and refresh them?"}, {"cat": "Networking", "key": "networking", "emoji": "🌐", "color": "#30d158", "q": "How do you mock network requests for testing?"}, {"cat": "Networking", "key": "networking", "emoji": "🌐", "color": "#30d158", "q": "What is `URLCache` and how does caching work in iOS?"}, {"cat": "Networking", "key": "networking", "emoji": "🌐", "color": "#30d158", "q": "What is `multipart/form-data` and how do you send it in iOS?"}, {"cat": "Networking", "key": "networking", "emoji": "🌐", "color": "#30d158", "q": "How do you handle SSL pinning in iOS?"}, {"cat": "Networking", "key": "networking", "emoji": "🌐", "color": "#30d158", "q": "What is Combine and how does it relate to networking?"}, {"cat": "Testing", "key": "testing", "emoji": "🧪", "color": "#5ac8fa", "q": "What is the difference between unit tests and UI tests?"}, {"cat": "Testing", "key": "testing", "emoji": "🧪", "color": "#5ac8fa", "q": "What is a mock vs a stub vs a spy?"}, {"cat": "Testing", "key": "testing", "emoji": "🧪", "color": "#5ac8fa", "q": "How do you test async code in XCTest?"}, {"cat": "Testing", "key": "testing", "emoji": "🧪", "color": "#5ac8fa", "q": "What is `XCTestExpectation` and when do you need it?"}, {"cat": "Testing", "key": "testing", "emoji": "🧪", "color": "#5ac8fa", "q": "What is test coverage and how do you measure it?"}, {"cat": "Testing", "key": "testing", "emoji": "🧪", "color": "#5ac8fa", "q": "How do you test a ViewModel?"}, {"cat": "Testing", "key": "testing", "emoji": "🧪", "color": "#5ac8fa", "q": "What is snapshot testing?"}, {"cat": "Testing", "key": "testing", "emoji": "🧪", "color": "#5ac8fa", "q": "How do you use dependency injection to make code testable?"}, {"cat": "Testing", "key": "testing", "emoji": "🧪", "color": "#5ac8fa", "q": "What is `XCTAssert` and what are the main assertion types?"}, {"cat": "Testing", "key": "testing", "emoji": "🧪", "color": "#5ac8fa", "q": "How do you test network code without hitting a real server?"}, {"cat": "UIKit", "key": "uikit", "emoji": "📐", "color": "#ff375f", "q": "What is the `UIViewController` lifecycle?"}, {"cat": "UIKit", "key": "uikit", "emoji": "📐", "color": "#ff375f", "q": "What is the difference between `frame` and `bounds`?"}, {"cat": "UIKit", "key": "uikit", "emoji": "📐", "color": "#ff375f", "q": "How does Auto Layout work and what is constraint priority?"}, {"cat": "UIKit", "key": "uikit", "emoji": "📐", "color": "#ff375f", "q": "What is `UITableView` reuse and why does it matter?"}, {"cat": "UIKit", "key": "uikit", "emoji": "📐", "color": "#ff375f", "q": "What is the `UIResponder` and the responder chain?"}, {"cat": "UIKit", "key": "uikit", "emoji": "📐", "color": "#ff375f", "q": "How does `layoutSubviews` work and when is it called?"}, {"cat": "UIKit", "key": "uikit", "emoji": "📐", "color": "#ff375f", "q": "What is `intrinsicContentSize`?"}, {"cat": "UIKit", "key": "uikit", "emoji": "📐", "color": "#ff375f", "q": "What is `CALayer` and how does it relate to `UIView`?"}, {"cat": "UIKit", "key": "uikit", "emoji": "📐", "color": "#ff375f", "q": "How do you handle keyboard appearance and dismissal?"}, {"cat": "UIKit", "key": "uikit", "emoji": "📐", "color": "#ff375f", "q": "What is `UIStackView` and when should you use it?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "How do you configure an iOS app to support multiple environments (Dev, SIT, UAT, Prod) so all can be installed simultaneously on the same device?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "What is the correct Xcode build setting for enabling `#if Dev` / `#elseif SIT` Swift compiler flags?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "How do you configure Firebase for multiple environments in a SwiftUI app using compiler flags?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "What are the common pitfalls when setting up multiple Xcode build environments?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "What is Swift Package Manager (SPM)?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "What is the difference between `Debug` and `Release` build configurations?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "What is a scheme vs a target vs a project?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "How do you use breakpoints effectively in Xcode?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "What is `LLDB` and what are useful commands?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "What is a memory leak and how do you find one with Instruments?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "What is the Address Sanitizer?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "What is `OSLog` and how is it better than `print`?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "What is `xcconfig` and when would you use it?"}, {"cat": "Xcode", "key": "xcode-tools", "emoji": "🛠", "color": "#ff9f0a", "q": "How do you set up CI/CD for an iOS project?"}, {"cat": "Interview", "key": "interview-prep", "emoji": "🎯", "color": "#64d2ff", "q": "What is the 7-step framework for cracking any coding interview?"}, {"cat": "Interview", "key": "interview-prep", "emoji": "🎯", "color": "#64d2ff", "q": "Explain the iOS app lifecycle."}, {"cat": "Interview", "key": "interview-prep", "emoji": "🎯", "color": "#64d2ff", "q": "What is retain cycle and how do you prevent it?"}, {"cat": "Interview", "key": "interview-prep", "emoji": "🎯", "color": "#64d2ff", "q": "What is the difference between synchronous and asynchronous execution?"}, {"cat": "Interview", "key": "interview-prep", "emoji": "🎯", "color": "#64d2ff", "q": "What tools do you use to debug performance issues in iOS?"}];
+const CAT_META  = [{"emoji": "🔷", "color": "#4a9eff", "label": "Swift"}, {"emoji": "🔶", "color": "#f05a28", "label": "SwiftUI"}, {"emoji": "⚡", "color": "#ffd60a", "label": "Concurrency"}, {"emoji": "🏗", "color": "#bf5af2", "label": "Architecture"}, {"emoji": "🌐", "color": "#30d158", "label": "Networking"}, {"emoji": "🧪", "color": "#5ac8fa", "label": "Testing"}, {"emoji": "📐", "color": "#ff375f", "label": "UIKit"}, {"emoji": "🛠", "color": "#ff9f0a", "label": "Xcode"}, {"emoji": "🎯", "color": "#64d2ff", "label": "Interview"}];
 
-// ─────────────────────────────────────────────
-//  COPY CODE
-// ─────────────────────────────────────────────
-function copyCode(btn){
-  const pre=btn.closest('.code-block').querySelector('pre');
-  const text=pre.textContent||pre.innerText;
-  navigator.clipboard.writeText(text).then(()=>{
-    btn.textContent='Copied!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000);
-  }).catch(()=>{
-    const ta=document.createElement('textarea');ta.value=text;
-    document.body.appendChild(ta);ta.select();document.execCommand('copy');
-    document.body.removeChild(ta);
-    btn.textContent='Copied!';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied')},2000);
-  });
-}
+// Build lookup: label → meta
+const catByLabel = {};
+CAT_META.forEach(m => catByLabel[m.label] = m);
+// unique categories present in questions
+const CATS = [...new Set(QUESTIONS.map(q => q.cat))];
 
-// ─────────────────────────────────────────────
-//  DATA
-// ─────────────────────────────────────────────
-const QUESTIONS = [{"cat": "Swift", "q": "What is the difference between `strong`, `weak`, and `unowned` references?", "a": "**strong** (default) increases the retain count — the object stays alive as long as someone holds a strong ref. **weak** does NOT increase retain count and automatically becomes `nil` when the object is deallocated (must be `Optional`). **unowned** also doesn't retain, but assumes the object is always alive — accessing it after deallocation crashes.\n\nUse `weak` for delegate patterns and parent↔child cycles where the child might outlive the parent. Use `unowned` when you're certain the referenced object lives at least as long as the referencer.\n\n```swift\nclass Owner {\n    var pet: Pet?\n}\nclass Pet {\n    weak var owner: Owner?   // weak — owner may go away first\n}\n```"}, {"cat": "Swift", "q": "What is a protocol extension and why is it powerful?", "a": "A protocol extension lets you add **default implementations** to a protocol without touching the conforming types. This enables behavior sharing across all conformers — essentially free multiple inheritance of behaviour.\n\n```swift\nprotocol Greetable {\n    var name: String { get }\n}\nextension Greetable {\n    func greet() -> String { \"Hello, \\(name)!\" }  // default impl\n}\nstruct User: Greetable { var name: String }\nUser(name: \"Pich\").greet()   // \"Hello, Pich!\" — no extra code needed\n```\n\nIt powers Swift's protocol-oriented programming paradigm and is how the standard library (e.g. `Collection`, `Sequence`) adds dozens of methods without subclassing."}, {"cat": "Swift", "q": "What is `@escaping` in a closure?", "a": "A closure is **escaping** when it outlives the function it was passed into — typically stored or executed asynchronously after the function returns. You must mark it `@escaping` so the compiler knows to keep the closure (and anything it captures) alive.\n\n```swift\nvar stored: (() -> Void)?\n\nfunc save(_ action: @escaping () -> Void) {\n    stored = action   // action escapes — lives after save() returns\n}\n```\n\nNon-escaping closures (the default) are guaranteed to run before the function returns, so the compiler can optimise memory and you don't need `self.` inside them."}, {"cat": "Swift", "q": "What is the difference between `struct` and `class` in Swift?", "a": "| | struct | class |\n|---|---|---|\n| Type | Value (copied) | Reference (shared) |\n| Inheritance | ❌ | ✅ |\n| `deinit` | ❌ | ✅ |\n| Mutability | explicit `mutating` | implicit |\n| Thread safety | safer (each copy independent) | needs synchronisation |\n\n**Rule of thumb:** prefer `struct` by default. Use `class` when you need identity, inheritance, or reference semantics (e.g. `UIViewController`, shared managers).\n\n```swift\nstruct Point { var x: Int }\nvar a = Point(x: 1); var b = a; b.x = 99\n// a.x is still 1 — structs are copied\n```"}, {"cat": "Swift", "q": "What is `Optional` and how does it work?", "a": "`Optional<T>` is an enum with two cases: `.some(T)` and `.none`. It models the absence of a value safely — instead of null pointer crashes, the compiler forces you to handle both cases.\n\n```swift\nenum Optional<T> {\n    case some(T)\n    case none\n}\nvar name: String? = nil    // sugar for Optional<String>\n```\n\nUnwrap with `if let`, `guard let`, `??`, or `!` (force-unwrap, crashes on nil). Swift's type system ensures you never accidentally use a nil value without explicitly opting in."}, {"cat": "Swift", "q": "What is `guard let` vs `if let`?", "a": "Both unwrap an Optional, but `guard let` **exits the current scope** on failure (via `return`, `throw`, `break`, `continue`), and the unwrapped value is available **for the rest of the function**. `if let` scopes the value inside the `if` block only.\n\n```swift\nfunc process(_ input: String?) {\n    guard let value = input else { return }  // exits if nil\n    print(value)  // value available here ✅\n\n    if let v = input {\n        print(v)  // only inside this block\n    }\n    // v not available here ❌\n}\n```\n\nPrefer `guard let` for preconditions — it keeps the happy path un-nested."}, {"cat": "Swift", "q": "What is `Codable` and how does it work?", "a": "`Codable` is a type alias for `Encodable & Decodable`. Conforming types can be serialised to/from formats like JSON automatically. The compiler synthesises the implementation if all stored properties are also `Codable`.\n\n```swift\nstruct User: Codable {\n    let id: Int\n    let name: String\n}\nlet json = try JSONEncoder().encode(User(id: 1, name: \"Pich\"))\nlet user = try JSONDecoder().decode(User.self, from: json)\n```\n\nUse `CodingKeys` enum to map different JSON key names to Swift property names. Use custom `init(from:)` / `encode(to:)` for complex transformations."}, {"cat": "Swift", "q": "What is the difference between `map`, `flatMap`, and `compactMap`?", "a": "All three transform a collection, but handle nesting/optionals differently:\n\n- **`map`** — transforms each element, preserving structure\n- **`flatMap`** — transforms then flattens one level of nesting\n- **`compactMap`** — transforms and removes `nil` results\n\n```swift\nlet nums = [1, 2, 3]\nnums.map { $0 * 2 }           // [2, 4, 6]\nnums.flatMap { [$0, $0] }     // [1,1, 2,2, 3,3]\n\nlet strs = [\"1\", \"two\", \"3\"]\nstrs.compactMap { Int($0) }   // [1, 3]  — \"two\" returns nil, removed\n```"}, {"cat": "Swift", "q": "What is a `lazy` property and when is it useful?", "a": "A `lazy` property is only computed the first time it's accessed — and never recomputed. Useful when initialisation is expensive and the value may never be needed.\n\n```swift\nclass DataManager {\n    lazy var heavyData: [String] = loadFromDisk()  // only runs when first accessed\n    func loadFromDisk() -> [String] { /* expensive */ return [] }\n}\n```\n\nRules: must be `var` (not `let`), not available on `struct` with multiple threads safely, and the closure/expression captures `self` after `init` completes."}, {"cat": "Swift", "q": "What is `Result` type and when should you use it?", "a": "`Result<Success, Failure>` is an enum that represents either a value or an error, without throwing. Great for async callbacks where `throws` isn't available.\n\n```swift\nenum NetworkError: Error { case notFound, serverError }\n\nfunc fetchUser(completion: (Result<User, NetworkError>) -> Void) {\n    // ...\n    completion(.success(user))\n    // or\n    completion(.failure(.notFound))\n}\n\nfetchUser { result in\n    switch result {\n    case .success(let user): print(user)\n    case .failure(let error): print(error)\n    }\n}\n```\n\nWith `async/await` you can often just `throw` instead, but `Result` is still useful when passing errors around as values."}, {"cat": "Swift", "q": "What is `Hashable`, `Equatable`, and `Comparable`?", "a": "- **`Equatable`** — can be compared for equality (`==`). Required to use a type in `Set` or as a `Dictionary` key.\n- **`Hashable`** — extends `Equatable`, provides a `hashValue` for use in hash-based collections. Required for `Set` and `Dictionary` keys.\n- **`Comparable`** — extends `Equatable`, supports ordering (`<`, `>`, etc.). Needed for `sort()`.\n\n```swift\nstruct Card: Hashable, Comparable {\n    let rank: Int\n    static func < (lhs: Card, rhs: Card) -> Bool { lhs.rank < rhs.rank }\n}\nlet set: Set<Card> = [Card(rank: 1), Card(rank: 2)]\n```\n\nThe compiler can synthesise all three if stored properties conform."}, {"cat": "Swift", "q": "What is `@propertyWrapper` and how do you create one?", "a": "A property wrapper adds custom get/set logic to any property without repeating the boilerplate at each declaration. SwiftUI's `@State`, `@Binding` are all property wrappers.\n\n```swift\n@propertyWrapper\nstruct Clamped {\n    private var value: Int\n    let range: ClosedRange<Int>\n    var wrappedValue: Int {\n        get { value }\n        set { value = min(max(newValue, range.lowerBound), range.upperBound) }\n    }\n    init(wrappedValue: Int, _ range: ClosedRange<Int>) {\n        self.range = range\n        self.value = min(max(wrappedValue, range.lowerBound), range.upperBound)\n    }\n}\n\nstruct Player {\n    @Clamped(0...100) var health: Int = 100\n}\nvar p = Player(); p.health = 150; print(p.health) // 100\n```"}, {"cat": "Swift", "q": "What is the `some` keyword (opaque types)?", "a": "`some Protocol` means \"a specific concrete type that conforms to this protocol, but the caller doesn't need to know which one.\" It's the return-side counterpart to generics.\n\n```swift\nfunc makeShape() -> some Shape {  // caller gets A Shape, not the concrete type\n    return Circle(radius: 5)\n}\n```\n\nThis lets you hide implementation details while preserving type identity (unlike `any Protocol` / existentials). SwiftUI uses it heavily — `var body: some View` — so the view hierarchy stays typed and efficient."}, {"cat": "Swift", "q": "What is copy-on-write (COW) and which types use it?", "a": "COW means a value type appears to be copied immediately, but the actual copy is deferred until a mutation happens. If no mutation occurs, both variables share the same underlying storage — saving memory and time.\n\nSwift's standard library types — `Array`, `Dictionary`, `Set`, `String` — all use COW.\n\n```swift\nvar a = [1, 2, 3]\nvar b = a           // no copy yet — shared storage\nb.append(4)         // NOW a real copy happens for b\n// a is still [1, 2, 3]\n```\n\nCustom value types don't get COW automatically — you'd need to implement it manually using `isKnownUniquelyReferenced`."}, {"cat": "SwiftUI", "q": "What is the difference between `@State`, `@Binding`, `@ObservedObject`, and `@StateObject`?", "a": "| Wrapper | Owns data? | Source | Use for |\n|---|---|---|---|\n| `@State` | ✅ Yes | Local | Simple value types in a single view |\n| `@Binding` | ❌ No | Parent | Two-way connection to parent's state |\n| `@StateObject` | ✅ Yes | Local | Reference type (ObservableObject) owned by this view |\n| `@ObservedObject` | ❌ No | External | Reference type passed in from outside |\n\n```swift\n// Parent\n@StateObject var vm = CounterVM()   // owns it\nChildView(count: $vm.count)         // passes binding\n\n// Child\nstruct ChildView: View {\n    @Binding var count: Int          // doesn't own it\n}\n```\n\n**Key rule:** use `@StateObject` when the view creates the object; `@ObservedObject` when it's injected."}, {"cat": "SwiftUI", "q": "What is `ViewBuilder` and how does it work?", "a": "`@ViewBuilder` is a result builder that lets you write multiple views in a closure and have them automatically combined into a single view (usually a `TupleView`). It's what makes SwiftUI's DSL syntax work.\n\n```swift\nstruct MyStack<Content: View>: View {\n    @ViewBuilder let content: () -> Content  // accepts multi-view closures\n\n    var body: some View {\n        VStack { content() }\n    }\n}\n\nMyStack {\n    Text(\"Hello\")   // multiple views — ViewBuilder combines them\n    Text(\"World\")\n}\n```\n\nWithout `@ViewBuilder` you'd have to wrap everything in a `Group` or return a single view."}, {"cat": "SwiftUI", "q": "When should you use `task {}` vs `onAppear {}` in SwiftUI?", "a": "Use **`task {}`** for async work — it starts an async task tied to the view's lifetime, cancelling automatically when the view disappears.\n\nUse **`onAppear {}`** for synchronous, non-async setup or side effects that don't need cancellation.\n\n```swift\n.task {\n    await viewModel.loadData()   // ✅ async, auto-cancelled on disappear\n}\n\n.onAppear {\n    analytics.trackScreen(\"Home\")  // ✅ sync side effect\n}\n```\n\nDon't call `Task { await ... }` inside `onAppear` — that leaks the task because there's no cancellation hook. Use `.task {}` instead."}, {"cat": "SwiftUI", "q": "What is the difference between `@Environment` and `@EnvironmentObject`?", "a": "**`@Environment`** reads a single value from SwiftUI's built-in environment (like `colorScheme`, `locale`, `dismiss`). It's type-safe and uses a `KeyPath`.\n\n**`@EnvironmentObject`** injects a custom `ObservableObject` into the whole view hierarchy via `.environmentObject()`. Any descendent can read it without explicit passing.\n\n```swift\n// @Environment\n@Environment(\\.colorScheme) var scheme\n\n// @EnvironmentObject\nclass AppState: ObservableObject { @Published var isLoggedIn = false }\n\n// inject at root\nContentView().environmentObject(AppState())\n\n// read anywhere in the tree\n@EnvironmentObject var appState: AppState\n```\n\n`@EnvironmentObject` crashes at runtime (not compile time) if you forget to inject it — watch out."}, {"cat": "SwiftUI", "q": "How does SwiftUI's diffing algorithm work?", "a": "SwiftUI compares the **previous and new view tree** on every state change. It diffs them structurally — views at the same position in the hierarchy with the same type are considered the same view and are updated in place. Different types or positions destroy and recreate.\n\nThe identity of a view matters: `ForEach` uses the `id` you provide (or `Identifiable`) to match elements across updates — enabling smooth animations and preserving scroll position.\n\n`@State` survives re-renders because it's tied to identity, not the struct itself. This is why using `.id(something)` can force a full reset — it changes identity."}, {"cat": "SwiftUI", "q": "What is `GeometryReader` and what are its pitfalls?", "a": "`GeometryReader` exposes the parent's size and coordinate space so you can do size-dependent layouts.\n\n```swift\nGeometryReader { proxy in\n    Circle()\n        .frame(width: proxy.size.width * 0.5)\n}\n```\n\n**Pitfalls:**\n- It expands to fill all available space (greedy), which can break layouts unexpectedly\n- It aligns children to the top-left by default (not centered like most views)\n- Nesting multiple `GeometryReader`s causes performance issues\n- Prefer `frame()`, `overlay()`, or the newer `containerRelativeFrame()` / `Layout` protocol when possible"}, {"cat": "SwiftUI", "q": "How do you animate transitions between views in SwiftUI?", "a": "Use `withAnimation {}` to trigger state changes with animation, and `.transition()` to define how views enter/leave.\n\n```swift\n@State private var showDetail = false\n\nButton(\"Toggle\") { withAnimation(.spring()) { showDetail.toggle() } }\n\nif showDetail {\n    DetailView()\n        .transition(.move(edge: .bottom).combined(with: .opacity))\n}\n```\n\nFor matched geometry (hero animations):\n\n```swift\n@Namespace var ns\n\n// in source view\n.matchedGeometryEffect(id: \"card\", in: ns)\n// in destination view\n.matchedGeometryEffect(id: \"card\", in: ns)\n```"}, {"cat": "SwiftUI", "q": "What is `LazyVStack` vs `VStack` — when does it matter?", "a": "`VStack` renders **all** its children immediately. `LazyVStack` renders children **on-demand** as they scroll into view.\n\nFor a small fixed list: `VStack` is fine and has less overhead. For long or infinite lists: use `LazyVStack` inside a `ScrollView` to avoid creating hundreds of views upfront.\n\n```swift\nScrollView {\n    LazyVStack {                // ← renders as you scroll\n        ForEach(items) { item in\n            RowView(item: item)\n        }\n    }\n}\n```\n\nNote: `List` is already lazy internally, so don't wrap it in `LazyVStack`."}, {"cat": "SwiftUI", "q": "How do you handle navigation in SwiftUI using `NavigationStack`?", "a": "`NavigationStack` (iOS 16+) uses a **path** — an array of values — to represent the navigation state programmatically.\n\n```swift\n@State private var path: [Route] = []\n\nNavigationStack(path: $path) {\n    HomeView()\n        .navigationDestination(for: Route.self) { route in\n            switch route {\n            case .detail(let id): DetailView(id: id)\n            case .settings:       SettingsView()\n            }\n        }\n}\n\n// Navigate programmatically:\npath.append(.detail(id: 42))\n// Pop to root:\npath = []\n```\n\nThis replaces `NavigationView` and gives you full control over deep linking and state restoration."}, {"cat": "SwiftUI", "q": "What is `@AppStorage` and when would you use it?", "a": "`@AppStorage` is a property wrapper that reads/writes to `UserDefaults` and automatically updates the view when the value changes — like `@State` but persisted across launches.\n\n```swift\n@AppStorage(\"isDarkMode\") private var isDarkMode = false\n\nToggle(\"Dark Mode\", isOn: $isDarkMode)\n// UserDefaults[\"isDarkMode\"] is updated automatically\n```\n\nUse it for simple user preferences (theme, onboarding seen, etc.). Don't use it for large data, sensitive info (use Keychain), or complex object graphs (use a proper persistence layer)."}, {"cat": "SwiftUI", "q": "How do you create a custom `ViewModifier`?", "a": "Conform to `ViewModifier` and implement `body(content:)`. Then call it with `.modifier()` or wrap it in a `View` extension for cleaner syntax.\n\n```swift\nstruct CardStyle: ViewModifier {\n    func body(content: Content) -> some View {\n        content\n            .padding()\n            .background(Color(.systemBackground))\n            .cornerRadius(12)\n            .shadow(radius: 4)\n    }\n}\n\nextension View {\n    func cardStyle() -> some View {\n        modifier(CardStyle())\n    }\n}\n\n// Usage\nText(\"Hello\").cardStyle()\n```"}, {"cat": "SwiftUI", "q": "How do you pass data between a sheet and the parent view?", "a": "Use `@Binding` — pass a binding from the parent into the sheet so changes flow both ways.\n\n```swift\nstruct ParentView: View {\n    @State private var name = \"\"\n    @State private var showSheet = false\n\n    var body: some View {\n        Button(\"Edit\") { showSheet = true }\n            .sheet(isPresented: $showSheet) {\n                EditSheet(name: $name)   // binding passed in\n            }\n    }\n}\n\nstruct EditSheet: View {\n    @Binding var name: String\n    var body: some View {\n        TextField(\"Name\", text: $name)\n    }\n}\n```\n\nAlternatively use an `@EnvironmentObject` if the data is shared app-wide."}, {"cat": "SwiftUI", "q": "What is the `Identifiable` protocol and why does SwiftUI need it?", "a": "`Identifiable` requires a single `id` property that uniquely identifies each instance. SwiftUI's `ForEach` uses it to track which items changed, moved, or were deleted — enabling correct animations and avoiding full redraws.\n\n```swift\nstruct Transaction: Identifiable {\n    let id: UUID\n    let amount: Double\n}\n\nForEach(transactions) { tx in   // no need for id: \\.id\n    Text(\"\\(tx.amount)\")\n}\n```\n\nWithout stable identity, SwiftUI might animate the wrong rows or reset `@State` in list cells unexpectedly."}, {"cat": "Concurrency", "q": "What is the difference between `async/await` and GCD?", "a": "**GCD** (Grand Central Dispatch) is callback/closure-based. You dispatch work to queues manually and chain completions — leading to callback pyramids and easy mistakes with thread safety.\n\n**async/await** is structured concurrency built into the language. The compiler tracks suspension points, cancellation, and task lifetimes. Code reads top-to-bottom like synchronous code.\n\n```swift\n// GCD\nURLSession.shared.dataTask(with: url) { data, _, _ in\n    DispatchQueue.main.async { self.update(data) }\n}.resume()\n\n// async/await\nlet data = try await URLSession.shared.data(from: url)\nawait MainActor.run { update(data) }\n```\n\nasync/await prevents data races at compile time (with Sendable), handles cancellation automatically, and is easier to read and test."}, {"cat": "Concurrency", "q": "What is an `Actor` and when should you use one?", "a": "An `Actor` is a reference type that **serialises access** to its mutable state — only one task can run inside it at a time, eliminating data races without manual locks.\n\n```swift\nactor BankAccount {\n    private var balance: Double = 0\n\n    func deposit(_ amount: Double) { balance += amount }\n    func getBalance() -> Double { balance }\n}\n\nlet account = BankAccount()\nawait account.deposit(100)       // must await — crosses actor boundary\n```\n\nUse actors for shared mutable state accessed from multiple concurrent tasks — network caches, counters, session managers. For UI state, use `@MainActor` instead of a custom actor."}, {"cat": "Concurrency", "q": "What is `MainActor` and when do you use it?", "a": "`@MainActor` is a global actor that ensures code runs on the **main thread**. Mark a class, function, or property with it to guarantee UI updates happen safely.\n\n```swift\n@MainActor\nclass ViewModel: ObservableObject {\n    @Published var items: [String] = []   // always updated on main thread\n}\n\n// Or annotate a single function\n@MainActor\nfunc updateUI() { label.text = \"Done\" }\n```\n\nInside an async function, switch to main with:\n```swift\nawait MainActor.run { self.label.text = \"Done\" }\n```\n\nYou no longer need `DispatchQueue.main.async` for UI updates when using Swift Concurrency."}, {"cat": "Concurrency", "q": "What is a `Task` and how is it different from a `Thread`?", "a": "A **Thread** is an OS-level resource — heavy, limited in count, managed by the kernel. A **Task** is a lightweight unit of async work managed by Swift's cooperative thread pool — thousands can exist simultaneously.\n\n```swift\nTask {                          // creates a new concurrent task\n    let data = try await fetch()\n    await MainActor.run { update(data) }\n}\n\nlet handle = Task { return await compute() }\nlet result = await handle.value    // await the result\nhandle.cancel()                    // cancel if needed\n```\n\nTasks support structured lifetimes, cancellation propagation, and priority — none of which threads have natively."}, {"cat": "Concurrency", "q": "What is `TaskGroup` and when would you use it?", "a": "`TaskGroup` lets you run multiple async tasks **concurrently** and collect their results, all within a structured scope.\n\n```swift\nlet images = try await withThrowingTaskGroup(of: UIImage.self) { group in\n    for url in urls {\n        group.addTask { try await downloadImage(from: url) }\n    }\n    var result: [UIImage] = []\n    for try await image in group { result.append(image) }\n    return result\n}\n```\n\nUse it when you want to fan out work (e.g. download N images in parallel) and gather results. All child tasks are cancelled if the group is cancelled or throws."}, {"cat": "Concurrency", "q": "What is `async let` and when is it useful?", "a": "`async let` starts an async task immediately and lets you `await` the result later — perfect for running two independent operations in parallel.\n\n```swift\n// Sequential — slow (waits for each one)\nlet user = try await fetchUser()\nlet posts = try await fetchPosts()\n\n// Parallel with async let — both start at the same time\nasync let user = fetchUser()\nasync let posts = fetchPosts()\nlet (u, p) = try await (user, posts)   // wait for both\n```\n\nUse `async let` for a **fixed, small number** of parallel tasks. Use `TaskGroup` when the number is dynamic."}, {"cat": "Concurrency", "q": "What is `withCheckedContinuation` and why is it needed?", "a": "It bridges **old callback-based APIs** into the async/await world. You wrap the callback API and resume the continuation with a value or error.\n\n```swift\nfunc fetchData(url: URL) async throws -> Data {\n    try await withCheckedThrowingContinuation { continuation in\n        oldAPIWithCallback(url: url) { data, error in\n            if let error = error {\n                continuation.resume(throwing: error)\n            } else {\n                continuation.resume(returning: data!)\n            }\n        }\n    }\n}\n```\n\n`Checked` means Swift will warn you (in debug) if you forget to resume, or resume more than once. Use `withUnsafeContinuation` only when you're certain of correctness."}, {"cat": "Concurrency", "q": "How do you cancel a running `Task`?", "a": "Call `.cancel()` on the `Task` handle. The task isn't killed immediately — it must cooperate by checking `Task.isCancelled` or calling `try Task.checkCancellation()`.\n\n```swift\nlet task = Task {\n    for item in largeDataset {\n        try Task.checkCancellation()   // throws CancellationError if cancelled\n        process(item)\n    }\n}\ntask.cancel()    // signals cancellation\n```\n\n`URLSession` async methods automatically respect cancellation. `TaskGroup` child tasks are cancelled when the group is cancelled. Always design long-running tasks to be cancellation-aware."}, {"cat": "Concurrency", "q": "What is `Sendable` and why does it matter?", "a": "`Sendable` is a protocol that marks a type as safe to pass across concurrency boundaries (actor hops, task boundaries). Value types that contain only `Sendable` properties are implicitly `Sendable`. Classes need explicit conformance (usually requiring immutability or internal synchronisation).\n\n```swift\nstruct User: Sendable { let id: Int; let name: String }   // ✅ safe\n\nclass Cache: @unchecked Sendable {   // you're promising thread safety yourself\n    private let lock = NSLock()\n    // ...\n}\n```\n\nThe compiler enforces `Sendable` in strict concurrency mode, catching data races at compile time — the main safety guarantee of Swift 6 concurrency."}, {"cat": "Concurrency", "q": "What is the difference between a `serial` and `concurrent` queue in GCD?", "a": "A **serial queue** executes one task at a time, in order. Safe for shared state mutations.\n\nA **concurrent queue** can run multiple tasks simultaneously on different threads. Fast for independent work, but requires synchronisation for shared state.\n\n```swift\nlet serial = DispatchQueue(label: \"com.app.serial\")\nserial.async { task1() }\nserial.async { task2() }   // waits for task1 to finish\n\nlet concurrent = DispatchQueue(label: \"com.app.concurrent\", attributes: .concurrent)\nconcurrent.async { work1() }\nconcurrent.async { work2() }  // runs simultaneously with work1\n```\n\n`DispatchQueue.main` is a serial queue. `DispatchQueue.global()` is concurrent."}, {"cat": "Concurrency", "q": "What is a race condition and how do you prevent it?", "a": "A race condition occurs when two threads access shared mutable state simultaneously and at least one writes — producing unpredictable results.\n\n**Prevention strategies:**\n- **Actors** — serialise access automatically\n- **Serial queues** — dispatch all mutations to one queue\n- **Locks** — `NSLock`, `os_unfair_lock` (low-level)\n- **Atomic properties** — for simple values\n\n```swift\n// Race condition ❌\nclass Counter { var value = 0 }\n\n// Fix with actor ✅\nactor Counter {\n    var value = 0\n    func increment() { value += 1 }\n}\n```\n\nThread Sanitizer (TSan) in Xcode detects races at runtime during testing."}, {"cat": "Concurrency", "q": "What is `OperationQueue` and how is it different from GCD?", "a": "`OperationQueue` wraps GCD with higher-level features: **dependencies** between operations, **cancellation**, **max concurrent count**, and **KVO-observable state**.\n\n```swift\nlet queue = OperationQueue()\nqueue.maxConcurrentOperationCount = 3\n\nlet opA = BlockOperation { print(\"A\") }\nlet opB = BlockOperation { print(\"B\") }\nopB.addDependency(opA)   // B only runs after A finishes\nqueue.addOperations([opA, opB], waitUntilFinished: false)\n```\n\nUse GCD for simple fire-and-forget dispatch. Use `OperationQueue` when you need dependencies, reusable/subclassable operations, or fine-grained cancellation."}, {"cat": "Concurrency", "q": "What is `AsyncStream` and what problem does it solve?", "a": "`AsyncStream` bridges **event-based / callback APIs** into an `AsyncSequence` you can iterate with `for await`. Great for wrapping notifications, delegates, or timer events.\n\n```swift\nlet locationStream = AsyncStream<CLLocation> { continuation in\n    let manager = LocationManager { location in\n        continuation.yield(location)         // push values in\n    }\n    continuation.onTermination = { _ in manager.stop() }\n}\n\nfor await location in locationStream {       // consume with for-await\n    updateUI(location)\n}\n```\n\nIt solves the problem of consuming continuous streams of values (like socket messages or sensor data) in a clean, structured-concurrency-compatible way."}, {"cat": "Architecture", "q": "What is MVVM and how does it work in iOS?", "a": "**Model-View-ViewModel** separates UI from business logic:\n- **Model** — raw data and business rules\n- **ViewModel** — prepares model data for display, owns async logic, exposes `@Published` properties\n- **View** — observes the ViewModel, renders state, sends user actions back\n\n```swift\n// ViewModel\n@MainActor\nclass LoginViewModel: ObservableObject {\n    @Published var email = \"\"\n    @Published var isLoading = false\n\n    func login() async {\n        isLoading = true\n        try? await authService.login(email: email)\n        isLoading = false\n    }\n}\n\n// View\nstruct LoginView: View {\n    @StateObject var vm = LoginViewModel()\n    var body: some View {\n        TextField(\"Email\", text: $vm.email)\n        Button(\"Login\") { Task { await vm.login() } }\n    }\n}\n```"}, {"cat": "Architecture", "q": "What is the Coordinator pattern and why use it?", "a": "The Coordinator pattern moves **navigation logic out of ViewControllers/Views** into a dedicated `Coordinator` object. Each coordinator owns a flow (auth flow, main flow) and decides what screen to show next.\n\n**Benefits:** ViewControllers don't know about each other, flows are reusable and testable, deep linking is easier.\n\n```swift\nprotocol Coordinator: AnyObject {\n    var navigationController: UINavigationController { get }\n    func start()\n}\n\nclass AuthCoordinator: Coordinator {\n    var navigationController: UINavigationController\n\n    func start() { show(LoginViewController(coordinator: self)) }\n    func showRegister() { show(RegisterViewController(coordinator: self)) }\n\n    private func show(_ vc: UIViewController) {\n        navigationController.pushViewController(vc, animated: true)\n    }\n}\n```"}, {"cat": "Architecture", "q": "What is the difference between MVC, MVVM, and MVP?", "a": "| Pattern | Who handles logic? | View knows about...? |\n|---|---|---|\n| **MVC** | Controller | Model directly |\n| **MVVM** | ViewModel | ViewModel only (via binding) |\n| **MVP** | Presenter | Presenter only (via protocol) |\n\n- **MVC** — Apple's default. Controllers tend to become massive (\"Massive View Controller\") mixing UI, networking, and business logic.\n- **MVVM** — ViewModel has no UIKit import. Great with SwiftUI/Combine bindings. Testable without UI.\n- **MVP** — Presenter communicates through a `View` protocol. More boilerplate but explicit contracts. Better for UIKit.\n\n**MVVM** is the standard for SwiftUI. **MVP** or **MVVM+Coordinator** for UIKit."}, {"cat": "Architecture", "q": "What is Dependency Injection and why is it important?", "a": "DI means providing an object's dependencies from the outside rather than creating them internally. This makes the object testable and decoupled.\n\n```swift\n// Without DI ❌ — hard to test\nclass LoginViewModel {\n    let auth = AuthService()   // hardcoded\n}\n\n// With DI ✅ — injectable mock in tests\nclass LoginViewModel {\n    let auth: AuthServiceProtocol\n    init(auth: AuthServiceProtocol = AuthService()) { self.auth = auth }\n}\n\n// In tests\nlet vm = LoginViewModel(auth: MockAuthService())\n```\n\nThree flavours: **constructor injection** (above), **property injection** (`vm.auth = mock`), **method injection** (passed per-call). Constructor injection is the safest."}, {"cat": "Architecture", "q": "What is the Repository pattern?", "a": "The Repository sits between your business logic and data sources (network, CoreData, cache). It provides a clean API for data access, hiding where the data comes from.\n\n```swift\nprotocol UserRepository {\n    func fetchUser(id: Int) async throws -> User\n}\n\nclass RemoteUserRepository: UserRepository {\n    func fetchUser(id: Int) async throws -> User {\n        try await apiService.get(\"/users/\\(id)\")\n    }\n}\n\nclass MockUserRepository: UserRepository {\n    func fetchUser(id: Int) async throws -> User { User.mock }\n}\n```\n\nViewModels depend on the protocol, not the concrete class — swap remote for mock in tests without changing any ViewModel code."}, {"cat": "Architecture", "q": "What is the Singleton pattern and what are its downsides?", "a": "A Singleton ensures only one instance of a class exists globally.\n\n```swift\nclass NetworkManager {\n    static let shared = NetworkManager()\n    private init() {}\n}\nNetworkManager.shared.fetch(url)\n```\n\n**Downsides:**\n- **Hard to test** — can't inject a mock; tests share global state\n- **Hidden dependencies** — callers don't declare what they depend on\n- **Thread safety** — mutable singletons need synchronisation\n- **Lifetime** — lives forever, can cause memory/resource issues\n\nPrefer dependency injection. Reserve singletons for truly global, stateless utilities."}, {"cat": "Architecture", "q": "What is the difference between composition and inheritance?", "a": "**Inheritance** — \"is-a\" relationship. A subclass inherits all behaviour, which can be hard to change and creates tight coupling.\n\n**Composition** — \"has-a\" relationship. Objects are assembled from smaller, focused pieces via protocols and contained objects.\n\n```swift\n// Inheritance ❌ fragile\nclass LoggingButton: UIButton { override func ... }\n\n// Composition ✅ flexible\nstruct Button: View {\n    let action: () -> Void      // composed behaviour\n    let logger: Logger          // injected dependency\n}\n```\n\nSwift's lack of multiple inheritance pushes you towards composition. Protocol extensions let you \"mix in\" behaviour without a class hierarchy. Prefer composition for flexibility and testability."}, {"cat": "Architecture", "q": "What is SOLID and how does it apply to Swift?", "a": "- **S**ingle Responsibility — one class/struct does one thing. `URLSession` fetches, `JSONDecoder` decodes, `UserRepository` stores.\n- **O**pen/Closed — open for extension, closed for modification. Add behaviour via protocols/extensions, not by editing existing classes.\n- **L**iskov Substitution — subtypes must be usable wherever the base type is. Don't break protocol contracts in conformers.\n- **I**nterface Segregation — prefer small, focused protocols over fat ones. `Fetchable`, `Storable` over one giant `DataManager` protocol.\n- **D**ependency Inversion — depend on abstractions (protocols), not concrete types.\n\nSwift protocols + extensions make SOLID natural — especially D (DI via protocols) and O (protocol extensions add behaviour without modifying types)."}, {"cat": "Architecture", "q": "What is the Observer pattern and how is it used in iOS?", "a": "The Observer pattern lets objects subscribe to events from another object without tight coupling. One-to-many notification.\n\nIn iOS this appears as:\n- **Combine** `Publisher/Subscriber`\n- **NotificationCenter** — broadcast to unknown observers\n- **KVO** — observe property changes on NSObject\n- **Delegate** — one-to-one observer via protocol\n- **`@Published` + `ObservableObject`** — SwiftUI's version\n\n```swift\n// Combine\nviewModel.$items\n    .sink { items in self.tableView.reloadData() }\n    .store(in: &cancellables)\n\n// NotificationCenter\nNotificationCenter.default.addObserver(self, selector: #selector(handle),\n    name: UIApplication.didBecomeActiveNotification, object: nil)\n```"}, {"cat": "Architecture", "q": "What is the Factory pattern?", "a": "A Factory creates objects without exposing the creation logic to the caller. Centralises and hides construction complexity.\n\n```swift\nenum Environment { case dev, staging, prod }\n\nstruct NetworkFactory {\n    static func makeClient(for env: Environment) -> APIClient {\n        switch env {\n        case .dev:     return APIClient(baseURL: \"https://dev.api.com\")\n        case .staging: return APIClient(baseURL: \"https://staging.api.com\")\n        case .prod:    return APIClient(baseURL: \"https://api.com\")\n        }\n    }\n}\n\nlet client = NetworkFactory.makeClient(for: .prod)\n```\n\nUseful when the exact type to create depends on runtime conditions, or when construction is complex."}, {"cat": "Architecture", "q": "What is Clean Architecture in iOS?", "a": "Clean Architecture organises code in concentric layers where **inner layers have no knowledge of outer ones**:\n\n1. **Entities** — core business models (plain Swift structs, no frameworks)\n2. **Use Cases / Interactors** — business rules (e.g. `TransferFundsUseCase`)\n3. **Interface Adapters** — ViewModels, Repositories, Presenters\n4. **Frameworks & Drivers** — UIKit/SwiftUI, URLSession, CoreData\n\nEach layer communicates inward via protocols. This makes business logic fully testable with zero framework imports and lets you swap UIKit for SwiftUI without touching the core.\n\nThe main tradeoff: more files and protocols — worth it on large, long-lived teams."}, {"cat": "Architecture", "q": "What is TCA (The Composable Architecture)?", "a": "TCA is an opinionated Swift architecture library by Point-Free built around **unidirectional data flow**:\n\n- **State** — all view state in one struct\n- **Action** — enum of everything that can happen\n- **Reducer** — pure function: `(State, Action) → State + Effects`\n- **Store** — holds state, processes actions, runs effects\n\n```swift\nstruct CounterFeature: Reducer {\n    struct State { var count = 0 }\n    enum Action { case increment, decrement }\n\n    var body: some ReducerOf<Self> {\n        Reduce { state, action in\n            switch action {\n            case .increment: state.count += 1; return .none\n            case .decrement: state.count -= 1; return .none\n            }\n        }\n    }\n}\n```\n\n**Pros:** extremely testable, composable, great for complex state. **Cons:** steep learning curve, heavy for simple apps."}, {"cat": "Networking", "q": "How does `URLSession` work?", "a": "`URLSession` manages HTTP/HTTPS requests. You create a `URLRequest`, then use the session to get a `URLSessionTask` — `dataTask` for downloading data, `uploadTask` for sending, `downloadTask` for large file downloads.\n\n```swift\nlet url = URL(string: \"https://api.example.com/users\")!\nvar request = URLRequest(url: url)\nrequest.httpMethod = \"GET\"\nrequest.setValue(\"Bearer \\(token)\", forHTTPHeaderField: \"Authorization\")\n\nlet (data, response) = try await URLSession.shared.data(for: request)\nguard (response as? HTTPURLResponse)?.statusCode == 200 else { throw APIError.badResponse }\nlet users = try JSONDecoder().decode([User].self, from: data)\n```\n\n`URLSession.shared` is fine for most cases. Create a custom session for custom caching, timeout, or background download support."}, {"cat": "Networking", "q": "What is the difference between `dataTask`, `downloadTask`, and `uploadTask`?", "a": "| Task | Use for | Response |\n|---|---|---|\n| `dataTask` | Fetching API responses, small data | In-memory `Data` |\n| `downloadTask` | Large files (images, videos) | Written to temp file on disk |\n| `uploadTask` | Sending files/data to a server | Works in background |\n\n```swift\n// dataTask — API calls\nlet (data, _) = try await session.data(for: request)\n\n// downloadTask — large file\nlet (tempURL, _) = try await session.download(for: request)\ntry FileManager.default.moveItem(at: tempURL, to: destinationURL)\n\n// uploadTask — multipart upload\nlet (data, _) = try await session.upload(for: request, from: fileData)\n```\n\nFor background downloads/uploads that survive app termination, use a background `URLSessionConfiguration`."}, {"cat": "Networking", "q": "How do you handle API errors gracefully?", "a": "Define a structured error type, check the HTTP status code, and try to decode server error bodies.\n\n```swift\nenum APIError: Error {\n    case httpError(statusCode: Int)\n    case decodingError(Error)\n    case serverMessage(String)\n}\n\nfunc fetch<T: Decodable>(_ request: URLRequest) async throws -> T {\n    let (data, response) = try await URLSession.shared.data(for: request)\n    guard let http = response as? HTTPURLResponse else { throw APIError.httpError(statusCode: 0) }\n\n    guard 200..<300 ~= http.statusCode else {\n        if let msg = try? JSONDecoder().decode(ServerError.self, from: data) {\n            throw APIError.serverMessage(msg.message)\n        }\n        throw APIError.httpError(statusCode: http.statusCode)\n    }\n    return try JSONDecoder().decode(T.self, from: data)\n}\n```"}, {"cat": "Networking", "q": "How do you implement retry logic for failed network calls?", "a": "Use a loop with a delay, typically with exponential backoff — each retry waits longer than the last.\n\n```swift\nfunc fetchWithRetry<T: Decodable>(request: URLRequest, maxRetries: Int = 3) async throws -> T {\n    var attempt = 0\n    while true {\n        do {\n            return try await fetch(request)\n        } catch {\n            attempt += 1\n            guard attempt < maxRetries else { throw error }\n            let delay = pow(2.0, Double(attempt))   // 2s, 4s, 8s\n            try await Task.sleep(for: .seconds(delay))\n        }\n    }\n}\n```\n\nOnly retry on transient errors (5xx, timeout) — never on 4xx (client errors like 401, 404) since retrying won't fix them."}, {"cat": "Networking", "q": "How do you handle authentication tokens and refresh them?", "a": "Store the token in **Keychain** (never UserDefaults). On 401, attempt a token refresh and retry the original request — but only once to avoid infinite loops.\n\n```swift\nfunc authorizedRequest<T: Decodable>(_ request: URLRequest) async throws -> T {\n    var req = request\n    req.setValue(\"Bearer \\(TokenStore.accessToken)\", forHTTPHeaderField: \"Authorization\")\n\n    do {\n        return try await fetch(req)\n    } catch APIError.httpError(statusCode: 401) {\n        try await refreshAccessToken()             // get new token\n        req.setValue(\"Bearer \\(TokenStore.accessToken)\", forHTTPHeaderField: \"Authorization\")\n        return try await fetch(req)                // retry once\n    }\n}\n```\n\nUse an actor or serial queue to ensure only one refresh happens even if multiple requests hit 401 simultaneously."}, {"cat": "Networking", "q": "How do you mock network requests for testing?", "a": "Use a protocol abstraction over `URLSession` and inject a mock in tests. Or override `URLProtocol` to intercept actual `URLSession` calls.\n\n```swift\n// Protocol approach\nprotocol HTTPClient {\n    func data(for request: URLRequest) async throws -> (Data, URLResponse)\n}\nextension URLSession: HTTPClient {}   // real session conforms\n\nclass MockHTTPClient: HTTPClient {\n    var stubbedData: Data = Data()\n    func data(for request: URLRequest) async throws -> (Data, URLResponse) {\n        return (stubbedData, HTTPURLResponse())\n    }\n}\n\n// In tests\nlet client = MockHTTPClient()\nclient.stubbedData = try! JSONEncoder().encode(User.mock)\nlet sut = UserRepository(client: client)\n```"}, {"cat": "Networking", "q": "What is `URLCache` and how does caching work in iOS?", "a": "`URLCache` stores `(URLRequest → CachedURLResponse)` pairs in memory and/or on disk. `URLSession` respects HTTP cache headers (`Cache-Control`, `ETag`, `Last-Modified`) automatically.\n\n```swift\n// Custom cache config\nlet cache = URLCache(memoryCapacity: 20_000_000,   // 20 MB memory\n                     diskCapacity: 100_000_000,    // 100 MB disk\n                     directory: nil)\n\nlet config = URLSessionConfiguration.default\nconfig.urlCache = cache\nconfig.requestCachePolicy = .returnCacheDataElseLoad  // serve from cache if available\n\nlet session = URLSession(configuration: config)\n```\n\nCache policies: `.reloadIgnoringCache` (always fresh), `.returnCacheDataDontLoad` (offline mode), `.useProtocolCachePolicy` (default, follows server headers)."}, {"cat": "Networking", "q": "What is `multipart/form-data` and how do you send it in iOS?", "a": "`multipart/form-data` is the encoding used to send binary files (images, documents) mixed with text fields in a single HTTP request — the standard for file uploads.\n\n```swift\nfunc uploadImage(_ image: UIImage) async throws {\n    var request = URLRequest(url: uploadURL)\n    request.httpMethod = \"POST\"\n\n    let boundary = UUID().uuidString\n    request.setValue(\"multipart/form-data; boundary=\\(boundary)\", forHTTPHeaderField: \"Content-Type\")\n\n    var body = Data()\n    body.append(\"--\\(boundary)\\r\\nContent-Disposition: form-data; name=\\\"avatar\\\"; filename=\\\"photo.jpg\\\"\\r\\nContent-Type: image/jpeg\\r\\n\\r\\n\".data(using: .utf8)!)\n    body.append(image.jpegData(compressionQuality: 0.8)!)\n    body.append(\"\\r\\n--\\(boundary)--\\r\\n\".data(using: .utf8)!)\n\n    let (_, response) = try await URLSession.shared.upload(for: request, from: body)\n}\n```"}, {"cat": "Networking", "q": "How do you handle SSL pinning in iOS?", "a": "SSL pinning ensures the app only trusts a specific server certificate or public key — preventing man-in-the-middle attacks even if a rogue CA is trusted.\n\nImplement `URLSessionDelegate` and validate the server's certificate in `urlSession(_:didReceive:completionHandler:)`:\n\n```swift\nclass PinnedSessionDelegate: NSObject, URLSessionDelegate {\n    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge,\n                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {\n        guard let serverCert = challenge.protectionSpace.serverTrust.flatMap({ extractCert($0) }),\n              serverCert == pinnedCertData else {\n            completionHandler(.cancelAuthenticationChallenge, nil)\n            return\n        }\n        completionHandler(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))\n    }\n}\n```\n\nLibraries like TrustKit simplify this. Remember to update pinned certs before server cert rotation."}, {"cat": "Networking", "q": "What is Combine and how does it relate to networking?", "a": "Combine is Apple's reactive framework — a publisher/subscriber system for handling asynchronous events as streams of values over time.\n\nFor networking, `URLSession` has a built-in Combine publisher:\n\n```swift\nURLSession.shared\n    .dataTaskPublisher(for: url)\n    .map(\\.data)\n    .decode(type: [User].self, decoder: JSONDecoder())\n    .receive(on: DispatchQueue.main)\n    .sink(receiveCompletion: { print($0) },\n          receiveValue: { self.users = $0 })\n    .store(in: &cancellables)\n```\n\nWith async/await now available, most new code uses `URLSession.data(for:)` directly. Combine still shines for **complex reactive pipelines** — debouncing search input, combining multiple streams, or chaining operators like `retry`, `throttle`, `merge`."}, {"cat": "Testing", "q": "What is the difference between unit tests and UI tests?", "a": "**Unit tests** test a single function or class in isolation — fast, no simulator needed, run in the test target with mocks.\n\n**UI tests** (`XCUITest`) drive a real or simulated app through its UI — tapping buttons, checking labels — testing end-to-end flows. Much slower, fragile to layout changes.\n\n```swift\n// Unit test\nfunc testLoginValidation() {\n    let vm = LoginViewModel(auth: MockAuth())\n    vm.email = \"bad\"\n    XCTAssertFalse(vm.canSubmit)\n}\n\n// UI test\nfunc testLoginFlow() {\n    let app = XCUIApplication(); app.launch()\n    app.textFields[\"Email\"].tap(); app.textFields[\"Email\"].typeText(\"user@test.com\")\n    app.buttons[\"Login\"].tap()\n    XCTAssertTrue(app.staticTexts[\"Dashboard\"].exists)\n}\n```\n\nFavour unit tests (fast, stable) — use UI tests only for critical user journeys."}, {"cat": "Testing", "q": "What is a mock vs a stub vs a spy?", "a": "All three are **test doubles** — objects that replace real dependencies in tests:\n\n- **Stub** — returns hardcoded values, no verification. Just replaces the dependency.\n- **Mock** — records calls and lets you **verify** interactions (was this method called? how many times?).\n- **Spy** — wraps the real object, records calls but still delegates to the real implementation.\n\n```swift\n// Stub\nclass StubAuthService: AuthServiceProtocol {\n    func login(email: String) async throws -> User { .mock }   // hardcoded\n}\n\n// Mock\nclass MockAuthService: AuthServiceProtocol {\n    var loginCalled = false\n    func login(email: String) async throws -> User {\n        loginCalled = true   // record the call\n        return .mock\n    }\n}\n// In test: XCTAssertTrue(mockAuth.loginCalled)\n```"}, {"cat": "Testing", "q": "How do you test async code in XCTest?", "a": "Mark your test function `async` and `await` the result directly — XCTest fully supports async/await from iOS 15/Xcode 13.\n\n```swift\nfunc testFetchUser() async throws {\n    let repo = UserRepository(client: MockHTTPClient(data: User.mockJSON))\n    let user = try await repo.fetchUser(id: 1)\n    XCTAssertEqual(user.name, \"Pich\")\n}\n```\n\nFor Combine publishers or callback-based code, use `XCTestExpectation` with `await fulfillment(of:timeout:)`:\n\n```swift\nfunc testPublisher() async throws {\n    let exp = expectation(description: \"received value\")\n    publisher.sink { _ in exp.fulfill() }.store(in: &cancellables)\n    await fulfillment(of: [exp], timeout: 2)\n}\n```"}, {"cat": "Testing", "q": "What is `XCTestExpectation` and when do you need it?", "a": "`XCTestExpectation` is used when you can't `await` a result — for callback-based async code, notifications, or delegate calls. You create an expectation, fulfill it when the async work completes, then wait.\n\n```swift\nfunc testNotification() {\n    let exp = expectation(forNotification: .NSManagedObjectContextDidSave, object: context)\n\n    context.perform { self.context.insert(entity) }\n\n    wait(for: [exp], timeout: 2.0)   // test fails if not fulfilled in time\n}\n```\n\nWith async/await you mostly avoid `XCTestExpectation` — but it's still needed for legacy callback APIs, `NotificationCenter`, and delegate patterns that aren't easily wrapped."}, {"cat": "Testing", "q": "What is test coverage and how do you measure it?", "a": "Test coverage measures what percentage of your code is executed by tests. Xcode shows it per-file and per-line in the Report Navigator after enabling **Code Coverage** in the scheme (Edit Scheme → Test → Options → Code Coverage ✅).\n\nLines highlighted in red were never executed during tests.\n\n**Healthy coverage:** 70–80%+ for business logic and ViewModels. 100% is overkill and often misleading — coverage tells you code was *touched*, not that it was *correctly tested*.\n\nFocus coverage on: use cases, repositories, validation logic. Don't obsess over trivial getters or generated code."}, {"cat": "Testing", "q": "How do you test a ViewModel?", "a": "Inject mock dependencies via the constructor and test published property changes with `async/await` or Combine.\n\n```swift\n@MainActor\nfunc testLoginSetsIsLoading() async throws {\n    let mockAuth = MockAuthService()\n    let vm = LoginViewModel(auth: mockAuth)\n\n    vm.email = \"test@test.com\"\n    let task = Task { await vm.login() }\n\n    // Check loading state is true while awaiting\n    XCTAssertTrue(vm.isLoading)\n    await task.value\n    XCTAssertFalse(vm.isLoading)\n    XCTAssertTrue(mockAuth.loginCalled)\n}\n```\n\nKey practices: mark tests `@MainActor` when testing `@MainActor` ViewModels, use `async throws`, and test both success and failure paths."}, {"cat": "Testing", "q": "What is snapshot testing?", "a": "Snapshot testing renders a view and saves a **reference image**. On subsequent test runs, the rendered output is compared pixel-by-pixel to the reference. Any visual change (intentional or accidental) fails the test.\n\nThe most popular library is **swift-snapshot-testing** by Point-Free:\n\n```swift\nimport SnapshotTesting\n\nfunc testLoginViewSnapshot() {\n    let vc = LoginViewController()\n    assertSnapshot(matching: vc, as: .image(on: .iPhone13Pro))\n}\n```\n\nFirst run creates the reference. After UI changes, run `record: true` to update references. Great for catching unintended layout regressions, but snapshots need updating whenever you intentionally change UI."}, {"cat": "Testing", "q": "How do you use dependency injection to make code testable?", "a": "Define dependencies as protocols, inject them through the initialiser, and swap in mocks during tests.\n\n```swift\n// Without DI ❌\nclass ProfileViewModel {\n    func load() async { UserService.shared.fetch() }   // untestable\n}\n\n// With DI ✅\nprotocol UserServiceProtocol { func fetch() async throws -> User }\n\nclass ProfileViewModel {\n    private let service: UserServiceProtocol\n    init(service: UserServiceProtocol = UserService()) { self.service = service }\n    func load() async throws { user = try await service.fetch() }\n}\n\n// Test\nlet vm = ProfileViewModel(service: MockUserService())\n```\n\nThis pattern applies everywhere: networking, persistence, analytics, date providers (so you can control \"now\" in tests)."}, {"cat": "Testing", "q": "What is `XCTAssert` and what are the main assertion types?", "a": "Assertions verify expected behaviour and fail the test with a message if the condition isn't met:\n\n```swift\nXCTAssertTrue(vm.isLoggedIn)\nXCTAssertFalse(vm.isLoading)\nXCTAssertEqual(vm.username, \"Pich\")\nXCTAssertNotEqual(result, previousResult)\nXCTAssertNil(vm.error)\nXCTAssertNotNil(vm.user)\nXCTAssertGreaterThan(items.count, 0)\nXCTAssertThrowsError(try badFunction())\nXCTAssertNoThrow(try goodFunction())\n```\n\nAll accept an optional message parameter: `XCTAssertEqual(a, b, \"a should equal b after merge\")`.\n\nFor async throwing functions: `async throws` test functions let you use `try await` directly — failed throws fail the test automatically."}, {"cat": "Testing", "q": "How do you test network code without hitting a real server?", "a": "Two approaches:\n\n**1. Protocol-based mock** — abstract `URLSession` behind a protocol:\n\n```swift\nclass MockHTTPClient: HTTPClient {\n    var responseData: Data\n    func data(for: URLRequest) async throws -> (Data, URLResponse) {\n        return (responseData, HTTPURLResponse(url: url, statusCode: 200, ...))\n    }\n}\n```\n\n**2. `URLProtocol` subclass** — intercepts real `URLSession` calls:\n\n```swift\nclass MockURLProtocol: URLProtocol {\n    static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data))?\n\n    override func startLoading() {\n        let (response, data) = try! Self.requestHandler!(request)\n        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)\n        client?.urlProtocol(self, didLoad: data)\n        client?.urlProtocolDidFinishLoading(self)\n    }\n}\n```\n\nThe protocol subclass approach lets you test code that uses `URLSession` directly without wrapping it."}, {"cat": "UIKit", "q": "What is the `UIViewController` lifecycle?", "a": "The lifecycle controls how a VC's view is created, displayed, and destroyed:\n\n```\ninit → loadView → viewDidLoad → viewWillAppear → viewDidAppear\n                                                     ↓\n                               viewWillDisappear → viewDidDisappear → deinit\n```\n\n- **`viewDidLoad`** — view hierarchy created (once). Do setup here.\n- **`viewWillAppear`** — called every time before becoming visible. Refresh UI here.\n- **`viewDidAppear`** — view is on screen. Start animations or tracking.\n- **`viewWillDisappear`** — about to leave screen. Pause/save here.\n- **`viewDidDisappear`** — off screen. Stop expensive work.\n\n`loadView` is where you can assign a custom root view if not using a Storyboard."}, {"cat": "UIKit", "q": "What is the difference between `frame` and `bounds`?", "a": "- **`frame`** — the view's rect in its **parent's** coordinate space. Moving `frame.origin` moves the view.\n- **`bounds`** — the view's rect in its **own** coordinate space. `bounds.origin` is always `(0,0)` unless you're a `UIScrollView` (scrolling changes `bounds.origin`).\n\n```swift\nlet view = UIView(frame: CGRect(x: 50, y: 100, width: 200, height: 100))\nview.frame.origin  // (50, 100) — position in parent\nview.bounds.origin // (0, 0)   — always own origin\nview.bounds.size   // (200, 100) — same as frame.size (no transform)\n```\n\nWhen you apply a `transform` (rotation/scale), `frame` becomes unreliable — use `bounds` + `center` instead."}, {"cat": "UIKit", "q": "How does Auto Layout work and what is constraint priority?", "a": "Auto Layout solves a system of linear equations to determine every view's frame at runtime. Constraints define relationships between views' edges, widths, and centers.\n\n**Priority** (1–1000) resolves conflicts: higher priority wins. `required` = 1000, `defaultHigh` = 750, `defaultLow` = 250.\n\n```swift\nlet constraint = view.widthAnchor.constraint(equalToConstant: 200)\nconstraint.priority = .defaultHigh   // can be broken if needed\nconstraint.isActive = true\n```\n\n**Content Hugging Priority** — resistance to growing larger than intrinsic size.\n**Compression Resistance** — resistance to shrinking smaller than intrinsic size.\n\nUse `UILayoutGuide` for spacing without dummy views. Debug with `view.hasAmbiguousLayout` and `exerciseAmbiguityInLayout()`."}, {"cat": "UIKit", "q": "What is `UITableView` reuse and why does it matter?", "a": "Instead of creating one cell per row (expensive for large lists), `UITableView` maintains a **reuse pool**. Cells that scroll off-screen are recycled and given to new rows.\n\n```swift\n// Register\ntableView.register(UserCell.self, forCellReuseIdentifier: \"UserCell\")\n\n// Dequeue — returns a recycled or new cell\nfunc tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {\n    let cell = tableView.dequeueReusableCell(withIdentifier: \"UserCell\", for: indexPath) as! UserCell\n    cell.configure(with: users[indexPath.row])   // always reconfigure — cell may have old data\n    return cell\n}\n```\n\nAlways reconfigure dequeued cells — they retain state from their previous use. Never skip `dequeueReusableCell` and create cells with `init()` in `cellForRowAt`."}, {"cat": "UIKit", "q": "What is the `UIResponder` and the responder chain?", "a": "Every `UIView`, `UIViewController`, and `UIApplication` is a `UIResponder`. The **responder chain** is the path an event (touch, shake, key command) travels up through responders until one handles it.\n\nOrder: `UIView → superview → ... → UIViewController → UIWindow → UIApplication → AppDelegate`\n\n```swift\n// Custom responder action\nclass MyView: UIView {\n    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {\n        // handle, or call super to pass up the chain\n        super.touchesBegan(touches, with: event)\n    }\n}\n```\n\nUsed for: custom keyboard shortcuts (`UIKeyCommand`), undo/redo, passing events to VCs without delegation, first responder management (keyboard focus)."}, {"cat": "UIKit", "q": "How does `layoutSubviews` work and when is it called?", "a": "`layoutSubviews` is where a view positions its subviews. Override it for custom layout logic that Auto Layout can't express.\n\nIt's called:\n- On first display\n- When `bounds` changes (rotation, resize)\n- After calling `setNeedsLayout()` + `layoutIfNeeded()`\n- When a subview is added/removed\n\n```swift\noverride func layoutSubviews() {\n    super.layoutSubviews()   // always call super\n    let padding: CGFloat = 16\n    iconView.frame = CGRect(x: padding, y: padding, width: 44, height: 44)\n    titleLabel.frame = CGRect(x: iconView.maxX + 8, y: padding, width: bounds.width - iconView.maxX - padding - 8, height: 44)\n}\n```\n\nUse `setNeedsLayout()` to schedule a layout pass, `layoutIfNeeded()` to force it immediately (useful inside animation blocks)."}, {"cat": "UIKit", "q": "What is `intrinsicContentSize`?", "a": "A view's natural size based on its content — the size it \"wants\" to be. Auto Layout uses it when no explicit width/height constraint is given.\n\n`UILabel` computes it from text + font. `UIButton` from title + insets. `UIView` returns `noIntrinsicMetric` by default.\n\n```swift\nclass BadgeView: UIView {\n    var count: Int = 0 {\n        didSet { invalidateIntrinsicContentSize() }   // tell AL to re-ask\n    }\n    override var intrinsicContentSize: CGSize {\n        CGSize(width: max(24, CGFloat(count) * 8), height: 24)\n    }\n}\n```\n\nCall `invalidateIntrinsicContentSize()` when content changes. Content Hugging and Compression Resistance priorities govern how the intrinsic size is treated when there are conflicts."}, {"cat": "UIKit", "q": "What is `CALayer` and how does it relate to `UIView`?", "a": "Every `UIView` has a backing `CALayer` that does the actual rendering on the GPU. `UIView` is a wrapper that adds touch handling and the responder chain — the layer does the drawing.\n\n```swift\n// Rounded corners — layer property\nview.layer.cornerRadius = 12\nview.layer.masksToBounds = true\n\n// Shadow — also layer\nview.layer.shadowColor = UIColor.black.cgColor\nview.layer.shadowOpacity = 0.3\nview.layer.shadowOffset = CGSize(width: 0, height: 4)\n\n// Can't have rounded corners AND shadow on same layer\n// Solution: two layers or use shadowPath\n```\n\nFor animations, `CALayer` uses the **implicit animation** system — property changes auto-animate. `UIView.animate` blocks internally modify layer properties."}, {"cat": "UIKit", "q": "How do you handle keyboard appearance and dismissal?", "a": "Observe `UIResponder.keyboardWillShowNotification` and `keyboardWillHideNotification`, then adjust your scroll view or bottom constraint.\n\n```swift\nvar keyboardConstraint: NSLayoutConstraint!  // bottom constraint\n\noverride func viewDidLoad() {\n    super.viewDidLoad()\n    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)),\n        name: UIResponder.keyboardWillShowNotification, object: nil)\n}\n\n@objc func keyboardWillShow(_ n: Notification) {\n    let height = (n.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? 0\n    let duration = n.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double ?? 0.25\n    UIView.animate(withDuration: duration) {\n        self.keyboardConstraint.constant = -height\n        self.view.layoutIfNeeded()\n    }\n}\n```\n\nIn SwiftUI, use `.ignoresSafeArea(.keyboard)` or the `safeAreaInset(edge:)` modifier."}, {"cat": "UIKit", "q": "What is `UIStackView` and when should you use it?", "a": "`UIStackView` arranges views in a horizontal or vertical line automatically, distributing space based on its `distribution` and `alignment` settings — without manual frame math.\n\n```swift\nlet stack = UIStackView(arrangedSubviews: [iconView, titleLabel, subtitleLabel])\nstack.axis = .horizontal\nstack.spacing = 12\nstack.alignment = .center\nstack.distribution = .fill   // icon fixed size, labels fill remaining\n```\n\nUse it for: form rows, button groups, card layouts, any linear arrangement.\n\nDon't use it when you need: overlapping views, complex grid layouts (use `UICollectionView`), or when content changes frequently and performance is critical (stack view is heavier than manual layout for huge lists)."}, {"cat": "Xcode", "q": "What is Swift Package Manager (SPM)?", "a": "SPM is Apple's official tool for managing Swift code dependencies. You declare packages in `Package.swift` (for libraries) or directly in Xcode (for apps) using a GitHub URL + version rule.\n\n```swift\n// Package.swift (for a library)\ndependencies: [\n    .package(url: \"https://github.com/Alamofire/Alamofire\", from: \"5.0.0\")\n],\ntargets: [\n    .target(name: \"MyApp\", dependencies: [\"Alamofire\"])\n]\n```\n\nIn Xcode: **File → Add Package Dependencies** → paste URL. SPM resolves versions, fetches source, and compiles the package into your build. No Podfile or Cartfile needed."}, {"cat": "Xcode", "q": "What is the difference between `Debug` and `Release` build configurations?", "a": "| | Debug | Release |\n|---|---|---|\n| Optimisation | None (`-Onone`) | Full (`-O`) |\n| Debug symbols | Included | Stripped (or DSYM) |\n| Assertions | Active | Removed |\n| Speed | Slow compile, fast to build | Slow compile, fast runtime |\n| Crash reports | Stack traces readable | Need DSYM to symbolicate |\n\nDebug is for development — assertions fire, LLDB works, breakpoints pause. Release is for the App Store — compiler aggressively optimises, `assert()` and `precondition()` calls are compiled out.\n\nAlways test performance and memory with a **Release** build — Debug builds can be 2–10× slower."}, {"cat": "Xcode", "q": "What is a scheme vs a target vs a project?", "a": "- **Project** (`.xcodeproj`) — the top-level container. Holds files, build settings, and one or more targets.\n- **Target** — defines what to build: an app, framework, test bundle, or extension. Has its own build settings and source files.\n- **Scheme** — defines *how* to build/run/test. Points at a target and configures build configuration (Debug/Release), test plans, launch arguments, and environment variables.\n\nA typical setup: one project → targets: `MyApp`, `MyAppTests`, `MyAppUITests` → schemes: `MyApp` (Debug), `MyApp-Staging`, `MyApp-Production`."}, {"cat": "Xcode", "q": "How do you use breakpoints effectively in Xcode?", "a": "- **Standard breakpoint** — click the gutter. Conditional breakpoints (right-click → Edit) only pause when a condition is true.\n- **Exception breakpoint** — catches Swift/Obj-C exceptions. Add via the Breakpoint Navigator `+` menu.\n- **Symbolic breakpoint** — breaks on any call to a function by name (e.g. `viewDidLoad`, `-[UIView layoutSubviews]`).\n- **Actions** — run LLDB expressions, speak text, or log a message without stopping execution.\n\n```lldb\n// In debug console\npo variable           // print object description\np expression          // evaluate expression\nbt                    // backtrace\nframe variable        // all local variables\n```\n\nEnable **\"Automatically continue after evaluating actions\"** to log without pausing — like a non-invasive `print`."}, {"cat": "Xcode", "q": "What is `LLDB` and what are useful commands?", "a": "LLDB is Xcode's debugger — it pauses execution at breakpoints and lets you inspect/modify the running process.\n\n```lldb\npo self.viewModel        // print object (calls description)\np self.count             // print value\nexpression self.count = 42  // modify a variable live\nbt                       // print stack backtrace\nframe variable           // all local variables in current frame\nthread list              // all threads\nimage lookup -a 0x1234   // symbolicate an address\nwatchpoint set variable self.balance  // break when balance changes\n```\n\n`po` calls `debugDescription`. For SwiftUI, `po _printChanges()` inside `body` shows which state triggered a re-render."}, {"cat": "Xcode", "q": "What is a memory leak and how do you find one with Instruments?", "a": "A memory leak is memory that is allocated but never freed — usually caused by **retain cycles** (two objects holding strong references to each other).\n\n**Finding with Instruments:**\n\n1. Product → Profile (⌘I) → **Leaks** instrument\n2. Run the app, navigate around, then tap the **Leaks** record button\n3. Red bar = leaked objects. Click to see allocation backtrace.\n\n**Common causes in iOS:**\n\n```swift\n// Retain cycle in closure ❌\nviewModel.onUpdate = { self.reload() }   // self → viewModel → closure → self\n\n// Fix ✅\nviewModel.onUpdate = { [weak self] in self?.reload() }\n```\n\nAlso use the **Memory Graph Debugger** (debug toolbar `∞` button) — shows a live object graph to spot cycles visually."}, {"cat": "Xcode", "q": "What is the Address Sanitizer?", "a": "Address Sanitizer (ASan) is a runtime tool that detects **memory safety errors** at the moment they occur — not just when they cause a crash later.\n\nIt catches: use-after-free, buffer overflows, use of stack memory after return, double-free.\n\nEnable in scheme: **Edit Scheme → Run → Diagnostics → Address Sanitizer ✅**\n\n```swift\n// Use-after-free example ASan would catch:\nvar ptr = UnsafeMutablePointer<Int>.allocate(capacity: 1)\nptr.deallocate()\nptr.pointee = 42   // ← ASan catches this immediately, not a silent corruption\n```\n\nASan adds significant runtime overhead (~2×) — use only when debugging, not in production. Complement it with Thread Sanitizer (TSan) for data races."}, {"cat": "Xcode", "q": "What is `OSLog` and how is it better than `print`?", "a": "`OSLog` (unified logging) is Apple's production-grade logging system. Unlike `print`:\n\n- Logs are **categorised and filtered** by subsystem/category\n- Sensitive data can be **redacted** in production (`%{private}@`)\n- **Near-zero performance cost** when logs aren't being collected (deferred formatting)\n- Viewable in **Console.app** from a real device\n- Logs survive between app launches\n\n```swift\nimport OSLog\nlet logger = Logger(subsystem: \"com.app.banking\", category: \"network\")\n\nlogger.debug(\"Request started: \\(url, privacy: .public)\")\nlogger.error(\"Token refresh failed: \\(error.localizedDescription, privacy: .private)\")\n```\n\n`print` is fine during development but use `OSLog` for anything you'd want to see in production crash reports or diagnostics."}, {"cat": "Xcode", "q": "What is `xcconfig` and when would you use it?", "a": "An `.xcconfig` file is a plain text file that sets Xcode build settings as key-value pairs — instead of burying them in the GUI.\n\n```\n// Debug.xcconfig\nAPI_BASE_URL = https://dev.api.com\nSWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG\n\n// Release.xcconfig\nAPI_BASE_URL = https://api.com\n```\n\nThen reference in `Info.plist`:\n```xml\n<key>APIBaseURL</key>\n<string>$(API_BASE_URL)</string>\n```\n\n**Use when:** managing multiple environments (dev/staging/prod), sharing settings across targets, keeping secrets out of source control (use a `.gitignore`d `Secrets.xcconfig`), or when onboarding new devs who shouldn't touch Xcode project settings manually."}, {"cat": "Xcode", "q": "How do you set up CI/CD for an iOS project?", "a": "**Common stack:** GitHub Actions + Fastlane + Firebase App Distribution (or TestFlight).\n\n```yaml\n# .github/workflows/ios.yml\n- name: Build & Test\n  run: fastlane test\n\n- name: Distribute to testers\n  run: fastlane beta\n```\n\n```ruby\n# Fastfile\nlane :test do\n  run_tests(scheme: \"MyApp\")\nend\n\nlane :beta do\n  increment_build_number\n  build_app(scheme: \"MyApp\")\n  firebase_app_distribution(app: ENV[\"FIREBASE_APP_ID\"])\nend\n```\n\nStore signing certs in **Fastlane Match** (encrypts them in a private repo). Store secrets (API keys, certs) in **GitHub Actions Secrets** — never commit them. See the full guide in `xcode-tools/fastlane-firebase-distribution.md` in this repo."}, {"cat": "Interview", "q": "Explain the iOS app lifecycle.", "a": "The app lifecycle tracks the app's state as it moves foreground ↔ background:\n\n```\nNot Running → Inactive → Active (foreground)\n                          ↓\n                      Background → Suspended → Not Running\n```\n\n- **Not Running** — not launched or terminated by system\n- **Inactive** — in foreground but not receiving events (e.g. during a call overlay)\n- **Active** — running and receiving events\n- **Background** — executing code but screen off (limited time)\n- **Suspended** — in memory, no code running\n\n**UIKit:** `UIApplicationDelegate` — `applicationDidBecomeActive`, `applicationDidEnterBackground`, etc.\n\n**SwiftUI:** `@Environment(\\.scenePhase)` — `.active`, `.inactive`, `.background`.\n\nOn iOS 13+, **scenes** handle individual windows, and `SceneDelegate` manages per-scene lifecycle."}, {"cat": "Interview", "q": "What is a retain cycle and how do you prevent it?", "a": "A retain cycle occurs when two objects hold **strong references** to each other — neither can be deallocated, leaking memory permanently.\n\n```swift\n// Retain cycle ❌\nclass A { var b: B? }\nclass B { var a: A? }  // A→B, B→A — neither ever deinits\n\n// Fix: break the cycle with weak ✅\nclass B { weak var a: A? }\n```\n\n**Common iOS patterns that cause cycles:**\n\n```swift\n// Closure capturing self ❌\ntimer = Timer.scheduledTimer(withTimeInterval: 1) { _ in\n    self.update()   // self → timer → closure → self\n}\n\n// Fix ✅\ntimer = Timer.scheduledTimer(withTimeInterval: 1) { [weak self] _ in\n    self?.update()\n}\n```\n\nDetect them with Instruments (Leaks) or the Memory Graph Debugger."}, {"cat": "Interview", "q": "What is the difference between synchronous and asynchronous execution?", "a": "**Synchronous** — code executes one statement at a time, in order. The calling thread **blocks** until the task finishes.\n\n**Asynchronous** — the calling thread starts the task and **continues** without waiting. The task completes later and notifies via callback, delegate, Combine, or `async/await`.\n\n```swift\n// Synchronous — blocks the current thread\nlet data = try! Data(contentsOf: fileURL)   // ❌ hangs UI if on main thread\n\n// Asynchronous — non-blocking\nTask {\n    let data = try await URLSession.shared.data(from: url)  // ✅\n    await MainActor.run { updateUI(data) }\n}\n```\n\n**Rule:** never do blocking work on the main thread — it freezes the UI. Always move I/O and network calls off main."}, {"cat": "Interview", "q": "What tools do you use to debug performance issues in iOS?", "a": "**Time Profiler** — finds slow CPU code. Shows which functions eat the most time during a recording.\n\n**Allocations** — tracks memory usage over time. Spot memory growth and large allocations.\n\n**Leaks** — detects objects that are allocated but never freed.\n\n**Core Animation / Metal System Trace** — frames per second, GPU usage, offscreen rendering, blended layers.\n\n**Network** — HTTP traffic, latency, payload sizes.\n\n**Energy Log** — CPU wakeups, I/O, background activity.\n\nIn Xcode directly:\n- **Debug Navigator** — live CPU/memory/network/energy gauges\n- **Memory Graph Debugger** — live object graph, spot retain cycles\n- **View Hierarchy Debugger** — inspect the live 3D view hierarchy for offscreen rendering or constraint issues\n\nStart with the Debug Navigator for a quick overview, then use Instruments for a deep dive."}];
-const CAT_META  = [{"key": "Swift", "emoji": "🔷", "color": "#4a9eff"}, {"key": "SwiftUI", "emoji": "🔶", "color": "#f05a28"}, {"key": "Concurrency", "emoji": "⚡", "color": "#ffd60a"}, {"key": "Architecture", "emoji": "🏗", "color": "#bf5af2"}, {"key": "Networking", "emoji": "🌐", "color": "#30d158"}, {"key": "Testing", "emoji": "🧪", "color": "#5ac8fa"}, {"key": "UIKit", "emoji": "📐", "color": "#ff375f"}, {"key": "Xcode", "emoji": "🛠", "color": "#ff9f0a"}, {"key": "Interview", "emoji": "🎯", "color": "#64d2ff"}];
-const catMap = {};
-CAT_META.forEach(c => catMap[c.key] = c);
+// ── Wheel ──────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('wheel');
+const ctx = canvas.getContext('2d');
+const W=220, CX=W/2, CY=W/2, R=W/2-4;
+const segments = CATS.map(c => catByLabel[c] || {emoji:'❓',color:'#888',label:c});
+const N = segments.length;
+const ARC = Math.PI*2 / N;
+let rotation=0, spinning=false;
 
-// ─────────────────────────────────────────────
-//  STORAGE  (localStorage — persists across sessions)
-// ─────────────────────────────────────────────
-function loadState() {
-  try { return JSON.parse(localStorage.getItem('ios-qa-state') || '{}'); }
-  catch { return {}; }
-}
-function saveState(s) { localStorage.setItem('ios-qa-state', JSON.stringify(s)); }
-let STATE = loadState();
-// STATE[idx] = 'got-it' | 'almost' | 'nope' | undefined
-// STATE['bm_'+idx] = true
-
-function setStatus(idx, status) {
-  STATE[idx] = status;
-  saveState(STATE);
-  updateSidebarStats();
-}
-function getStatus(idx) { return STATE[idx]; }
-function toggleBookmark(idx) {
-  const k = 'bm_'+idx;
-  STATE[k] = !STATE[k];
-  saveState(STATE);
-}
-function isBookmarked(idx) { return !!STATE['bm_'+idx]; }
-
-// ─────────────────────────────────────────────
-//  NAV
-// ─────────────────────────────────────────────
-function nav(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
-  document.getElementById('nav-'+page).classList.add('active');
-  if(page==='progress') renderProgress();
-  if(page==='bookmarks') renderBookmarks();
-  if(page==='home') renderHome();
-  if(page==='quiz') renderQuizFilters();
-  closeSidebar();
-}
-
-// ─────────────────────────────────────────────
-//  UTILS
-// ─────────────────────────────────────────────
-function fmt(t) {
-  return t.replace(/`([^`]+)`/g,'<code>$1</code>');
-}
-function renderMarkdown(md) {
-  // Step 1: Escape HTML entities
-  let text = md
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
-  // Step 2: Extract code blocks into placeholders so newlines inside them are preserved
-  const codeBlocks = [];
-  text = text.replace(/```(\w+)?\n([\s\S]*?)```/g,(_, lang, code) => {
-    const trimmed = code.trim();
-    const langKey = lang || '';
-    const langLabel = langKey ? langKey.charAt(0).toUpperCase() + langKey.slice(1) : 'Code';
-    const langClass = langKey ? `language-${langKey}` : '';
-    const lines = trimmed.split('\n');
-    const nums = lines.map((_,i) => `<span>${i+1}</span>`).join('');
-    const block = `<div class="code-block">
-      <div class="code-header">
-        <span class="code-lang">${langLabel}</span>
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-      </div>
-      <div class="code-line-nums">
-        <div class="code-nums">${nums}</div>
-        <pre><code class="${langClass}">${trimmed}</code></pre>
-      </div>
-    </div>`;
-    codeBlocks.push(block);
-    return `\x00CODEBLOCK${codeBlocks.length - 1}\x00`;
-  });
-
-  // Step 3: Apply remaining Markdown transforms (safe — no code blocks present)
-  let html = text
-    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
-    .replace(/`([^`]+)`/g,'<code>$1</code>')
-    .replace(/^\|(.+)\|$/gm, row => {
-      const cells = row.split('|').filter(c=>c.trim());
-      return '<tr>'+cells.map(c=>`<td>${c.trim()}</td>`).join('')+'</tr>';
-    })
-    .replace(/(<tr>.*<\/tr>\n?)+/g, t => `<table>${t}</table>`)
-    .replace(/<table>(<tr><td>[-| ]+<\/td><\/tr>)/,'<table>')
-    .replace(/^- (.+)$/gm,'<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g,'<ul>$&</ul>')
-    .replace(/^(\d+)\. (.+)$/gm,'<oli>$2</oli>')
-    .replace(/(<oli>.*<\/oli>\n?)+/g, t => `<ol>${t.replace(/<oli>/g,'<li>').replace(/<\/oli>/g,'</li>')}</ol>`)
-    .replace(/\n\n/g,'</p><p>')
-    .replace(/\n/g,' ');
-
-  // Step 4: Restore code blocks
-  html = html.replace(/\x00CODEBLOCK(\d+)\x00/g, (_, i) => codeBlocks[parseInt(i)]);
-
-  return `<p>${html}</p>`;
-}
-
-function updateSidebarStats() {
-  const reviewed = QUESTIONS.filter((_,i)=>STATE[i]).length;
-  const gotIt    = QUESTIONS.filter((_,i)=>STATE[i]==='got-it').length;
-  document.getElementById('s-total').textContent = QUESTIONS.length;
-  document.getElementById('s-reviewed').textContent = reviewed;
-  document.getElementById('s-gotit').textContent = gotIt;
-}
-
-function makeQCard(idx, q, expandable=true) {
-  const meta = catMap[q.cat] || catMap[Object.keys(catMap)[0]];
-  const status = getStatus(idx);
-  const bm = isBookmarked(idx);
-  const div = document.createElement('div');
-  div.className = 'q-card' + (status ? ' has-status' : '');
-  div.id = 'qcard-'+idx;
-  div.innerHTML = `
-    <div class="q-header" onclick="${expandable ? 'toggleCard('+idx+')' : ''}">
-      <div class="q-status ${status||''}" id="qs-${idx}"></div>
-      <span class="cat-badge" style="color:${meta.color}">${meta.emoji} ${q.cat}</span>
-      <span class="q-text">${fmt(q.q)}</span>
-      ${expandable ? '<span class="chevron">▼</span>' : ''}
-    </div>
-    <div class="q-answer" id="qa-${idx}">
-      <div style="margin-top:12px">${renderMarkdown(q.a)}</div>
-      <div class="answer-actions">
-        <button class="ans-btn got-it ${status==='got-it'?'selected':''}" onclick="markQ(${idx},'got-it')">✅ Got it</button>
-        <button class="ans-btn almost ${status==='almost'?'selected':''}" onclick="markQ(${idx},'almost')">🤔 Almost</button>
-        <button class="ans-btn nope   ${status==='nope'  ?'selected':''}" onclick="markQ(${idx},'nope')">❌ Nope</button>
-        <button class="bm-btn ${bm?'saved':''}" id="bm-${idx}" onclick="markBM(${idx})">
-          ${bm?'⭐':'☆'}
-        </button>
-      </div>
-    </div>`;
-  // highlight after DOM insert
-  setTimeout(()=>{
-    div.querySelectorAll('pre code').forEach(el=>hljs.highlightElement(el));
-  },0);
-  return div;
-}
-
-function toggleCard(idx) {
-  const card = document.getElementById('qcard-'+idx);
-  card.classList.toggle('open');
-}
-
-function markQ(idx, status) {
-  setStatus(idx, status);
-  // update status dot
-  const dot = document.getElementById('qs-'+idx);
-  if(dot) { dot.className='q-status '+status; }
-  // update buttons in all cards with this idx
-  document.querySelectorAll(`[id="qcard-${idx}"] .ans-btn`).forEach(b=>b.classList.remove('selected'));
-  document.querySelectorAll(`[id="qcard-${idx}"] .ans-btn.${status}`).forEach(b=>b.classList.add('selected'));
-  if(typeof quizMarkCallback==='function') quizMarkCallback(idx,status);
-}
-
-function markBM(idx) {
-  toggleBookmark(idx);
-  const btn = document.getElementById('bm-'+idx);
-  if(btn) { btn.textContent = isBookmarked(idx)?'⭐':'☆'; btn.classList.toggle('saved',isBookmarked(idx)); }
-}
-
-// ─────────────────────────────────────────────
-//  HOME
-// ─────────────────────────────────────────────
-function renderHome() {
-  document.getElementById('h-total').textContent = QUESTIONS.length;
-  const reviewed = QUESTIONS.filter((_,i)=>STATE[i]).length;
-  const gotIt    = QUESTIONS.filter((_,i)=>STATE[i]==='got-it').length;
-  const pct = Math.round(reviewed/QUESTIONS.length*100);
-
-  document.getElementById('home-stats').innerHTML = `
-    <div class="stat-card"><div class="num" style="color:var(--blue)">${QUESTIONS.length}</div><div class="lbl">Total Questions</div></div>
-    <div class="stat-card"><div class="num" style="color:var(--orange)">${reviewed}</div><div class="lbl">Reviewed</div></div>
-    <div class="stat-card"><div class="num" style="color:var(--green)">${gotIt}</div><div class="lbl">Got It ✅</div></div>
-    <div class="stat-card"><div class="num" style="color:var(--purple)">${pct}%</div><div class="lbl">Completion</div></div>
-  `;
-  const cats = document.getElementById('home-cats');
-  cats.innerHTML='';
-  CAT_META.forEach(meta=>{
-    const pool = QUESTIONS.map((q,i)=>{return{q,i}}).filter(x=>x.q.cat===meta.key);
-    const done = pool.filter(x=>STATE[x.i]).length;
-    const pct = pool.length ? Math.round(done/pool.length*100) : 0;
-    const d = document.createElement('div');
-    d.className='cat-card'; d.onclick=()=>browseFilter(meta.key);
-    d.innerHTML=`
-      <span class="emoji">${meta.emoji}</span>
-      <div class="info">
-        <h3>${meta.key}</h3>
-        <p>${done}/${pool.length} reviewed</p>
-        <div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%;background:${meta.color}"></div></div>
-      </div>`;
-    cats.appendChild(d);
-  });
-}
-
-// ─────────────────────────────────────────────
-//  BROWSE
-// ─────────────────────────────────────────────
-let browseActive='All';
-function buildBrowse() {
-  const filtersDiv = document.getElementById('browse-filters');
-  const listDiv    = document.getElementById('browse-list');
-
-  function render() {
-    // filters
-    filtersDiv.innerHTML='';
-    [['⚡ All','All'],...CAT_META.map(c=>[c.emoji+' '+c.key,c.key])].forEach(([lbl,key])=>{
-      const b=document.createElement('button');
-      b.className='pill'+(browseActive===key?' active':'');
-      b.textContent=lbl;
-      b.onclick=()=>{browseActive=key;render()};
-      filtersDiv.appendChild(b);
-    });
-    // list
-    listDiv.innerHTML='';
-    QUESTIONS.forEach((q,i)=>{
-      if(browseActive!=='All'&&q.cat!==browseActive)return;
-      listDiv.appendChild(makeQCard(i,q,true));
-    });
-  }
-  render();
-}
-
-function browseFilter(cat) {
-  browseActive=cat;
-  nav('browse');
-  buildBrowse();
-}
-
-// ─────────────────────────────────────────────
-//  SPIN
-// ─────────────────────────────────────────────
-const canvas=document.getElementById('wheel');
-const ctx=canvas.getContext('2d');
-const W=200,CX=100,CY=100,R=96;
-const segs=CAT_META;
-const N=segs.length;
-const ARC=Math.PI*2/N;
-let rot=0,spinning=false,spinTarget=null;
-
-function drawWheel(r){
+function drawWheel(rot) {
   ctx.clearRect(0,0,W,W);
-  for(let i=0;i<N;i++){
-    const s=r+i*ARC,e=s+ARC;
-    ctx.beginPath();ctx.moveTo(CX,CY);ctx.arc(CX,CY,R,s,e);ctx.closePath();
-    ctx.fillStyle=segs[i].color+'2a';ctx.fill();
-    ctx.strokeStyle='#0d0f14';ctx.lineWidth=2;ctx.stroke();
-    ctx.beginPath();ctx.arc(CX,CY,R,s,e);
-    ctx.strokeStyle=segs[i].color+'99';ctx.lineWidth=2;ctx.stroke();
+  for(let i=0;i<N;i++) {
+    const s=rot+i*ARC, e=s+ARC;
+    ctx.beginPath(); ctx.moveTo(CX,CY); ctx.arc(CX,CY,R,s,e); ctx.closePath();
+    ctx.fillStyle=segments[i].color+'33'; ctx.fill();
+    ctx.strokeStyle='#0d0f14'; ctx.lineWidth=2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(CX,CY,R,s,e);
+    ctx.strokeStyle=segments[i].color+'88'; ctx.lineWidth=2; ctx.stroke();
     const ang=s+ARC/2;
-    ctx.save();ctx.translate(CX+Math.cos(ang)*R*.65,CY+Math.sin(ang)*R*.65);
-    ctx.font='15px serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(segs[i].emoji,0,0);ctx.restore();
+    const tx=CX+Math.cos(ang)*(R*.65), ty=CY+Math.sin(ang)*(R*.65);
+    ctx.save(); ctx.translate(tx,ty);
+    ctx.font='16px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(segments[i].emoji,0,0); ctx.restore();
   }
-  ctx.beginPath();ctx.arc(CX,CY,20,0,Math.PI*2);
-  ctx.fillStyle='#1c2030';ctx.fill();
-  ctx.strokeStyle='#f05a28';ctx.lineWidth=2;ctx.stroke();
-  ctx.font='bold 13px serif';ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillStyle='#f05a28';ctx.fillText('🎰',CX,CY);
+  ctx.beginPath(); ctx.arc(CX,CY,22,0,Math.PI*2);
+  ctx.fillStyle='#1c2030'; ctx.fill();
+  ctx.strokeStyle='#f05a28'; ctx.lineWidth=2; ctx.stroke();
+  ctx.font='bold 14px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillStyle='#f05a28'; ctx.fillText('🎰',CX,CY);
 }
-drawWheel(rot);
+drawWheel(rotation);
 
-function spinWheel(){
-  if(spinning)return;
+function spinWheel() {
+  if(spinning) return;
   spinning=true;
-  document.getElementById('spin-btn').disabled=true;
-  document.getElementById('spin-go-btn').style.display='none';
-  const card=document.getElementById('spin-card');
-  card.className='spin-card';
-  card.innerHTML='<p class="spin-placeholder">⏳ Spinning…</p>';
-  const total=(5+Math.random()*6)*Math.PI*2,dur=3200+Math.random()*800;
-  const t0=performance.now(),r0=rot;
+  document.getElementById('spinBtn').disabled=true;
+  const card=document.getElementById('qCard');
+  card.classList.remove('revealed');
+  card.innerHTML='<p class="q-placeholder">⏳ Spinning…</p>';
+  const total=(5+Math.random()*5)*Math.PI*2, dur=3000+Math.random()*1000;
+  const t0=performance.now(), r0=rotation;
   const ease=t=>1-Math.pow(1-t,3);
-  function frame(now){
-    const el=now-t0,t=Math.min(el/dur,1);
-    rot=r0+total*ease(t);drawWheel(rot);
-    if(t<1)requestAnimationFrame(frame);
-    else{spinning=false;document.getElementById('spin-btn').disabled=false;revealSpin(rot);}
+  function frame(now) {
+    const el=now-t0, t=Math.min(el/dur,1);
+    rotation=r0+total*ease(t); drawWheel(rotation);
+    if(t<1) requestAnimationFrame(frame);
+    else { spinning=false; document.getElementById('spinBtn').disabled=false; reveal(rotation); }
   }
   requestAnimationFrame(frame);
 }
 
-function revealSpin(r){
-  const norm=(((-r-Math.PI/2)%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
+function reveal(rot) {
+  const norm=(((-rot-Math.PI/2)%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
   const idx=Math.floor(norm/ARC)%N;
-  const cat=segs[idx].key;
-  const pool=QUESTIONS.map((q,i)=>{return{q,i}}).filter(x=>x.q.cat===cat);
-  const pick=pool[Math.floor(Math.random()*pool.length)];
-  spinTarget=pick.i;
-  const card=document.getElementById('spin-card');
-  card.className='spin-card lit';
+  const cat=segments[idx].label;
+  const pool=QUESTIONS.filter(q=>q.cat===cat);
+  const q=pool[Math.floor(Math.random()*pool.length)];
+  const card=document.getElementById('qCard');
+  card.classList.add('revealed');
   card.innerHTML=`
-    <div class="spin-cat" style="color:${segs[idx].color}">${segs[idx].emoji} ${cat}</div>
-    <div class="spin-q">${fmt(pick.q.q)}</div>
-    <div class="spin-hint">💡 Think through your answer — then click "See Answer"</div>`;
-  const goBtn=document.getElementById('spin-go-btn');
-  goBtn.style.display='block';
-  goBtn.onclick=()=>{browseFilter(cat);const el=document.getElementById('qcard-'+spinTarget);if(el){el.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>el.classList.add('open'),400);}};
-}
-
-// ─────────────────────────────────────────────
-//  QUIZ
-// ─────────────────────────────────────────────
-let quizFilter='All', quizPool=[], quizIdx=0, quizAnswered=false;
-let quizResults={gotIt:0,almost:0,nope:0};
-let quizMarkCallback=null;
-
-function renderQuizFilters(){
-  const f=document.getElementById('quiz-filters');
-  f.innerHTML='';
-  [['⚡ All','All'],...CAT_META.map(c=>[c.emoji+' '+c.key,c.key])].forEach(([lbl,key])=>{
-    const b=document.createElement('button');
-    b.className='pill'+(quizFilter===key?' active':'');
-    b.textContent=lbl;
-    b.onclick=()=>{quizFilter=key;renderQuizFilters();startQuiz()};
-    f.appendChild(b);
-  });
-  startQuiz();
-}
-
-function startQuiz(){
-  quizPool=(quizFilter==='All'?QUESTIONS.map((_,i)=>i):QUESTIONS.map((_,i)=>i).filter(i=>QUESTIONS[i].cat===quizFilter))
-    .sort(()=>Math.random()-.5);
-  quizIdx=0;quizResults={gotIt:0,almost:0,nope:0};
-  renderQuizCard();
-}
-
-function renderQuizCard(){
-  const wrap=document.getElementById('quiz-wrap');
-  if(quizIdx>=quizPool.length){
-    // done screen
-    const pct=Math.round(quizResults.gotIt/quizPool.length*100)||0;
-    wrap.innerHTML=`
-      <div class="quiz-done">
-        <div style="font-size:48px;margin-bottom:12px">${pct>=80?'🎉':pct>=50?'💪':'📖'}</div>
-        <h2>${pct>=80?'Outstanding!':pct>=50?'Getting there!':'Keep studying!'}</h2>
-        <p>You reviewed ${quizPool.length} questions</p>
-        <div class="score-grid">
-          <div class="score-item"><div class="n" style="color:var(--green)">${quizResults.gotIt}</div><div class="l">Got it ✅</div></div>
-          <div class="score-item"><div class="n" style="color:var(--yellow)">${quizResults.almost}</div><div class="l">Almost 🤔</div></div>
-          <div class="score-item"><div class="n" style="color:var(--pink)">${quizResults.nope}</div><div class="l">Nope ❌</div></div>
-        </div>
-        <button class="action-btn primary" onclick="startQuiz()">🔄 Restart Quiz</button>
-      </div>`;
-    return;
-  }
-  const qi=quizPool[quizIdx];
-  const q=QUESTIONS[qi];
-  const meta=catMap[q.cat]||CAT_META[0];
-  const total=quizPool.length;
-  const pct=Math.round(quizIdx/total*100);
-  quizAnswered=false;
-  quizMarkCallback=(idx,status)=>{
-    if(idx!==qi)return;
-    quizResults[status==='got-it'?'gotIt':status]==(quizResults[status==='got-it'?'gotIt':status]||0);
-    if(status==='got-it')quizResults.gotIt++;
-    else if(status==='almost')quizResults.almost++;
-    else quizResults.nope++;
-    setTimeout(()=>{quizIdx++;renderQuizCard()},600);
-  };
-  wrap.innerHTML=`
-    <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
-    <div class="quiz-meta">
-      <span>${quizIdx+1} / ${total}</span>
-      <span style="color:${meta.color}">${meta.emoji} ${q.cat}</span>
-    </div>
-    <div class="quiz-q-card" id="quiz-qc">
-      <div class="quiz-cat" style="color:${meta.color}">${meta.emoji} ${q.cat}</div>
-      <div class="quiz-question">${fmt(q.q)}</div>
-    </div>
-    <div class="quiz-answer-panel" id="quiz-ap">
-      <div class="q-answer" id="quiz-ans"></div>
-    </div>
-    <div class="quiz-actions" id="quiz-acts">
-      <button class="quiz-btn reveal" onclick="revealQuiz(${qi})">👁 Reveal Answer</button>
-    </div>`;
-}
-
-function revealQuiz(qi){
-  const q=QUESTIONS[qi];
-  const panel=document.getElementById('quiz-ap');
-  panel.classList.add('show');
-  const ansDiv=document.getElementById('quiz-ans');
-  ansDiv.innerHTML=`<div style="margin-top:0">${renderMarkdown(q.a)}</div>
-    <div class="answer-actions" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-      <button class="ans-btn got-it" onclick="markQ(${qi},'got-it')">✅ Got it</button>
-      <button class="ans-btn almost" onclick="markQ(${qi},'almost')">🤔 Almost</button>
-      <button class="ans-btn nope"   onclick="markQ(${qi},'nope')">❌ Nope</button>
-    </div>`;
-  panel.querySelectorAll('pre code').forEach(el=>hljs.highlightElement(el));
-  document.getElementById('quiz-acts').innerHTML=`
-    <button class="quiz-btn" style="background:var(--surface);color:var(--muted);border:1px solid var(--border)" onclick="quizIdx++;renderQuizCard()">Skip →</button>`;
-}
-
-// ─────────────────────────────────────────────
-//  SEARCH
-// ─────────────────────────────────────────────
-function doSearch(){
-  const q=document.getElementById('search-input').value.trim().toLowerCase();
-  const res=document.getElementById('search-results');
-  if(!q){res.innerHTML='';return;}
-  const hits=QUESTIONS.map((item,i)=>{return{item,i}}).filter(x=>
-    x.item.q.toLowerCase().includes(q)||x.item.a.toLowerCase().includes(q)
-  );
-  if(!hits.length){res.innerHTML='<div class="no-results">No results for "'+q+'"</div>';return;}
-  res.innerHTML='';
-  hits.slice(0,30).forEach(x=>{
-    const hl=t=>t.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');
-    const div=document.createElement('div');div.className='q-card search-hit';
-    const meta=catMap[x.item.cat]||CAT_META[0];
-    div.innerHTML=`<div class="q-header" onclick="toggleCard('s${x.i}')">
-      <div class="q-status ${getStatus(x.i)||''}"></div>
-      <span class="cat-badge" style="color:${meta.color}">${meta.emoji} ${x.item.cat}</span>
-      <span class="q-text">${hl(fmt(x.item.q))}</span>
-      <span class="chevron">▼</span>
-    </div>
-    <div class="q-answer" id="qa-s${x.i}">
-      <div style="margin-top:12px">${renderMarkdown(x.item.a)}</div>
-      <div class="answer-actions">
-        <button class="ans-btn got-it" onclick="markQ(${x.i},'got-it')">✅ Got it</button>
-        <button class="ans-btn almost" onclick="markQ(${x.i},'almost')">🤔 Almost</button>
-        <button class="ans-btn nope"   onclick="markQ(${x.i},'nope')">❌ Nope</button>
-      </div>
-    </div>`;
-    div.querySelector('.q-header').addEventListener('click',()=>{
-      div.classList.toggle('open');
-      div.querySelectorAll('pre code').forEach(el=>hljs.highlightElement(el));
-    });
-    res.appendChild(div);
-  });
-}
-
-// ─────────────────────────────────────────────
-//  PROGRESS
-// ─────────────────────────────────────────────
-function renderProgress(){
-  const total=QUESTIONS.length;
-  const gotIt  =QUESTIONS.filter((_,i)=>STATE[i]==='got-it').length;
-  const almost =QUESTIONS.filter((_,i)=>STATE[i]==='almost').length;
-  const nope   =QUESTIONS.filter((_,i)=>STATE[i]==='nope').length;
-  const done   =gotIt+almost+nope;
-  const pct    =Math.round(done/total*100);
-
-  document.getElementById('prog-summary').innerHTML=`
-    <div class="prog-stat"><div class="n" style="color:var(--blue)">${total}</div><div class="l">Total</div></div>
-    <div class="prog-stat"><div class="n" style="color:var(--orange)">${done}</div><div class="l">Reviewed</div></div>
-    <div class="prog-stat"><div class="n" style="color:var(--green)">${gotIt}</div><div class="l">Got it ✅</div></div>
-    <div class="prog-stat"><div class="n" style="color:var(--yellow)">${almost}</div><div class="l">Almost 🤔</div></div>
-    <div class="prog-stat"><div class="n" style="color:var(--pink)">${nope}</div><div class="l">Nope ❌</div></div>
-    <div class="prog-stat"><div class="n" style="color:var(--purple)">${pct}%</div><div class="l">Complete</div></div>
+    <div class="q-category" style="color:${segments[idx].color}">${segments[idx].emoji} ${cat}</div>
+    <div class="q-text">${fmt(q.q)}</div>
+    <div class="q-hint">💡 Answer this without looking — then check your notes</div>
   `;
-  const catList=document.getElementById('prog-cats');catList.innerHTML='';
-  CAT_META.forEach(meta=>{
-    const pool=QUESTIONS.map((_,i)=>i).filter(i=>QUESTIONS[i].cat===meta.key);
-    const g=pool.filter(i=>STATE[i]==='got-it').length;
-    const a=pool.filter(i=>STATE[i]==='almost').length;
-    const n=pool.filter(i=>STATE[i]==='nope').length;
-    const u=pool.length-g-a-n;
-    const toW=v=>pool.length?Math.round(v/pool.length*100):0;
-    const div=document.createElement('div');div.className='prog-cat-row';
-    div.innerHTML=`
-      <div class="prog-cat-top">
-        <span style="color:${meta.color}">${meta.emoji}</span>
-        <span class="name">${meta.key}</span>
-        <span class="count">${g+a+n}/${pool.length}</span>
-      </div>
-      <div class="prog-segments">
-        <div class="seg" style="width:${toW(g)}%;background:var(--green)"></div>
-        <div class="seg" style="width:${toW(a)}%;background:var(--yellow)"></div>
-        <div class="seg" style="width:${toW(n)}%;background:var(--pink)"></div>
-        <div class="seg" style="width:${toW(u)}%;background:var(--border)"></div>
-      </div>
-      <div style="display:flex;gap:12px;margin-top:8px;font-size:11px;font-family:var(--mono);color:var(--muted)">
-        <span style="color:var(--green)">✅ ${g}</span>
-        <span style="color:var(--yellow)">🤔 ${a}</span>
-        <span style="color:var(--pink)">❌ ${n}</span>
-        <span>⬜ ${u} unseen</span>
-      </div>`;
-    catList.appendChild(div);
+}
+
+function fmt(q){return q.replace(/`([^`]+)`/g,'<code>$1</code>')}
+
+// ── Filters + Grid ─────────────────────────────────────────────────────────
+let active='All';
+
+function renderAll() {
+  const filtersDiv=document.getElementById('filters');
+  filtersDiv.innerHTML='';
+  [['⚡ All','All'],...CATS.map(c=>[catByLabel[c]?.emoji+' '+c,c])].forEach(([label,key])=>{
+    const btn=document.createElement('button');
+    btn.className='filter-btn'+(active===key?' active':'');
+    btn.textContent=label;
+    btn.onclick=()=>{active=key;renderAll()};
+    filtersDiv.appendChild(btn);
+  });
+  const filtered=active==='All'?QUESTIONS:QUESTIONS.filter(q=>q.cat===active);
+  const meta=active==='All'?null:catByLabel[active];
+  document.getElementById('gridLabel').textContent=
+    active==='All'?`All ${QUESTIONS.length} Questions`:`${meta?.emoji} ${active} (${filtered.length})`;
+  const grid=document.getElementById('qGrid');
+  grid.innerHTML='';
+  filtered.forEach(q=>{
+    const m=catByLabel[q.cat]||{};
+    const div=document.createElement('div'); div.className='q-item';
+    div.innerHTML=`<div class="q-item-cat" style="color:${m.color}">${m.emoji} ${q.cat}</div>
+      <div class="q-item-text">${fmt(q.q)}</div>`;
+    grid.appendChild(div);
   });
 }
-
-function resetProgress(){
-  if(!confirm('Reset all progress and bookmarks?'))return;
-  STATE={};saveState(STATE);updateSidebarStats();renderProgress();
-}
-
-// ─────────────────────────────────────────────
-//  BOOKMARKS
-// ─────────────────────────────────────────────
-function renderBookmarks(){
-  const list=document.getElementById('bm-list');list.innerHTML='';
-  const bms=QUESTIONS.map((_,i)=>i).filter(i=>isBookmarked(i));
-  if(!bms.length){list.innerHTML='<div class="bm-empty">⭐ No starred questions yet.<br>Open any question and click ☆ to save it here.</div>';return;}
-  bms.forEach(i=>list.appendChild(makeQCard(i,QUESTIONS[i],true)));
-}
-
-// ─────────────────────────────────────────────
-//  INIT
-// ─────────────────────────────────────────────
-buildBrowse();
-renderHome();
-updateSidebarStats();
+renderAll();
 </script>
 </body>
 </html>
