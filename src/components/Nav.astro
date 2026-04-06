@@ -33,7 +33,7 @@ function isActive(href: string) {
 </nav>
 
 <!-- Search modal (Pagefind UI loaded on demand) -->
-<div id="search-modal" aria-hidden="true">
+<div id="search-modal" role="dialog" aria-modal="true" aria-label="Search" aria-hidden="true">
   <div class="search-inner">
     <div id="pagefind-search"></div>
     <button class="search-close" id="search-close" aria-label="Close search">✕</button>
@@ -53,9 +53,18 @@ function isActive(href: string) {
       // @ts-ignore
       import('/ios-qa/pagefind/pagefind-ui.js').then(({ PagefindUI }) => {
         new PagefindUI({ element: '#pagefind-search', showImages: false });
+        // Focus the search input after Pagefind renders
+        setTimeout(() => {
+          const input = modal!.querySelector('input[type="text"], input[type="search"]') as HTMLInputElement;
+          input?.focus();
+        }, 100);
       }).catch(() => {
         document.getElementById('pagefind-search')!.textContent = 'Search not available in dev mode. Run npm run build first.';
       });
+    } else {
+      // Already loaded - focus immediately
+      const input = modal!.querySelector('input[type="text"], input[type="search"]') as HTMLInputElement;
+      input?.focus();
     }
   }
 
