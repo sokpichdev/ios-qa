@@ -73,8 +73,8 @@ export default function SpinWheel({ questions, base }: Props) {
     const px = cx + r + 6;
     ctx.beginPath();
     ctx.moveTo(px, cy);
-    ctx.lineTo(px + 18, cy - 10);
-    ctx.lineTo(px + 18, cy + 10);
+    ctx.lineTo(px + 28, cy - 16);
+    ctx.lineTo(px + 28, cy + 16);
     ctx.closePath();
     ctx.fillStyle = '#f05a28';
     ctx.fill();

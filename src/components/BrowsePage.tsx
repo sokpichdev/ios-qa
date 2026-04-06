@@ -2,6 +2,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import type { Question } from '../lib/questions';
 import { CATEGORIES, CATEGORY_META } from '../lib/questions';
+import { renderMarkdown } from '../lib/renderMarkdown';
 
 const DIFFICULTIES = ['Beginner', 'Intermediate', 'Advanced'] as const;
 
@@ -154,9 +155,11 @@ export default function BrowsePage({ questions, base, initialCategory = 'all' }:
 
               {isOpen && (
                 <div style={{ padding: '0 16px 16px', borderTop: '1px solid var(--border)' }}>
-                  <div style={{ marginTop: 16, lineHeight: 1.7, fontSize: 15, whiteSpace: 'pre-wrap' }}>
-                    {q.body}
-                  </div>
+                  <div
+                    className="answer-body"
+                    style={{ marginTop: 16, lineHeight: 1.7, fontSize: 15 }}
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(q.body) }}
+                  />
                   <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
                     {(['got-it', 'almost', 'nope'] as const).map(s => (
                       <button
