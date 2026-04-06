@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import type { Question } from '../lib/questions';
 import { CATEGORIES, CATEGORY_META } from '../lib/questions';
+import { renderMarkdown } from '../lib/renderMarkdown';
 
 const DIFFICULTIES = ['Beginner', 'Intermediate', 'Advanced'] as const;
 
@@ -145,9 +146,11 @@ export default function Quiz({ questions }: Props) {
         </div>
       ) : (
         <>
-          <div className="card" style={{ marginBottom: 20, lineHeight: 1.7, whiteSpace: 'pre-wrap', fontSize: 15 }}>
-            {q.body}
-          </div>
+          <div
+            className="card answer-body"
+            style={{ marginBottom: 20, lineHeight: 1.7, fontSize: 15 }}
+            dangerouslySetInnerHTML={{ __html: renderMarkdown(q.body) }}
+          />
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button className="btn btn-ghost" style={{ borderColor: '#10b981', color: '#10b981' }} onClick={() => answer('got-it')}>✅ Got it</button>
             <button className="btn btn-ghost" style={{ borderColor: '#f59e0b', color: '#f59e0b' }} onClick={() => answer('almost')}>🤔 Almost</button>
