@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<BaseLayout title="Contributor Guide" description="How to contribute iOS Q&A questions via GitHub">
+  <div style="max-width: 720px;">
+    <h1 style="font-size: 28px; margin-bottom: 8px;">Contributor Guide</h1>
+    <p style="color: var(--text-muted); margin-bottom: 40px; line-height: 1.6;">
+      Prefer working directly in git? Follow these steps to contribute via Pull Request.
+      Or use the <a href={`${base}/contribute`}>web form</a> for a quicker workflow.
+    </p>
+
+    <div style="display: flex; flex-direction: column; gap: 40px;">
+
+      <section>
+        <h2 style="font-size: 18px; margin-bottom: 12px;">Step 1: Fork the repository</h2>
+        <p style="color: var(--text-muted); margin-bottom: 12px; line-height: 1.6;">
+          Go to <a href="https://github.com/cobra-PICH/ios-qa" target="_blank" rel="noopener noreferrer">github.com/cobra-PICH/ios-qa</a> and click <strong>Fork</strong>.
+        </p>
+        <pre>git clone https://github.com/YOUR-USERNAME/ios-qa.git
+cd ios-qa</pre>
+      </section>
+
+      <section>
+        <h2 style="font-size: 18px; margin-bottom: 12px;">Step 2: Find the right folder</h2>
+        <p style="color: var(--text-muted); margin-bottom: 12px; line-height: 1.6;">
+          Create or edit a <code>.md</code> file in the correct category folder under <code>src/content/questions/</code>:
+        </p>
+        <pre>src/content/questions/
+├── swift/
+├── swiftui/
+├── concurrency/
+├── architecture/
+├── networking/
+├── testing/
+├── uikit/
+├── xcode-tools/
+└── interview-prep/</pre>
+      </section>
+
+      <section>
+        <h2 style="font-size: 18px; margin-bottom: 12px;">Step 3: Use the Q&A format</h2>
+        <p style="color: var(--text-muted); margin-bottom: 12px; line-height: 1.6;">
+          Copy this template into your file. One file can contain multiple Q&amp;A entries — just repeat the format.
+        </p>
+        <pre>{"## Q: Your question here?\n\nYour answer here. Explain clearly and concisely.\n\n```swift\n// Optional code example\nlet example: String? = nil\n```\n\n**Difficulty:** Beginner\n**Tags:** tag1, tag2, tag3\n\n---"}</pre>
+        <ul style="margin-top: 16px; color: var(--text-muted); padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.6;">
+          <li>The heading <strong>must</strong> start with <code>## Q:</code></li>
+          <li><strong>Difficulty</strong> must be <code>Beginner</code>, <code>Intermediate</code>, or <code>Advanced</code></li>
+          <li>Tags are comma-separated keywords</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 style="font-size: 18px; margin-bottom: 12px;">Step 4: Open a Pull Request</h2>
+        <pre>git checkout -b add/your-question-topic
+git add src/content/questions/your-category/your-file.md
+git commit -m "feat: add question about YOUR TOPIC"
+git push origin add/your-question-topic</pre>
+        <p style="color: var(--text-muted); margin-top: 12px; font-size: 14px; line-height: 1.6;">
+          Then open a Pull Request on GitHub. The maintainer will review and merge it — the site rebuilds and deploys automatically on merge.
+        </p>
+      </section>
+
+    </div>
+  </div>
+</BaseLayout>
