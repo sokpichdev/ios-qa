@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Quiz from '../components/Quiz';
+import { parseQuestionsFromRaw } from '../lib/questions';
+
+const allFiles = import.meta.glob<string>(
+  '../content/questions/**/*.md',
+  { eager: true, query: '?raw', import: 'default' }
+);
+
+const allQuestions = Object.entries(allFiles).flatMap(([path, raw]) => {
+  const match = path.match(/questions\/([^/]+)\//);
+  const category = match?.[1] ?? 'swift';
+  return parseQuestionsFromRaw(raw, category);
+});
+---
+<BaseLayout title="Quiz" description="Test your iOS knowledge with randomized questions">
+  <h1 style="margin-bottom: 32px; font-size: 28px; text-align: center;">Quiz Mode</h1>
+  <Quiz client:load questions={allQuestions} />
+</BaseLayout>
