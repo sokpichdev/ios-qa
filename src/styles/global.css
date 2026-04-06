@@ -9,6 +9,7 @@
   --text:      #e2e8f0;
   --text-muted:#8892a4;
   --accent:    #f05a28;
+  --accent-dark: #d94d1e;
   --success:   #10b981;
   --warning:   #f59e0b;
   --danger:    #ef4444;
@@ -69,7 +70,7 @@ pre {
   font-family: var(--font-sans);
 }
 .btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover { background: #d94d1e; }
+.btn-primary:hover { background: var(--accent-dark); }
 .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
 .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
 
