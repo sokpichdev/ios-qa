@@ -35,6 +35,7 @@ func loadUser() async throws -> User {
 ```
 
 **Tags:** `#concurrency` `#async-await` `#gcd` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -69,6 +70,7 @@ await cache.store(image, for: url)
 - Actor methods are automatically `async` when called from outside
 
 **Tags:** `#concurrency` `#actor` `#thread-safety` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -101,3 +103,4 @@ func updateUI() async {
 ```
 
 **Tags:** `#concurrency` `#mainactor` `#swiftui` `#thread-safety`
+**Difficulty:** Intermediate

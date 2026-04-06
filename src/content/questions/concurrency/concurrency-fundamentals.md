@@ -33,6 +33,7 @@ Task.detached(priority: .background) {
 ```
 
 **Tags:** `#concurrency` `#task` `#async-await` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -69,6 +70,7 @@ let users = try await fetchAllUsers(ids: [1, 2, 3, 4, 5])
 - Results arrive in completion order, not the order tasks were added
 
 **Tags:** `#concurrency` `#taskgroup` `#parallelism` `#async-await`
+**Difficulty:** Intermediate
 
 ---
 
@@ -104,6 +106,7 @@ func loadDashboard() async throws -> Dashboard {
 **Rule of thumb:** Use `async let` for a fixed set of concurrent operations. Use `TaskGroup` for a dynamic number.
 
 **Tags:** `#concurrency` `#async-let` `#parallelism` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -140,6 +143,7 @@ let data = try await fetchData()
 - `withUnsafeContinuation` skips the "called once" check — only use if performance is critical
 
 **Tags:** `#concurrency` `#continuation` `#async-await` `#bridging`
+**Difficulty:** Intermediate
 
 ---
 
@@ -179,6 +183,7 @@ Task {
 ```
 
 **Tags:** `#concurrency` `#cancellation` `#task` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -215,6 +220,7 @@ actor MyActor {
 ```
 
 **Tags:** `#concurrency` `#sendable` `#thread-safety` `#advanced`
+**Difficulty:** Intermediate
 
 ---
 
@@ -248,6 +254,7 @@ DispatchQueue.main.async {
 ```
 
 **Tags:** `#concurrency` `#gcd` `#queues` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -286,6 +293,7 @@ class QueueCounter {
 ```
 
 **Tags:** `#concurrency` `#race-condition` `#thread-safety` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -322,6 +330,7 @@ queue.cancelAllOperations()
 ```
 
 **Tags:** `#concurrency` `#operationqueue` `#gcd`
+**Difficulty:** Intermediate
 
 ---
 
@@ -359,3 +368,4 @@ Task {
 **Use for:** Location updates, WebSocket messages, notifications, sensor data, any ongoing event stream.
 
 **Tags:** `#concurrency` `#asyncstream` `#async-await` `#combine`
+**Difficulty:** Intermediate

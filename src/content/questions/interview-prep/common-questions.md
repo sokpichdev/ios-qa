@@ -26,6 +26,7 @@ func applicationWillTerminate(_:)                   // cleanup
 ```
 
 **Tags:** `#interview` `#lifecycle` `#uikit`
+**Difficulty:** Intermediate
 
 ---
 
@@ -55,6 +56,7 @@ viewModel.onUpdate = { [unowned self] in
 **How to find them:** Xcode's Memory Graph Debugger (`Debug > Memory Graph`) — look for objects that still exist after they should be deallocated.
 
 **Tags:** `#interview` `#memory` `#arc` `#retain-cycle`
+**Difficulty:** Intermediate
 
 ---
 
@@ -75,6 +77,7 @@ Task {
 ```
 
 **Tags:** `#interview` `#concurrency` `#async-await`
+**Difficulty:** Intermediate
 
 ---
 
@@ -94,3 +97,4 @@ Task {
 4. Use `os_signpost` to confirm the improvement
 
 **Tags:** `#interview` `#performance` `#instruments` `#debugging`
+**Difficulty:** Intermediate

@@ -41,6 +41,7 @@ struct ChildView: View {
 - Use `@ObservedObject` when the object is **created elsewhere** and passed in
 
 **Tags:** `#swiftui` `#state` `#binding` `#stateobject` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -74,6 +75,7 @@ MyCard(title: "Summary") {
 ```
 
 **Tags:** `#swiftui` `#viewbuilder` `#advanced`
+**Difficulty:** Intermediate
 
 ---
 
@@ -104,3 +106,4 @@ struct ArticleView: View {
 ```
 
 **Tags:** `#swiftui` `#async-await` `#concurrency` `#lifecycle`
+**Difficulty:** Intermediate

@@ -42,6 +42,7 @@ ContentView()
 ```
 
 **Tags:** `#swiftui` `#environment` `#state` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -76,6 +77,7 @@ TextField("Name", text: $name)
 ```
 
 **Tags:** `#swiftui` `#performance` `#diffing` `#advanced`
+**Difficulty:** Intermediate
 
 ---
 
@@ -110,6 +112,7 @@ Rectangle()
 ```
 
 **Tags:** `#swiftui` `#layout` `#geometryreader`
+**Difficulty:** Intermediate
 
 ---
 
@@ -152,6 +155,7 @@ Image("thumbnail")
 ```
 
 **Tags:** `#swiftui` `#animation` `#transitions`
+**Difficulty:** Intermediate
 
 ---
 
@@ -187,6 +191,7 @@ ScrollView {
 - `List` uses lazy loading automatically
 
 **Tags:** `#swiftui` `#performance` `#layout` `#lazy`
+**Difficulty:** Intermediate
 
 ---
 
@@ -220,6 +225,7 @@ path = NavigationPath()    // pop to root
 ```
 
 **Tags:** `#swiftui` `#navigation` `#navigationstack` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -250,6 +256,7 @@ struct SettingsView: View {
 - ❌ Large data, sensitive data, or complex objects — use Core Data, Keychain, or a file instead
 
 **Tags:** `#swiftui` `#appstorage` `#userdefaults` `#persistence`
+**Difficulty:** Intermediate
 
 ---
 
@@ -288,6 +295,7 @@ VStack { ... }
 ```
 
 **Tags:** `#swiftui` `#viewmodifier` `#reusability`
+**Difficulty:** Intermediate
 
 ---
 
@@ -331,6 +339,7 @@ struct ColorPickerSheet: View {
 ```
 
 **Tags:** `#swiftui` `#sheets` `#binding` `#navigation`
+**Difficulty:** Intermediate
 
 ---
 
@@ -364,3 +373,4 @@ List(articles, id: \.title) { article in
 - `UUID()` is the safest default for new models
 
 **Tags:** `#swiftui` `#identifiable` `#list` `#interview`
+**Difficulty:** Intermediate

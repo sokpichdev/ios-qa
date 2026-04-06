@@ -48,6 +48,7 @@ class MyViewController: UIViewController {
 ```
 
 **Tags:** `#uikit` `#lifecycle` `#viewcontroller` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -76,6 +77,7 @@ print(scrollView.bounds.origin)  // (0, 200) — scrolled 200pt down
 ```
 
 **Tags:** `#uikit` `#layout` `#frame` `#bounds` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -110,6 +112,7 @@ label.setContentCompressionResistancePriority(.required, for: .horizontal)
 ```
 
 **Tags:** `#uikit` `#autolayout` `#constraints` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -148,6 +151,7 @@ class MyViewController: UIViewController, UITableViewDataSource {
 **Common mistake:** Not resetting cell state before configuring — old data shows briefly during scroll.
 
 **Tags:** `#uikit` `#tableview` `#reuse` `#performance` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -180,6 +184,7 @@ textField.resignFirstResponder()  // hide keyboard
 ```
 
 **Tags:** `#uikit` `#responder-chain` `#events` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -214,6 +219,7 @@ view.layoutIfNeeded()     // forces immediate layout (e.g. before animation)
 **When it's called:** bounds change, `setNeedsLayout`, adding/removing subviews, device rotation.
 
 **Tags:** `#uikit` `#layout` `#layoutsubviews`
+**Difficulty:** Intermediate
 
 ---
 
@@ -246,6 +252,7 @@ return CGSize(width: UIView.noIntrinsicMetric, height: 44)
 ```
 
 **Tags:** `#uikit` `#autolayout` `#intrinsiccontentsize`
+**Difficulty:** Intermediate
 
 ---
 
@@ -282,6 +289,7 @@ view.layer.add(animation, forKey: "fade")
 **Key distinction:** `UIView` is on the main thread; `CALayer` can render on background threads.
 
 **Tags:** `#uikit` `#calayer` `#animation` `#drawing`
+**Difficulty:** Intermediate
 
 ---
 
@@ -331,6 +339,7 @@ class FormViewController: UIViewController {
 **SwiftUI alternative:** `.ignoresSafeArea(.keyboard)` or `ScrollView` handles it automatically.
 
 **Tags:** `#uikit` `#keyboard` `#layout`
+**Difficulty:** Intermediate
 
 ---
 
@@ -365,3 +374,4 @@ hStack.spacing = 8
 **When to use:** Almost always prefer `UIStackView` over manual constraints for linear arrangements — it's simpler, more maintainable, and easier to animate.
 
 **Tags:** `#uikit` `#stackview` `#autolayout` `#layout`
+**Difficulty:** Intermediate

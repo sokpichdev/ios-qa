@@ -22,6 +22,7 @@ Use separate **Xcode Schemes**, **Build Configurations**, **Bundle Identifiers**
 7. **App Display Name** — Add a User-Defined Build Setting `APP_DISPLAY_NAME` with a value per config, then set `CFBundleDisplayName` = `$(APP_DISPLAY_NAME)` in Info.plist.
 
 **Tags:** xcode, multi-environment, firebase, schemes, build-configuration
+**Difficulty:** Intermediate
 
 ---
 
@@ -43,6 +44,7 @@ Go to **Target → Build Settings**, search for `Active Compilation Conditions`,
 Leaving Prod empty means the `#else` branch handles production — the safest fallback pattern.
 
 **Tags:** xcode, swift, compiler-flags, active-compilation-conditions, multi-environment
+**Difficulty:** Intermediate
 
 ---
 
@@ -106,6 +108,7 @@ struct YourApp: App {
 The `fatalError` guards are intentional — a misconfigured Firebase setup should fail loudly at launch during development, not silently at runtime.
 
 **Tags:** firebase, swiftui, multi-environment, compiler-flags, configuration
+**Difficulty:** Intermediate
 
 ---
 
@@ -120,3 +123,4 @@ The `fatalError` guards are intentional — a misconfigured Firebase setup shoul
 | Firebase Auth rejects requests | Bundle ID in app doesn't match the one registered in Firebase Console | Ensure Firebase Console bundle ID matches exactly per environment |
 
 **Tags:** xcode, multi-environment, firebase, debugging, common-mistakes
+**Difficulty:** Intermediate

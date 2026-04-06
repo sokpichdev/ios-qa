@@ -39,6 +39,7 @@ struct UserView: View {
 ```
 
 **Tags:** `#architecture` `#mvc` `#mvvm` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -79,6 +80,7 @@ let service = OrderService(network: MockNetwork(), db: MockDatabase())
 - **Method injection** — via function parameter
 
 **Tags:** `#architecture` `#dependency-injection` `#testing` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -120,6 +122,7 @@ class ArticleViewModel: ObservableObject {
 ```
 
 **Tags:** `#architecture` `#repository` `#testability` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -153,6 +156,7 @@ AnalyticsManager.shared.track("button_tapped")
 - Avoid for anything that manages data or has side effects
 
 **Tags:** `#architecture` `#singleton` `#patterns` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -193,6 +197,7 @@ extension Swimmable {
 ```
 
 **Tags:** `#architecture` `#composition` `#inheritance` `#protocols` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -235,6 +240,7 @@ class ViewModel {
 ```
 
 **Tags:** `#architecture` `#solid` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -270,6 +276,7 @@ class Downloader {
 ```
 
 **Tags:** `#architecture` `#observer` `#combine` `#patterns` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -307,6 +314,7 @@ protocol ViewControllerFactory {
 ```
 
 **Tags:** `#architecture` `#factory` `#patterns`
+**Difficulty:** Intermediate
 
 ---
 
@@ -354,6 +362,7 @@ class ArticleViewModel: ObservableObject {
 ```
 
 **Tags:** `#architecture` `#clean-architecture` `#advanced` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -408,3 +417,4 @@ struct CounterView: View {
 ```
 
 **Tags:** `#architecture` `#tca` `#advanced` `#swiftui`
+**Difficulty:** Intermediate

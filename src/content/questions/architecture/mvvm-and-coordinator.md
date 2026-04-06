@@ -56,6 +56,7 @@ struct ArticleView: View {
 ```
 
 **Tags:** `#architecture` `#mvvm` `#swiftui` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -98,3 +99,4 @@ class HomeCoordinator: Coordinator {
 ```
 
 **Tags:** `#architecture` `#coordinator` `#uikit` `#navigation`
+**Difficulty:** Intermediate
