@@ -1,7 +1,153 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { parseQuestionsFromRaw, CATEGORY_META, CATEGORIES } from '../lib/questions';
+
+const allFiles = import.meta.glob<{ rawContent: () => string }>(
+  '../content/questions/**/*.md',
+  { eager: true }
+);
+
+const allQuestions = Object.entries(allFiles).flatMap(([path, file]) => {
+  const match = path.match(/questions\/([^/]+)\//);
+  const category = match?.[1] ?? 'swift';
+  return parseQuestionsFromRaw(file.rawContent(), category);
+});
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const totalQuestions = allQuestions.length;
+
+const categoryCounts = CATEGORIES.reduce((acc, cat) => {
+  acc[cat] = allQuestions.filter(q => q.category === cat).length;
+  return acc;
+}, {} as Record<string, number>);
 ---
-<BaseLayout title="ios-qa" description="Community iOS development Q&A">
-  <h1 style="color: var(--accent); font-family: var(--font-mono);">ios-qa</h1>
-  <p style="color: var(--text-muted); margin-top: 16px;">Coming soon...</p>
+<BaseLayout title="ios-qa" description="Community iOS development Q&A — browse, quiz, and contribute">
+  <div class="hero">
+    <h1>ios-qa</h1>
+    <p class="subtitle">Community iOS development Q&amp;A — Swift, SwiftUI, Concurrency, Architecture &amp; more.</p>
+    <div class="hero-actions">
+      <a href={`${base}/browse`} class="btn btn-primary">Browse Questions</a>
+      <a href={`${base}/contribute`} class="btn btn-ghost">Contribute</a>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card card">
+      <div class="stat-num">{totalQuestions}</div>
+      <div class="stat-label">Questions</div>
+    </div>
+    <div class="stat-card card">
+      <div class="stat-num">{CATEGORIES.length}</div>
+      <div class="stat-label">Categories</div>
+    </div>
+    <div class="stat-card card">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Difficulty Levels</div>
+    </div>
+  </div>
+
+  <h2 class="section-heading">Categories</h2>
+  <div class="category-grid">
+    {CATEGORIES.map(cat => {
+      const meta = CATEGORY_META[cat];
+      return (
+        <a href={`${base}/browse?category=${cat}`} class="category-card card">
+          <span class="cat-emoji">{meta.emoji}</span>
+          <div>
+            <div class="cat-label">{meta.label}</div>
+            <div class="cat-count">{categoryCounts[cat] ?? 0} questions</div>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+
+  <div class="tools-section">
+    <h2 class="section-heading">Study Tools</h2>
+    <div class="tools-grid">
+      <a href={`${base}/quiz`} class="tool-card card">
+        <span class="tool-emoji">🧠</span>
+        <div>
+          <strong>Quiz Mode</strong>
+          <p>Test yourself with randomized questions</p>
+        </div>
+      </a>
+      <a href={`${base}/spin`} class="tool-card card">
+        <span class="tool-emoji">🎡</span>
+        <div>
+          <strong>Spin Wheel</strong>
+          <p>Random category challenge</p>
+        </div>
+      </a>
+      <a href={`${base}/bookmarks`} class="tool-card card">
+        <span class="tool-emoji">🔖</span>
+        <div>
+          <strong>Bookmarks</strong>
+          <p>Review your saved questions</p>
+        </div>
+      </a>
+    </div>
+  </div>
 </BaseLayout>
+
+<style>
+.hero { text-align: center; padding: 64px 0 48px; }
+.hero h1 {
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-mono);
+}
+.subtitle {
+  font-size: 18px; color: var(--text-muted);
+  margin: 16px auto 32px; max-width: 520px;
+}
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.stats-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; margin-bottom: 8px;
+}
+.stat-card { text-align: center; padding: 24px; }
+.stat-num {
+  font-size: 40px; font-weight: 700;
+  color: var(--accent); font-family: var(--font-mono);
+}
+.stat-label { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+.section-heading { margin: 40px 0 16px; font-size: 20px; }
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.category-card {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; color: var(--text);
+}
+.category-card:hover { border-color: var(--accent); }
+.cat-emoji { font-size: 28px; }
+.cat-label { font-weight: 600; }
+.cat-count { font-size: 13px; color: var(--text-muted); }
+
+.tools-section { margin-top: 48px; }
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.tool-card {
+  display: flex; align-items: center; gap: 16px;
+  text-decoration: none; color: var(--text);
+}
+.tool-card:hover { border-color: var(--accent); }
+.tool-emoji { font-size: 32px; flex-shrink: 0; }
+.tool-card strong { display: block; margin-bottom: 4px; }
+.tool-card p { font-size: 13px; color: var(--text-muted); margin: 0; }
+
+@media (max-width: 640px) {
+  .stats-row { grid-template-columns: 1fr; }
+  .hero { padding: 40px 0 32px; }
+}
+</style>
