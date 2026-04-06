@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Bookmarks from '../components/Bookmarks';
+import { parseQuestionsFromRaw } from '../lib/questions';
+
+const allFiles = import.meta.glob<string>(
+  '../content/questions/**/*.md',
+  { eager: true, query: '?raw', import: 'default' }
+);
+
+const allQuestions = Object.entries(allFiles).flatMap(([path, raw]) => {
+  const match = path.match(/questions\/([^/]+)\//);
+  const category = match?.[1] ?? 'swift';
+  return parseQuestionsFromRaw(raw, category);
+});
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<BaseLayout title="Bookmarks" description="Your saved iOS Q&A questions">
+  <h1 style="margin-bottom: 24px; font-size: 28px;">Bookmarks</h1>
+  <Bookmarks client:load questions={allQuestions} base={base} />
+</BaseLayout>
