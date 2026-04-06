@@ -2,15 +2,15 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { parseQuestionsFromRaw, CATEGORY_META, CATEGORIES } from '../lib/questions';
 
-const allFiles = import.meta.glob<{ rawContent: () => string }>(
+const allFiles = import.meta.glob<string>(
   '../content/questions/**/*.md',
-  { eager: true }
+  { eager: true, query: '?raw', import: 'default' }
 );
 
-const allQuestions = Object.entries(allFiles).flatMap(([path, file]) => {
+const allQuestions = Object.entries(allFiles).flatMap(([path, raw]) => {
   const match = path.match(/questions\/([^/]+)\//);
   const category = match?.[1] ?? 'swift';
-  return parseQuestionsFromRaw(file.rawContent(), category);
+  return parseQuestionsFromRaw(raw, category);
 });
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
