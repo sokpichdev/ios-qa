@@ -25,7 +25,7 @@ export const CATEGORIES = [
 
 export type Category = typeof CATEGORIES[number];
 
-export const CATEGORY_META: Record<string, { emoji: string; color: string; label: string }> = {
+export const CATEGORY_META: Record<Category, { emoji: string; color: string; label: string }> = {
   swift:            { emoji: '🦅', color: '#f05a28', label: 'Swift' },
   swiftui:          { emoji: '🎨', color: '#7c3aed', label: 'SwiftUI' },
   concurrency:      { emoji: '⚡', color: '#0ea5e9', label: 'Concurrency' },
@@ -49,9 +49,7 @@ function slugify(text: string): string {
 function parseDifficulty(body: string): Difficulty {
   const match = body.match(/\*\*Difficulty:\*\*\s*(Beginner|Intermediate|Advanced)/i);
   if (!match) return 'Intermediate';
-  const val = match[1] as string;
-  if (val === 'Beginner' || val === 'Intermediate' || val === 'Advanced') return val;
-  return 'Intermediate';
+  return match[1] as Difficulty;
 }
 
 function parseTags(body: string): string[] {
