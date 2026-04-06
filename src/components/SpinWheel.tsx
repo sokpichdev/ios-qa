@@ -15,6 +15,15 @@ export default function SpinWheel({ questions, base }: Props) {
   const rotationRef = useRef(0);
 
   const segments = CATEGORIES.filter(cat => questions.some(q => q.category === cat));
+
+  if (segments.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '64px 0' }}>
+        <p>No questions available to spin.</p>
+      </div>
+    );
+  }
+
   const segAngle = (2 * Math.PI) / segments.length;
 
   function drawWheel(rot: number) {
