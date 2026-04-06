@@ -52,11 +52,11 @@ export default function ContributeForm() {
   }
 
   const markdown = buildMarkdown(fields);
-  const isValid = fields.question.trim() && fields.answer.trim() && fields.filename.trim();
+  const isValid = fields.question.trim() && fields.answer.trim() && fields.filename.trim().replace(/\.md$/, '').trim();
 
   function handleSubmit() {
     const filename = fields.filename.trim().replace(/\.md$/, '') + '.md';
-    const url = `https://github.com/${REPO}/new/${BRANCH}/${fields.category}?filename=${encodeURIComponent(filename)}&value=${encodeURIComponent(markdown)}`;
+    const url = `https://github.com/${REPO}/new/${BRANCH}/${encodeURIComponent(fields.category)}?filename=${encodeURIComponent(filename)}&value=${encodeURIComponent(markdown)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   }
 
@@ -104,7 +104,7 @@ export default function ContributeForm() {
             </select>
           </div>
           <div>
-            <label style={labelStyle}>Difficulty *</label>
+            <label style={labelStyle}>Difficulty</label>
             <select style={inputStyle} value={fields.difficulty} onChange={e => update('difficulty', e.target.value)}>
               {DIFFICULTIES.map(d => <option key={d} value={d}>{d}</option>)}
             </select>
