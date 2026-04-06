@@ -1,0 +1,117 @@
+---
+// src/components/Nav.astro
+const pathname = Astro.url.pathname;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const links = [
+  { href: '/',           label: 'Home' },
+  { href: '/browse',     label: 'Browse' },
+  { href: '/quiz',       label: 'Quiz' },
+  { href: '/spin',       label: 'Spin' },
+  { href: '/bookmarks',  label: 'Bookmarks' },
+  { href: '/contribute', label: 'Contribute' },
+];
+
+function isActive(href: string) {
+  const full = base + href;
+  if (href === '/') return pathname === full + '' || pathname === full + '/';
+  return pathname.startsWith(full);
+}
+---
+<nav>
+  <div class="container nav-inner">
+    <a class="brand" href={`${base}/`}>ios-qa</a>
+    <div class="nav-links">
+      {links.map(l => (
+        <a href={`${base}${l.href}`} class:list={['nav-link', { active: isActive(l.href) }]}>
+          {l.label}
+        </a>
+      ))}
+    </div>
+    <button class="nav-search" id="search-trigger" aria-label="Search">🔍</button>
+  </div>
+</nav>
+
+<!-- Search modal (Pagefind UI loaded on demand) -->
+<div id="search-modal" aria-hidden="true">
+  <div class="search-inner">
+    <div id="pagefind-search"></div>
+    <button class="search-close" id="search-close" aria-label="Close search">✕</button>
+  </div>
+</div>
+
+<script>
+  const trigger = document.getElementById('search-trigger');
+  const modal = document.getElementById('search-modal');
+  const close = document.getElementById('search-close');
+  let loaded = false;
+
+  function openSearch() {
+    modal!.removeAttribute('aria-hidden');
+    if (!loaded) {
+      loaded = true;
+      // @ts-ignore
+      import('/ios-qa/pagefind/pagefind-ui.js').then(({ PagefindUI }) => {
+        new PagefindUI({ element: '#pagefind-search', showImages: false });
+      }).catch(() => {
+        document.getElementById('pagefind-search')!.textContent = 'Search not available in dev mode. Run npm run build first.';
+      });
+    }
+  }
+
+  function closeSearch() { modal!.setAttribute('aria-hidden', 'true'); }
+
+  trigger?.addEventListener('click', openSearch);
+  close?.addEventListener('click', closeSearch);
+  modal?.addEventListener('click', e => { if (e.target === modal) closeSearch(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
+</script>
+
+<style>
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  display: flex; align-items: center; gap: 24px; height: 56px;
+}
+.brand {
+  font-family: var(--font-mono); font-weight: 700; font-size: 18px;
+  color: var(--accent); text-decoration: none; flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 2px; flex: 1; flex-wrap: wrap; }
+.nav-link {
+  padding: 6px 10px; border-radius: var(--radius);
+  font-size: 14px; color: var(--text-muted); text-decoration: none;
+  transition: all 0.15s; white-space: nowrap;
+}
+.nav-link:hover { color: var(--text); background: var(--surface2); text-decoration: none; }
+.nav-link.active { color: var(--text); background: var(--surface2); }
+.nav-search {
+  background: none; border: none; cursor: pointer; font-size: 18px;
+  padding: 4px; flex-shrink: 0;
+}
+
+/* Search modal */
+#search-modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+  z-index: 200; display: flex; align-items: flex-start;
+  justify-content: center; padding-top: 80px;
+}
+#search-modal[aria-hidden="true"] { display: none; }
+.search-inner {
+  position: relative; width: 100%; max-width: 600px;
+  background: var(--surface); border-radius: 12px; padding: 24px;
+  margin: 0 16px;
+}
+.search-close {
+  position: absolute; top: 12px; right: 12px;
+  background: none; border: none; cursor: pointer;
+  color: var(--text-muted); font-size: 18px;
+}
+
+@media (max-width: 640px) {
+  .nav-link { padding: 6px 7px; font-size: 12px; }
+}
+</style>
