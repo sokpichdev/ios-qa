@@ -1,6 +1,7 @@
 # Coding Interview Framework
 
 > **Tags:** `#interview` `#problem-solving` `#algorithms` `#mindset`
+**Difficulty:** Intermediate
 
 ---
 
@@ -141,3 +142,4 @@ func lengthOfLongestSubstring(_ s: String) -> Int {
 ---
 
 **Tags:** `#interview` `#problem-solving` `#algorithms` `#hash-map` `#sliding-window` `#complexity`
+**Difficulty:** Intermediate

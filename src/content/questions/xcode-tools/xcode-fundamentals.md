@@ -43,6 +43,7 @@ let package = Package(
 - `.upToNextMinor(from: "5.2.0")` — < 5.3.0
 
 **Tags:** `#xcode` `#spm` `#dependencies`
+**Difficulty:** Intermediate
 
 ---
 
@@ -80,6 +81,7 @@ guard let url = URL(string: urlString) else {
 ```
 
 **Tags:** `#xcode` `#debug` `#release` `#build-config` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -114,6 +116,7 @@ Scheme: MyApp
 - White-label apps with different bundle IDs and assets
 
 **Tags:** `#xcode` `#scheme` `#target` `#project` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -151,6 +154,7 @@ bt                // backtrace — see call stack
 ```
 
 **Tags:** `#xcode` `#debugging` `#breakpoints` `#lldb`
+**Difficulty:** Intermediate
 
 ---
 
@@ -200,6 +204,7 @@ br s -n "URLSession"
 ```
 
 **Tags:** `#xcode` `#lldb` `#debugging` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -248,6 +253,7 @@ override func viewDidDisappear(_ animated: Bool) {
 ```
 
 **Tags:** `#xcode` `#instruments` `#memory-leak` `#debugging` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -277,6 +283,7 @@ READ of size 4 at 0x... thread T0
 **Note:** ASan adds significant runtime overhead (~2x slower, ~3x more memory) — only enable it when hunting bugs, not for regular development.
 
 **Tags:** `#xcode` `#address-sanitizer` `#debugging` `#memory`
+**Difficulty:** Intermediate
 
 ---
 
@@ -322,6 +329,7 @@ class NetworkManager {
 - Negligible performance impact
 
 **Tags:** `#xcode` `#logging` `#oslog` `#debugging`
+**Difficulty:** Intermediate
 
 ---
 
@@ -357,6 +365,7 @@ let apiURL = Bundle.main.infoDictionary?["API_BASE_URL"] as? String ?? ""
 - Works well with CI/CD — inject values at build time
 
 **Tags:** `#xcode` `#xcconfig` `#build-settings` `#environments`
+**Difficulty:** Intermediate
 
 ---
 
@@ -411,3 +420,4 @@ jobs:
 5. Upload to TestFlight (for `main` branch merges)
 
 **Tags:** `#xcode` `#ci-cd` `#github-actions` `#testing` `#automation`
+**Difficulty:** Intermediate

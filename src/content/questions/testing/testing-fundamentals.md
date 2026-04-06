@@ -40,6 +40,7 @@ class CheckoutUITests: XCTestCase {
 ```
 
 **Tags:** `#testing` `#unit-tests` `#ui-tests` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -81,6 +82,7 @@ func test_login_tracksEvent() {
 ```
 
 **Tags:** `#testing` `#mocking` `#stubs` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -119,6 +121,7 @@ class UserServiceTests: XCTestCase {
 ```
 
 **Tags:** `#testing` `#async-await` `#xctest` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -160,6 +163,7 @@ func test_multipleDownloads() {
 ```
 
 **Tags:** `#testing` `#xctest` `#async` `#expectation`
+**Difficulty:** Intermediate
 
 ---
 
@@ -194,6 +198,7 @@ XCTAssertEqual(discount(for: 1),   0.0)
 ```
 
 **Tags:** `#testing` `#coverage` `#xcode`
+**Difficulty:** Intermediate
 
 ---
 
@@ -235,6 +240,7 @@ class ArticleViewModelTests: XCTestCase {
 ```
 
 **Tags:** `#testing` `#viewmodel` `#mvvm` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -273,6 +279,7 @@ class ProfileCardTests: XCTestCase {
 3. Future UI changes fail the test — you review and update the snapshot if intentional
 
 **Tags:** `#testing` `#snapshot` `#ui` `#regression`
+**Difficulty:** Intermediate
 
 ---
 
@@ -324,6 +331,7 @@ class MockStorage: Storage {
 ```
 
 **Tags:** `#testing` `#dependency-injection` `#mocking` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -361,6 +369,7 @@ XCTFail("Unexpected state reached")
 ```
 
 **Tags:** `#testing` `#xctest` `#assertions`
+**Difficulty:** Intermediate
 
 ---
 
@@ -406,3 +415,4 @@ XCTAssertEqual(articles.count, 1)
 ```
 
 **Tags:** `#testing` `#networking` `#mocking` `#urlprotocol`
+**Difficulty:** Intermediate

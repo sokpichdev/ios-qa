@@ -35,6 +35,7 @@ func createUser(_ user: User) async throws {
 ```
 
 **Tags:** `#networking` `#urlsession` `#async-await` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -71,6 +72,7 @@ URLSession.shared.uploadTask(with: request, fromFile: fileURL) { data, response,
 ```
 
 **Tags:** `#networking` `#urlsession` `#files`
+**Difficulty:** Intermediate
 
 ---
 
@@ -120,6 +122,7 @@ func fetch<T: Decodable>(_ type: T.Type, from url: URL) async throws -> T {
 ```
 
 **Tags:** `#networking` `#error-handling` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -158,6 +161,7 @@ func fetchWithRetry<T: Decodable>(
 ```
 
 **Tags:** `#networking` `#retry` `#error-handling`
+**Difficulty:** Intermediate
 
 ---
 
@@ -201,6 +205,7 @@ class AuthenticatedSession {
 ```
 
 **Tags:** `#networking` `#authentication` `#keychain` `#security`
+**Difficulty:** Intermediate
 
 ---
 
@@ -244,6 +249,7 @@ let service = UserService(client: mock)
 ```
 
 **Tags:** `#networking` `#testing` `#mocking` `#dependency-injection`
+**Difficulty:** Intermediate
 
 ---
 
@@ -277,6 +283,7 @@ URLCache.shared.storeCachedResponse(cachedResponse, for: request)
 ```
 
 **Tags:** `#networking` `#caching` `#urlcache` `#performance`
+**Difficulty:** Intermediate
 
 ---
 
@@ -317,6 +324,7 @@ func uploadImage(_ image: UIImage, name: String) async throws {
 ```
 
 **Tags:** `#networking` `#upload` `#multipart` `#images`
+**Difficulty:** Intermediate
 
 ---
 
@@ -361,6 +369,7 @@ let session = URLSession(configuration: .default,
 ```
 
 **Tags:** `#networking` `#security` `#ssl-pinning` `#advanced`
+**Difficulty:** Intermediate
 
 ---
 
@@ -405,3 +414,4 @@ service.fetchArticles()
 **Note:** `async/await` is now preferred for new code, but Combine is still widely used and worth knowing.
 
 **Tags:** `#networking` `#combine` `#reactive` `#interview`
+**Difficulty:** Intermediate

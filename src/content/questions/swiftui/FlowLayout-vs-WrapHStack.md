@@ -17,6 +17,7 @@
 | iOS version | iOS 16+ | Any |
 
 **Tags:** swiftui, layout, flowlayout, wraplayout, scrollview
+**Difficulty:** Intermediate
 
 ---
 
@@ -29,6 +30,7 @@ The root cause: `FlowLayout` relies on the parent correctly proposing a finite w
 `WrapHStack` avoids this entirely because `GeometryReader` reads the *actual rendered frame width*, bypassing the layout proposal system.
 
 **Tags:** swiftui, layout, scrollview, flowlayout, bug
+**Difficulty:** Intermediate
 
 ---
 
@@ -82,6 +84,7 @@ struct FlowLayout: Layout {
 ```
 
 **Tags:** swiftui, layout, flowlayout, ios16
+**Difficulty:** Intermediate
 
 ---
 
@@ -147,3 +150,4 @@ struct WrapHStack<Data: RandomAccessCollection, Content: View, ID: Hashable>: Vi
 **Limitations:** requires `RandomAccessCollection` input (no inline content), row spacing is hardcoded to 5, adds `.padding(.horizontal, 4)` to every item.
 
 **Tags:** swiftui, layout, wraplayout, scrollview, geometryreader, preferencekey
+**Difficulty:** Intermediate

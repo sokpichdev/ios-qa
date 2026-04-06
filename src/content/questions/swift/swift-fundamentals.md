@@ -30,6 +30,7 @@ let count = name?.count  // returns Int? not Int
 - Prefer `if let`, `guard let`, or `??` for safe unwrapping
 
 **Tags:** `#swift` `#optional` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -63,6 +64,7 @@ func greetUser() {
 **Rule of thumb:** Use `guard let` for preconditions at the top of a function. Use `if let` when the unwrapped value is only needed in one branch.
 
 **Tags:** `#swift` `#optional` `#guard` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -103,6 +105,7 @@ struct Article: Codable {
 ```
 
 **Tags:** `#swift` `#codable` `#json` `#networking` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -137,6 +140,7 @@ let flat = nested.flatMap { $0 }
 ```
 
 **Tags:** `#swift` `#collections` `#functional` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -167,6 +171,7 @@ let again = processor.expensiveData // returned from cache, no recompute
 - Great for views, formatters, and other setup-heavy properties
 
 **Tags:** `#swift` `#lazy` `#performance`
+**Difficulty:** Intermediate
 
 ---
 
@@ -204,6 +209,7 @@ fetchUser(id: 1) { result in
 ```
 
 **Tags:** `#swift` `#error-handling` `#result` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -235,6 +241,7 @@ let sorted = points.sorted() // works because of Comparable
 **Note:** Swift auto-synthesizes `Equatable` and `Hashable` for structs if all stored properties conform.
 
 **Tags:** `#swift` `#protocols` `#hashable` `#equatable`
+**Difficulty:** Intermediate
 
 ---
 
@@ -271,6 +278,7 @@ player.health = -10  // clamped to 0
 ```
 
 **Tags:** `#swift` `#propertywrapper` `#advanced`
+**Difficulty:** Intermediate
 
 ---
 
@@ -305,6 +313,7 @@ func makeShape() -> some Shape {
 **Key difference from `any`:** `some` is a specific type (compiler-optimized), `any` is a type-erased existential (runtime overhead).
 
 **Tags:** `#swift` `#opaque-types` `#swiftui` `#advanced`
+**Difficulty:** Intermediate
 
 ---
 
@@ -334,3 +343,4 @@ print(array2) // [1, 2, 3, 4, 5, 6]
 **Note:** Custom structs do NOT get COW automatically. You have to implement it manually if needed.
 
 **Tags:** `#swift` `#memory` `#performance` `#cow` `#interview`
+**Difficulty:** Intermediate

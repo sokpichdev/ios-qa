@@ -35,6 +35,7 @@ class ViewModel {
 - `unowned` — the reference should never become `nil` (e.g. child → parent with guaranteed lifetime)
 
 **Tags:** `#swift` `#arc` `#memory` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -71,6 +72,7 @@ print(user.greet()) // "Hello, Mia!"
 - Constrained extensions let you add methods only for specific types
 
 **Tags:** `#swift` `#protocols` `#extensions` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -101,6 +103,7 @@ func performOperation(action: () -> Void) {
 - Non-escaping closures don't need `self.` to capture properties
 
 **Tags:** `#swift` `#closures` `#async` `#interview`
+**Difficulty:** Intermediate
 
 ---
 
@@ -123,3 +126,4 @@ The core difference is value type vs reference type.
 - Use `class` when you need identity, inheritance, or Objective-C interop
 
 **Tags:** `#swift` `#struct` `#class` `#memory` `#interview`
+**Difficulty:** Intermediate
