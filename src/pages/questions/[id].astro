@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { parseQuestionsFromRaw, CATEGORY_META } from '../../lib/questions';
+import { marked } from 'marked';
 
 export async function getStaticPaths() {
   const allFiles = import.meta.glob<string>(
@@ -38,7 +39,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     <h1 style="font-size: 22px; margin-bottom: 24px; line-height: 1.4;">{q.title}</h1>
 
-    <div class="answer-body" style="line-height: 1.7; white-space: pre-wrap;">{q.body}</div>
+    <div class="answer-body" style="line-height: 1.7;" set:html={marked.parse(q.body)} />
 
     <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border);">
       <a href={`${base}/browse`} class="btn btn-ghost" style="font-size: 13px;">← Back to Browse</a>

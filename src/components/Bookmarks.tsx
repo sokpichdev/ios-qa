@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import type { Question } from '../lib/questions';
 import { CATEGORY_META } from '../lib/questions';
+import { renderMarkdown } from '../lib/renderMarkdown';
 
 interface Props {
   questions: Question[];
@@ -100,9 +101,12 @@ export default function Bookmarks({ questions, base }: Props) {
                 <div style={{
                   padding: '0 16px 16px',
                   borderTop: '1px solid var(--border)',
-                  lineHeight: 1.7, whiteSpace: 'pre-wrap', fontSize: 15,
                 }}>
-                  <div style={{ marginTop: 16 }}>{q.body}</div>
+                  <div
+                    className="answer-body"
+                    style={{ marginTop: 16, lineHeight: 1.7, fontSize: 15 }}
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(q.body) }}
+                  />
                   <div style={{ marginTop: 12 }}>
                     <a href={`${base}/questions/${q.id}`} className="btn btn-ghost" style={{ fontSize: 13 }}>
                       Full page →
