@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SpinWheel from '../components/SpinWheel';
+import { parseQuestionsFromRaw } from '../lib/questions';
+
+const allFiles = import.meta.glob<string>(
+  '../content/questions/**/*.md',
+  { eager: true, query: '?raw', import: 'default' }
+);
+
+const allQuestions = Object.entries(allFiles).flatMap(([path, raw]) => {
+  const match = path.match(/questions\/([^/]+)\//);
+  const category = match?.[1] ?? 'swift';
+  return parseQuestionsFromRaw(raw, category);
+});
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<BaseLayout title="Spin" description="Random iOS question challenge">
+  <h1 style="text-align: center; margin-bottom: 32px; font-size: 28px;">Spin the Wheel</h1>
+  <SpinWheel client:load questions={allQuestions} base={base} />
+</BaseLayout>
