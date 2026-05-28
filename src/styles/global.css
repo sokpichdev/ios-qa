@@ -144,3 +144,9 @@ pre {
 .answer-body tr:hover td {
   background: var(--surface2);
 }
+
+@keyframes wheelResultIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.wheel-result { animation: wheelResultIn 0.35s ease-out; }
