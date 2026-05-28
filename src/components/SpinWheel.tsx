@@ -87,9 +87,9 @@ export default function SpinWheel({ questions, base }: Props) {
 
     // Top pointer (triangle pointing down into the wheel)
     ctx.beginPath();
-    ctx.moveTo(cx, 16);
-    ctx.lineTo(cx - 12, -2);
-    ctx.lineTo(cx + 12, -2);
+    ctx.moveTo(cx, 20);
+    ctx.lineTo(cx - 12, 2);
+    ctx.lineTo(cx + 12, 2);
     ctx.closePath();
     ctx.fillStyle = '#e2e8f0';
     ctx.fill();
@@ -125,10 +125,7 @@ export default function SpinWheel({ questions, base }: Props) {
         rotationRef.current = targetRot % (2 * Math.PI);
         setSpinning(false);
 
-        // Determine winning segment: pointer is at angle 0 (right side)
-        const normalized = ((targetRot % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-        const winAngle = (2 * Math.PI - normalized) % (2 * Math.PI);
-        const winIndex = Math.floor(winAngle / segAngle) % segments.length;
+        const winIndex = winningIndex(targetRot, segments.length);
         const winCategory = segments[winIndex];
         const pool = questions.filter(q => q.category === winCategory);
         const pick = pool[Math.floor(Math.random() * pool.length)];
@@ -159,7 +156,14 @@ export default function SpinWheel({ questions, base }: Props) {
       </button>
 
       {result && meta && (
-        <div className="card" style={{ maxWidth: 520, width: '100%' }}>
+        <div
+          className="card wheel-result"
+          style={{
+            maxWidth: 520,
+            width: '100%',
+            borderLeft: `4px solid ${meta.color}`,
+          }}
+        >
           <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8 }}>
             {meta.emoji} {meta.label} · {result.difficulty}
           </div>
