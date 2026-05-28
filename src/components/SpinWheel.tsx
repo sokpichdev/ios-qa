@@ -2,6 +2,7 @@
 import { useRef, useState, useEffect } from 'react';
 import type { Question } from '../lib/questions';
 import { CATEGORIES, CATEGORY_META } from '../lib/questions';
+import { winningIndex, segStart } from '../lib/wheel';
 
 interface Props {
   questions: Question[];
@@ -26,57 +27,71 @@ export default function SpinWheel({ questions, base }: Props) {
 
   const segAngle = (2 * Math.PI) / segments.length;
 
+  const SIZE = 340; // CSS px
+
   function drawWheel(rot: number) {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    const cx = canvas.width / 2;
-    const cy = canvas.height / 2;
-    const r = cx - 10;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const dpr = window.devicePixelRatio || 1;
+    if (canvas.width !== SIZE * dpr) {
+      canvas.width = SIZE * dpr;
+      canvas.height = SIZE * dpr;
+      canvas.style.width = SIZE + 'px';
+      canvas.style.height = SIZE + 'px';
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const cx = SIZE / 2;
+    const cy = SIZE / 2;
+    const r = cx - 14;
+    ctx.clearRect(0, 0, SIZE, SIZE);
+
+    const start0 = segStart(segments.length);
 
     segments.forEach((cat, i) => {
-      const start = rot + i * segAngle;
+      const start = rot + start0 + i * segAngle;
       const end = start + segAngle;
       const meta = CATEGORY_META[cat];
 
-      // Segment fill
       ctx.beginPath();
       ctx.moveTo(cx, cy);
       ctx.arc(cx, cy, r, start, end);
       ctx.closePath();
-      ctx.fillStyle = meta.color + 'cc';
+      ctx.fillStyle = meta.color;
       ctx.fill();
       ctx.strokeStyle = '#0d0f14';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Label
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(start + segAngle / 2);
       ctx.textAlign = 'right';
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 12px Sora, sans-serif';
-      ctx.fillText(`${meta.emoji} ${meta.label}`, r - 12, 5);
+      ctx.font = '600 12px Sora, sans-serif';
+      ctx.fillText(`${meta.emoji} ${meta.label}`, r - 14, 4);
       ctx.restore();
     });
 
-    // Center dot
+    // Clean hub
     ctx.beginPath();
     ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
     ctx.fillStyle = '#0d0f14';
     ctx.fill();
+    ctx.strokeStyle = '#2a2d3e';
+    ctx.lineWidth = 2;
+    ctx.stroke();
 
-    // Pointer (triangle pointing left, at right edge)
-    const px = cx + r + 6;
+    // Top pointer (triangle pointing down into the wheel)
     ctx.beginPath();
-    ctx.moveTo(px, cy);
-    ctx.lineTo(px + 28, cy - 16);
-    ctx.lineTo(px + 28, cy + 16);
+    ctx.moveTo(cx, 20);
+    ctx.lineTo(cx - 12, 2);
+    ctx.lineTo(cx + 12, 2);
     ctx.closePath();
-    ctx.fillStyle = '#f05a28';
+    ctx.fillStyle = '#e2e8f0';
     ctx.fill();
   }
 
@@ -110,10 +125,7 @@ export default function SpinWheel({ questions, base }: Props) {
         rotationRef.current = targetRot % (2 * Math.PI);
         setSpinning(false);
 
-        // Determine winning segment: pointer is at angle 0 (right side)
-        const normalized = ((targetRot % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-        const winAngle = (2 * Math.PI - normalized) % (2 * Math.PI);
-        const winIndex = Math.floor(winAngle / segAngle) % segments.length;
+        const winIndex = winningIndex(targetRot, segments.length);
         const winCategory = segments[winIndex];
         const pool = questions.filter(q => q.category === winCategory);
         const pick = pool[Math.floor(Math.random() * pool.length)];
@@ -130,9 +142,8 @@ export default function SpinWheel({ questions, base }: Props) {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
       <canvas
         ref={canvasRef}
-        width={340}
-        height={340}
-        style={{ display: 'block', maxWidth: '100%' }}
+        onClick={spin}
+        style={{ display: 'block', maxWidth: '100%', cursor: spinning ? 'default' : 'pointer' }}
       />
 
       <button
@@ -145,7 +156,14 @@ export default function SpinWheel({ questions, base }: Props) {
       </button>
 
       {result && meta && (
-        <div className="card" style={{ maxWidth: 520, width: '100%' }}>
+        <div
+          className="card wheel-result"
+          style={{
+            maxWidth: 520,
+            width: '100%',
+            borderLeft: `4px solid ${meta.color}`,
+          }}
+        >
           <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8 }}>
             {meta.emoji} {meta.label} · {result.difficulty}
           </div>
