@@ -160,7 +160,7 @@ export default function BrowsePage({ questions, base, initialCategory = 'all' }:
                     style={{ marginTop: 16, lineHeight: 1.7, fontSize: 15 }}
                     dangerouslySetInnerHTML={{ __html: renderMarkdown(q.body) }}
                   />
-                  <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap', alignItems: 'center' }}>
                     {(['got-it', 'almost', 'nope'] as const).map(s => (
                       <button
                         key={s}
@@ -177,6 +177,13 @@ export default function BrowsePage({ questions, base, initialCategory = 'all' }:
                     <button className="btn btn-ghost" onClick={() => toggleBookmark(q.id)}>
                       {isBookmarked ? '⭐ Saved' : '☆ Save'}
                     </button>
+                    <a
+                      href={`${base}/questions/${q.id}`}
+                      className="btn btn-ghost"
+                      style={{ marginLeft: 'auto', fontSize: 13 }}
+                    >
+                      View Full Page →
+                    </a>
                   </div>
                 </div>
               )}
