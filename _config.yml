@@ -1,9 +1,0 @@
-title: iOS Developer Q&A
-description: Personal knowledge base for iOS development — Swift, SwiftUI, Architecture, Concurrency and more.
-theme: jekyll-theme-cayman
-
-author: cobra-PICH
-show_downloads: false
-
-# Makes .md links work correctly on GitHub Pages
-markdown: kramdown
