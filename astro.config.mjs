@@ -3,7 +3,7 @@ import react from '@astrojs/react';
 import pagefind from 'astro-pagefind';
 
 export default defineConfig({
-  site: 'https://cobra-pich.github.io',
+  site: 'https://sokpichdev.github.io',
   base: '/ios-qa',
   integrations: [
     react(),
