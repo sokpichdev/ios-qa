@@ -1,5 +1,6 @@
 ---
 // src/components/Nav.astro
+import Icon from './Icon.astro';
 const pathname = Astro.url.pathname;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -18,17 +19,20 @@ function isActive(href: string) {
   return pathname.startsWith(full);
 }
 ---
-<nav>
+<nav id="site-nav">
   <div class="container nav-inner">
     <a class="brand" href={`${base}/`}>ios-qa</a>
-    <div class="nav-links">
+    <div class="nav-links" id="nav-links">
       {links.map(l => (
         <a href={`${base}${l.href}`} class:list={['nav-link', { active: isActive(l.href) }]}>
           {l.label}
         </a>
       ))}
     </div>
-    <button class="nav-search" id="search-trigger" aria-label="Search">🔍</button>
+    <button class="nav-search" id="search-trigger" aria-label="Search"><Icon name="search" size={18} /></button>
+    <button class="nav-burger" id="nav-burger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
@@ -36,51 +40,102 @@ function isActive(href: string) {
 <div id="search-modal" role="dialog" aria-modal="true" aria-label="Search" aria-hidden="true">
   <div class="search-inner">
     <div id="pagefind-search"></div>
-    <button class="search-close" id="search-close" aria-label="Close search">✕</button>
+    <button class="search-close" id="search-close" aria-label="Close search"><Icon name="x" size={16} /></button>
   </div>
 </div>
 
 <script>
-  const trigger = document.getElementById('search-trigger');
-  const modal = document.getElementById('search-modal');
-  const close = document.getElementById('search-close');
-  let loaded = false;
+  // The nav is re-rendered on every view-transition navigation, so all
+  // handlers are delegated to document/window and query elements lazily.
+  const SEEN_KEY = 'ios-qa-search-seen';
+
+  function getModal() { return document.getElementById('search-modal'); }
+
+  function focusSearchInput(modal: HTMLElement) {
+    const input = modal.querySelector('input[type="text"], input[type="search"]') as HTMLInputElement | null;
+    input?.focus();
+  }
 
   function openSearch() {
-    modal!.removeAttribute('aria-hidden');
-    if (!loaded) {
-      loaded = true;
+    const modal = getModal();
+    if (!modal) return;
+    modal.removeAttribute('aria-hidden');
+    if (!modal.dataset.init) {
+      modal.dataset.init = '1';
       // @ts-ignore
       import('/ios-qa/pagefind/pagefind-ui.js').then(({ PagefindUI }) => {
         new PagefindUI({ element: '#pagefind-search', showImages: false });
         // Focus the search input after Pagefind renders
-        setTimeout(() => {
-          const input = modal!.querySelector('input[type="text"], input[type="search"]') as HTMLInputElement;
-          input?.focus();
-        }, 100);
+        setTimeout(() => focusSearchInput(modal), 100);
       }).catch(() => {
-        document.getElementById('pagefind-search')!.textContent = 'Search not available in dev mode. Run npm run build first.';
+        const target = document.getElementById('pagefind-search');
+        if (target) target.textContent = 'Search not available in dev mode. Run npm run build first.';
       });
     } else {
-      // Already loaded - focus immediately
-      const input = modal!.querySelector('input[type="text"], input[type="search"]') as HTMLInputElement;
-      input?.focus();
+      focusSearchInput(modal);
     }
   }
 
-  function closeSearch() { modal!.setAttribute('aria-hidden', 'true'); }
+  function closeSearch() { getModal()?.setAttribute('aria-hidden', 'true'); }
 
-  trigger?.addEventListener('click', openSearch);
-  close?.addEventListener('click', closeSearch);
-  modal?.addEventListener('click', e => { if (e.target === modal) closeSearch(); });
+  document.addEventListener('click', e => {
+    const el = e.target instanceof Element ? e.target : null;
+    if (!el) return;
+
+    const trigger = el.closest('#search-trigger');
+    if (trigger) {
+      trigger.classList.remove('pulse');
+      try { localStorage.setItem(SEEN_KEY, '1'); } catch {}
+      openSearch();
+      return;
+    }
+    if (el.closest('#search-close') || el.id === 'search-modal') {
+      closeSearch();
+      return;
+    }
+    const burger = el.closest('#nav-burger');
+    if (burger) {
+      const links = document.getElementById('nav-links');
+      const open = links?.classList.toggle('open') ?? false;
+      burger.setAttribute('aria-expanded', String(open));
+      return;
+    }
+    if (el.closest('#nav-links a')) {
+      document.getElementById('nav-links')?.classList.remove('open');
+      document.getElementById('nav-burger')?.setAttribute('aria-expanded', 'false');
+    }
+  });
+
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
+
+  // Stronger frosted look once the page is scrolled
+  window.addEventListener('scroll', () => {
+    document.getElementById('site-nav')?.classList.toggle('scrolled', window.scrollY > 8);
+  }, { passive: true });
+
+  // Per-page setup: pulse the search button until it's been used once
+  document.addEventListener('astro:page-load', () => {
+    try {
+      if (!localStorage.getItem(SEEN_KEY)) {
+        document.getElementById('search-trigger')?.classList.add('pulse');
+      }
+    } catch {}
+    document.getElementById('site-nav')?.classList.toggle('scrolled', window.scrollY > 8);
+  });
 </script>
 
 <style>
 nav {
   position: sticky; top: 0; z-index: 100;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: rgba(13, 15, 20, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  transition: background var(--dur-med), box-shadow var(--dur-med);
+}
+nav.scrolled {
+  background: rgba(13, 15, 20, 0.85);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
 }
 .nav-inner {
   display: flex; align-items: center; gap: 24px; height: 56px;
@@ -91,16 +146,67 @@ nav {
 }
 .nav-links { display: flex; gap: 2px; flex: 1; flex-wrap: wrap; }
 .nav-link {
-  padding: 6px 10px; border-radius: var(--radius);
+  position: relative;
+  padding: 6px 10px;
   font-size: 14px; color: var(--text-muted); text-decoration: none;
-  transition: all 0.15s; white-space: nowrap;
+  transition: all var(--dur-fast); white-space: nowrap;
 }
-.nav-link:hover { color: var(--text); background: var(--surface2); text-decoration: none; }
-.nav-link.active { color: var(--text); background: var(--surface2); }
+.nav-link:hover { color: var(--text); text-decoration: none; }
+.nav-link.active { color: var(--text); transform: translateY(-1px); }
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  left: 10px; right: 10px; bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gradient-accent);
+  box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.6);
+}
 .nav-search {
-  background: none; border: none; cursor: pointer; font-size: 18px;
-  padding: 4px; flex-shrink: 0;
+  background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted);
+  padding: 6px; flex-shrink: 0;
+  position: relative;
+  border-radius: 50%;
+  transition: color var(--dur-fast);
 }
+.nav-search:hover { color: var(--accent); }
+.nav-search.pulse::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid rgba(var(--accent-rgb), 0.6);
+  animation: pulse-ring 2s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes pulse-ring {
+  0%   { transform: scale(0.8); opacity: 1; }
+  70%  { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  background: none; border: none; cursor: pointer;
+  width: 44px; height: 44px;
+  padding: 10px;
+  flex-shrink: 0;
+}
+.nav-burger span {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--text);
+  transition: transform var(--dur-med), opacity var(--dur-med);
+}
+.nav-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.nav-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
 /* Search modal */
 #search-modal {
@@ -121,6 +227,22 @@ nav {
 }
 
 @media (max-width: 640px) {
-  .nav-link { padding: 6px 7px; font-size: 12px; }
+  .nav-burger { display: flex; }
+  .nav-links {
+    position: absolute;
+    top: 56px; left: 0; right: 0;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(13, 15, 20, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--dur-med) ease;
+  }
+  .nav-links.open { max-height: 320px; }
+  .nav-link { padding: 12px 24px; font-size: 15px; min-height: 44px; display: flex; align-items: center; }
+  .nav-link.active::after { left: 24px; right: auto; width: 24px; bottom: 8px; }
 }
 </style>

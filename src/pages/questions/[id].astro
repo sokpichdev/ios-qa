@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
 import { parseQuestionsFromRaw, CATEGORY_META } from '../../lib/questions';
-import { marked } from 'marked';
+import { renderMarkdown } from '../../lib/renderMarkdown';
 
 export async function getStaticPaths() {
   const allFiles = import.meta.glob<string>(
@@ -30,7 +31,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <nav style="margin-bottom: 16px; display: flex; gap: 8px; align-items: center; font-size: 14px;">
       <a href={`${base}/browse`} style="color: var(--text-muted);">← Browse</a>
       <span style="color: var(--border)">|</span>
-      <span style="color: var(--text-muted)">{meta.emoji} {meta.label}</span>
+      <span style="color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;">
+        <span style={`color: ${meta.color}; display: inline-flex;`}><Icon name={meta.icon} size={14} /></span>
+        {meta.label}
+      </span>
       <span style="color: var(--border)">|</span>
       <span style={`color: ${q.difficulty === 'Beginner' ? '#10b981' : q.difficulty === 'Advanced' ? '#ef4444' : '#f59e0b'}`}>
         {q.difficulty}
@@ -39,7 +43,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
     <h1 style="font-size: 22px; margin-bottom: 24px; line-height: 1.4;">{q.title}</h1>
 
-    <div class="answer-body" style="line-height: 1.7;" set:html={marked.parse(q.body)} />
+    <div class="answer-body" style="line-height: 1.7;" set:html={renderMarkdown(q.body)} />
 
     <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border);">
       <a href={`${base}/browse`} class="btn btn-ghost" style="font-size: 13px;">← Back to Browse</a>

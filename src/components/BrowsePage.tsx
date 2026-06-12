@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect } from 'react';
 import type { Question } from '../lib/questions';
 import { CATEGORIES, CATEGORY_META } from '../lib/questions';
 import { renderMarkdown } from '../lib/renderMarkdown';
+import Icon from './Icon';
 
 const DIFFICULTIES = ['Beginner', 'Intermediate', 'Advanced'] as const;
 
@@ -10,6 +11,12 @@ const DIFF_COLORS: Record<string, string> = {
   Beginner: '#10b981',
   Intermediate: '#f59e0b',
   Advanced: '#ef4444',
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  'got-it': '#10b981',
+  almost: '#f59e0b',
+  nope: '#ef4444',
 };
 
 function getStorage<T>(key: string, fallback: T): T {
@@ -34,6 +41,8 @@ export default function BrowsePage({ questions, base, initialCategory = 'all' }:
   const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [activeDifficulty, setActiveDifficulty] = useState('all');
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [everOpened, setEverOpened] = useState<Set<string>>(new Set());
+  const [pulsingId, setPulsingId] = useState<string | null>(null);
   const [statuses, setStatuses] = useState<Record<string, string>>({});
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
 
@@ -57,6 +66,11 @@ export default function BrowsePage({ questions, base, initialCategory = 'all' }:
     });
   }, [questions, search, activeCategory, activeDifficulty]);
 
+  function toggleExpanded(id: string, isOpen: boolean) {
+    setExpanded(isOpen ? null : id);
+    if (!isOpen) setEverOpened(prev => new Set(prev).add(id));
+  }
+
   function setStatus(id: string, status: string | null) {
     const next = { ...statuses };
     if (status === null) delete next[id]; else next[id] = status;
@@ -69,6 +83,13 @@ export default function BrowsePage({ questions, base, initialCategory = 'all' }:
     if (next.has(id)) next.delete(id); else next.add(id);
     setBookmarks(next);
     setStorage('ios-qa-bookmarks', [...next]);
+    setPulsingId(id);
+  }
+
+  function clearFilters() {
+    setSearch('');
+    setActiveCategory('all');
+    setActiveDifficulty('all');
   }
 
   return (
@@ -77,29 +98,25 @@ export default function BrowsePage({ questions, base, initialCategory = 'all' }:
       <input
         id="search"
         type="search"
+        className="search-input"
         placeholder="Search questions and answers..."
         value={search}
         onChange={e => setSearch(e.target.value)}
-        style={{
-          width: '100%', padding: '10px 16px', marginBottom: 16,
-          borderRadius: 8, background: 'var(--surface2)',
-          border: '1px solid var(--border)', color: 'var(--text)',
-          fontFamily: 'var(--font-sans)', fontSize: 15,
-        }}
+        style={{ marginBottom: 16 }}
       />
 
       {/* Category chips */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
+      <div className="chip-row" style={{ marginBottom: 10 }}>
         <button className={`chip ${activeCategory === 'all' ? 'active' : ''}`} onClick={() => setActiveCategory('all')}>All</button>
         {CATEGORIES.map(cat => (
           <button key={cat} className={`chip ${activeCategory === cat ? 'active' : ''}`} onClick={() => setActiveCategory(cat)}>
-            {CATEGORY_META[cat].emoji} {CATEGORY_META[cat].label}
+            <Icon name={CATEGORY_META[cat].icon} size={13} /> {CATEGORY_META[cat].label}
           </button>
         ))}
       </div>
 
       {/* Difficulty chips */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+      <div className="chip-row" style={{ marginBottom: 20 }}>
         <button className={`chip ${activeDifficulty === 'all' ? 'active' : ''}`} onClick={() => setActiveDifficulty('all')}>All Levels</button>
         {DIFFICULTIES.map(d => (
           <button
@@ -127,74 +144,93 @@ export default function BrowsePage({ questions, base, initialCategory = 'all' }:
           const meta = CATEGORY_META[q.category];
 
           return (
-            <div key={q.id} className="card" style={{ padding: 0, overflow: 'hidden' }}>
+            <div key={q.id} className="card" style={{ padding: 0, overflow: 'hidden', borderLeft: `4px solid ${meta.color}` }}>
               <button
-                onClick={() => setExpanded(isOpen ? null : q.id)}
+                onClick={() => toggleExpanded(q.id, isOpen)}
                 style={{
                   width: '100%', display: 'flex', alignItems: 'center',
                   gap: 10, padding: '14px 16px', background: 'none',
                   border: 'none', cursor: 'pointer', textAlign: 'left',
-                  color: 'var(--text)',
+                  color: 'var(--text)', minHeight: 44,
                 }}
               >
                 <span style={{
                   width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
-                  background: status === 'got-it' ? '#10b981'
-                    : status === 'almost' ? '#f59e0b'
-                    : status === 'nope' ? '#ef4444'
-                    : 'var(--border)',
+                  background: STATUS_COLORS[status] ?? 'var(--border)',
+                  boxShadow: STATUS_COLORS[status] ? `0 0 8px ${STATUS_COLORS[status]}66` : 'none',
                 }} />
                 <span style={{
-                  fontSize: 11, background: meta.color + '22', color: meta.color,
-                  padding: '2px 8px', borderRadius: 12, flexShrink: 0,
-                }}>{meta.emoji}</span>
+                  display: 'inline-flex', alignItems: 'center',
+                  background: meta.color + '22', color: meta.color,
+                  padding: '4px 8px', borderRadius: 12, flexShrink: 0,
+                }}><Icon name={meta.icon} size={13} /></span>
                 <span style={{ flex: 1, fontWeight: 500, fontSize: 15, lineHeight: 1.4 }}>{q.title}</span>
                 <span style={{ fontSize: 11, color: DIFF_COLORS[q.difficulty], flexShrink: 0 }}>{q.difficulty}</span>
-                <span style={{ color: 'var(--text-muted)', flexShrink: 0, fontSize: 12 }}>{isOpen ? '▲' : '▼'}</span>
+                <span style={{ color: 'var(--text-muted)', flexShrink: 0, display: 'inline-flex' }}>
+                  <Icon name={isOpen ? 'chevron-up' : 'chevron-down'} size={14} />
+                </span>
               </button>
 
-              {isOpen && (
-                <div style={{ padding: '0 16px 16px', borderTop: '1px solid var(--border)' }}>
-                  <div
-                    className="answer-body"
-                    style={{ marginTop: 16, lineHeight: 1.7, fontSize: 15 }}
-                    dangerouslySetInnerHTML={{ __html: renderMarkdown(q.body) }}
-                  />
-                  <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap', alignItems: 'center' }}>
-                    {(['got-it', 'almost', 'nope'] as const).map(s => (
-                      <button
-                        key={s}
-                        className="btn btn-ghost"
-                        style={status === s ? {
-                          borderColor: s === 'got-it' ? '#10b981' : s === 'almost' ? '#f59e0b' : '#ef4444',
-                          color: s === 'got-it' ? '#10b981' : s === 'almost' ? '#f59e0b' : '#ef4444',
-                        } : {}}
-                        onClick={() => setStatus(q.id, status === s ? null : s)}
-                      >
-                        {s === 'got-it' ? '✅ Got it' : s === 'almost' ? '🤔 Almost' : '❌ Nope'}
-                      </button>
-                    ))}
-                    <button className="btn btn-ghost" onClick={() => toggleBookmark(q.id)}>
-                      {isBookmarked ? '⭐ Saved' : '☆ Save'}
-                    </button>
-                    <a
-                      href={`${base}/questions/${q.id}`}
-                      className="btn btn-ghost"
-                      style={{ marginLeft: 'auto', fontSize: 13 }}
-                    >
-                      View Full Page →
-                    </a>
-                  </div>
+              <div className="collapse" data-open={isOpen}>
+                <div className="collapse-inner">
+                  {(isOpen || everOpened.has(q.id)) && (
+                    <div style={{ padding: '0 16px 16px', borderTop: '1px solid var(--border)' }}>
+                      <div
+                        className="answer-body"
+                        style={{ marginTop: 16, lineHeight: 1.7, fontSize: 15 }}
+                        dangerouslySetInnerHTML={{ __html: renderMarkdown(q.body) }}
+                      />
+                      <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+                        {(['got-it', 'almost', 'nope'] as const).map(s => (
+                          <button
+                            key={s}
+                            className="btn btn-ghost"
+                            style={status === s ? {
+                              borderColor: STATUS_COLORS[s],
+                              color: STATUS_COLORS[s],
+                              boxShadow: `0 0 12px ${STATUS_COLORS[s]}40`,
+                            } : {}}
+                            onClick={() => setStatus(q.id, status === s ? null : s)}
+                          >
+                            <Icon name={s === 'got-it' ? 'check' : s === 'almost' ? 'help-circle' : 'x'} size={14} />
+                            {s === 'got-it' ? 'Got it' : s === 'almost' ? 'Almost' : 'Nope'}
+                          </button>
+                        ))}
+                        <button
+                          className={`btn btn-ghost bookmark-btn ${pulsingId === q.id ? 'pulsing' : ''}`}
+                          onClick={() => toggleBookmark(q.id)}
+                          onAnimationEnd={() => setPulsingId(null)}
+                          style={isBookmarked ? { borderColor: 'var(--accent)', color: 'var(--accent)' } : {}}
+                        >
+                          <Icon name="star" size={14} filled={isBookmarked} />
+                          {isBookmarked ? 'Saved' : 'Save'}
+                        </button>
+                        <a
+                          href={`${base}/questions/${q.id}`}
+                          className="btn btn-ghost"
+                          style={{ marginLeft: 'auto', fontSize: 13 }}
+                        >
+                          View Full Page →
+                        </a>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           );
         })}
       </div>
 
       {filtered.length === 0 && (
-        <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '48px 0' }}>
-          No questions match your filters.
+        <div className="empty-state">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="16.5" y1="16.5" x2="21" y2="21" />
+            <line x1="8.5" y1="11" x2="13.5" y2="11" />
+          </svg>
+          <p>Nothing matches your filters — try widening the search.</p>
+          <button className="btn btn-ghost" onClick={clearFilters}>Clear filters</button>
         </div>
       )}
     </div>

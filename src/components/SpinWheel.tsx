@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 import type { Question } from '../lib/questions';
 import { CATEGORIES, CATEGORY_META } from '../lib/questions';
 import { winningIndex, segStart } from '../lib/wheel';
+import Icon from './Icon';
 
 interface Props {
   questions: Question[];
@@ -72,7 +73,7 @@ export default function SpinWheel({ questions, base }: Props) {
       ctx.textAlign = 'right';
       ctx.fillStyle = '#ffffff';
       ctx.font = '600 12px Sora, sans-serif';
-      ctx.fillText(`${meta.emoji} ${meta.label}`, r - 14, 4);
+      ctx.fillText(meta.label, r - 14, 4);
       ctx.restore();
     });
 
@@ -104,9 +105,10 @@ export default function SpinWheel({ questions, base }: Props) {
     setSpinning(true);
     setResult(null);
 
-    const extraSpins = 5 + Math.random() * 5;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const extraSpins = reduced ? 0.5 : 5 + Math.random() * 5;
     const targetRot = rotationRef.current + extraSpins * 2 * Math.PI + Math.random() * 2 * Math.PI;
-    const duration = 3500;
+    const duration = reduced ? 400 : 3500;
     const startTime = performance.now();
     const fromRot = rotationRef.current;
 
@@ -138,13 +140,32 @@ export default function SpinWheel({ questions, base }: Props) {
 
   const meta = result ? CATEGORY_META[result.category] : null;
 
+  // Particle burst dots fan out from the wheel center on spin completion
+  const burstDots = result ? Array.from({ length: 8 }, (_, i) => {
+    const angle = (i / 8) * 2 * Math.PI;
+    return {
+      bx: `${Math.cos(angle) * 190}px`,
+      by: `${Math.sin(angle) * 190}px`,
+      color: meta?.color ?? 'var(--accent)',
+    };
+  }) : [];
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
-      <canvas
-        ref={canvasRef}
-        onClick={spin}
-        style={{ display: 'block', maxWidth: '100%', cursor: spinning ? 'default' : 'pointer' }}
-      />
+      <div className={`wheel-wrap burst ${spinning ? 'spinning' : ''}`}>
+        <canvas
+          ref={canvasRef}
+          onClick={spin}
+          style={{ display: 'block', maxWidth: '100%', cursor: spinning ? 'default' : 'pointer' }}
+        />
+        {burstDots.map((d, i) => (
+          <span
+            key={`${result!.id}-${i}`}
+            className="burst-dot"
+            style={{ '--bx': d.bx, '--by': d.by, background: d.color } as React.CSSProperties}
+          />
+        ))}
+      </div>
 
       <button
         className="btn btn-primary"
@@ -152,7 +173,8 @@ export default function SpinWheel({ questions, base }: Props) {
         disabled={spinning}
         style={{ minWidth: 140, justifyContent: 'center', fontSize: 16 }}
       >
-        {spinning ? '🎡 Spinning...' : '🎡 Spin!'}
+        <Icon name="disc" size={16} />
+        {spinning ? 'Spinning...' : 'Spin!'}
       </button>
 
       {result && meta && (
@@ -164,8 +186,9 @@ export default function SpinWheel({ questions, base }: Props) {
             borderLeft: `4px solid ${meta.color}`,
           }}
         >
-          <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8 }}>
-            {meta.emoji} {meta.label} · {result.difficulty}
+          <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ color: meta.color, display: 'inline-flex' }}><Icon name={meta.icon} size={14} /></span>
+            {meta.label} · {result.difficulty}
           </div>
           <p style={{ fontWeight: 600, fontSize: 17, lineHeight: 1.4, marginBottom: 16 }}>
             {result.title}

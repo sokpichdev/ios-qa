@@ -1,4 +1,5 @@
 // src/lib/questions.ts
+import type { IconName } from './icons';
 
 export type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 
@@ -26,17 +27,17 @@ export const CATEGORIES = [
 
 export type Category = typeof CATEGORIES[number];
 
-export const CATEGORY_META: Record<Category, { emoji: string; color: string; label: string }> = {
-  swift:            { emoji: '🦅', color: '#f05a28', label: 'Swift' },
-  swiftui:          { emoji: '🎨', color: '#7c3aed', label: 'SwiftUI' },
-  concurrency:      { emoji: '⚡', color: '#0ea5e9', label: 'Concurrency' },
-  architecture:     { emoji: '🏗️', color: '#10b981', label: 'Architecture' },
-  oop:              { emoji: '🧩', color: '#d946ef', label: 'OOP' },
-  networking:       { emoji: '🌐', color: '#f59e0b', label: 'Networking' },
-  testing:          { emoji: '🧪', color: '#ec4899', label: 'Testing' },
-  uikit:            { emoji: '📱', color: '#8b5cf6', label: 'UIKit' },
-  'xcode-tools':    { emoji: '🔧', color: '#6366f1', label: 'Xcode Tools' },
-  'interview-prep': { emoji: '🎯', color: '#14b8a6', label: 'Interview Prep' },
+export const CATEGORY_META: Record<Category, { icon: IconName; color: string; label: string }> = {
+  swift:            { icon: 'feather',        color: '#f05a28', label: 'Swift' },
+  swiftui:          { icon: 'layers',         color: '#7c3aed', label: 'SwiftUI' },
+  concurrency:      { icon: 'zap',            color: '#0ea5e9', label: 'Concurrency' },
+  architecture:     { icon: 'box',            color: '#10b981', label: 'Architecture' },
+  oop:              { icon: 'grid',           color: '#d946ef', label: 'OOP' },
+  networking:       { icon: 'globe',          color: '#f59e0b', label: 'Networking' },
+  testing:          { icon: 'flask',          color: '#ec4899', label: 'Testing' },
+  uikit:            { icon: 'smartphone',     color: '#8b5cf6', label: 'UIKit' },
+  'xcode-tools':    { icon: 'wrench',         color: '#6366f1', label: 'Xcode Tools' },
+  'interview-prep': { icon: 'target',         color: '#14b8a6', label: 'Interview Prep' },
 };
 
 function slugify(text: string): string {

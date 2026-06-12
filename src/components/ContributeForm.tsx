@@ -99,7 +99,7 @@ export default function ContributeForm() {
             <label style={labelStyle}>Category *</label>
             <select style={inputStyle} value={fields.category} onChange={e => update('category', e.target.value)}>
               {CATEGORIES.map(cat => (
-                <option key={cat} value={cat}>{CATEGORY_META[cat].emoji} {CATEGORY_META[cat].label}</option>
+                <option key={cat} value={cat}>{CATEGORY_META[cat].label}</option>
               ))}
             </select>
           </div>
