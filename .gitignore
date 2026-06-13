@@ -1,10 +1,24 @@
-dist/
+# dependencies
 node_modules/
-.astro/
+
+# next.js
+.next/
+out/
+next-env.d.ts
+
+# generated data (built from content/ at build time)
+lib/generated/questions.json
+
+# env
 .env
 .env.*
 !.env.example
+
+# misc
 .DS_Store
 .superpowers/
 CLAUDE.md
 docs/superpowers/
+
+# typescript
+*.tsbuildinfo

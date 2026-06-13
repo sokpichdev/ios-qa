@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Code block highlighting — dark in both themes (code reads well dark). */
+@import 'highlight.js/styles/github-dark.css';
+
+:root {
+  --bg: #f6f7fb;
+  --bg-grad-1: rgba(124, 58, 237, 0.08);
+  --bg-grad-2: rgba(14, 165, 233, 0.06);
+  --bg-grad-3: rgba(236, 72, 153, 0.05);
+  --surface: #ffffff;
+  --surface-2: #ffffff;
+  --border: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.12);
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+  --shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+  --heading-from: #4f46e5;
+  --heading-to: #7c3aed;
+}
+
+.dark {
+  --bg: #0b0b14;
+  --bg-grad-1: rgba(124, 58, 237, 0.22);
+  --bg-grad-2: rgba(14, 165, 233, 0.16);
+  --bg-grad-3: rgba(236, 72, 153, 0.12);
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: #e8eaf2;
+  --text-muted: rgba(232, 234, 242, 0.55);
+  --text-faint: rgba(232, 234, 242, 0.38);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --heading-from: #e0c3fc;
+  --heading-to: #8ec5fc;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-feature-settings: 'cv02', 'cv03', 'cv04';
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  ::selection {
+    background: rgba(124, 58, 237, 0.3);
+  }
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer components {
+  .glass {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .dark .glass {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .glass-hover {
+    transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  }
+  .glass-hover:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+  .surface-2 {
+    background: var(--surface-2);
+  }
+  .text-muted {
+    color: var(--text-muted);
+  }
+  .text-faint {
+    color: var(--text-faint);
+  }
+  .border-app {
+    border-color: var(--border);
+  }
+  .heading-gradient {
+    background: linear-gradient(120deg, var(--text) 20%, var(--heading-to) 80%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-transform;
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-colors;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+  }
+  .btn-ghost:hover {
+    background: var(--surface-2);
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .chip-active {
+    color: #c4b5fd;
+    background: rgba(124, 58, 237, 0.18);
+    border-color: rgba(124, 58, 237, 0.4);
+  }
+  .label-caps {
+    @apply text-[11px] font-medium uppercase tracking-[0.15em];
+    color: var(--text-faint);
+  }
+}
+
+/* Markdown answer styling */
+.prose-answer {
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 0.95rem;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.prose-answer p {
+  margin: 0.75rem 0;
+}
+.prose-answer strong {
+  color: var(--text);
+  font-weight: 700;
+}
+.prose-answer ul,
+.prose-answer ol {
+  margin: 0.75rem 0;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+.prose-answer ol {
+  list-style: decimal;
+}
+.prose-answer li {
+  margin: 0.35rem 0;
+}
+.prose-answer a {
+  color: #818cf8;
+  text-decoration: underline;
+}
+.prose-answer h1,
+.prose-answer h2,
+.prose-answer h3 {
+  font-weight: 700;
+  margin: 1.25rem 0 0.5rem;
+}
+.prose-answer :not(pre) > code {
+  background: rgba(124, 58, 237, 0.14);
+  color: #a5b4fc;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-family: var(--font-mono), monospace;
+}
+.prose-answer pre {
+  background: #0d1117 !important;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+}
+/* Tables can be wider than the viewport — let them scroll, not push layout. */
+.prose-answer > table,
+.prose-answer p:has(> table) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+/* Code background is always dark, so keep code text light in both themes.
+   Un-highlighted blocks (no/unknown language) would otherwise inherit the
+   light-theme dark text color and become unreadable. hljs token colors
+   still override this for highlighted spans. */
+.prose-answer pre,
+.prose-answer pre code {
+  color: #c9d1d9;
+  font-family: var(--font-mono), monospace;
+}
+.prose-answer table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+}
+.prose-answer th,
+.prose-answer td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.prose-answer th {
+  background: var(--surface-2);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
