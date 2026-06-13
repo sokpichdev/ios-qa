@@ -17,7 +17,6 @@ function BrowseInner() {
   const [filter, setFilter] = useState<BrowseFilter>({
     topic: initialTopic,
     difficulty: null,
-    type: null,
     search: '',
   });
   const [limit, setLimit] = useState(PAGE_SIZE);
@@ -31,7 +30,6 @@ function BrowseInner() {
       filterQuestions({
         topics: filter.topic ? [filter.topic] : undefined,
         difficulties: filter.difficulty ? [filter.difficulty] : undefined,
-        types: filter.type ? [filter.type] : undefined,
         search: filter.search,
       }),
     [filter]
@@ -67,9 +65,9 @@ function BrowseInner() {
             <span className="text-muted">
               Showing <span className="font-semibold text-[var(--text)]">{results.length}</span> question{results.length !== 1 ? 's' : ''}
             </span>
-            {(filter.topic || filter.difficulty || filter.type || filter.search) && (
+            {(filter.topic || filter.difficulty || filter.search) && (
               <button
-                onClick={() => onChange({ topic: null, difficulty: null, type: null, search: '' })}
+                onClick={() => onChange({ topic: null, difficulty: null, search: '' })}
                 className="text-muted hover:text-[var(--text)]"
               >
                 Clear filters

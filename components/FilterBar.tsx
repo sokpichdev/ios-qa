@@ -2,13 +2,12 @@
 
 import Icon from './Icon';
 import { TOPICS, DIFFICULTIES } from '@/lib/topics';
-import type { Difficulty, QuestionType } from '@/lib/types';
+import type { Difficulty } from '@/lib/types';
 import { topicCounts } from '@/lib/questions';
 
 export interface BrowseFilter {
   topic: string | null;
   difficulty: Difficulty | null;
-  type: QuestionType | null;
   search: string;
 }
 
@@ -76,16 +75,6 @@ export default function FilterBar({
               {d.label}
             </Row>
           ))}
-        </div>
-      </div>
-
-      {/* Type */}
-      <div>
-        <p className="label-caps mb-2">Type</p>
-        <div className="space-y-0.5">
-          <Row active={filter.type === null} onClick={() => set({ type: null })}>All Types</Row>
-          <Row active={filter.type === 'mcq'} onClick={() => set({ type: 'mcq' })}>MCQ</Row>
-          <Row active={filter.type === 'open-ended'} onClick={() => set({ type: 'open-ended' })}>Open-ended</Row>
         </div>
       </div>
     </div>
