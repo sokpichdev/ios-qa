@@ -199,7 +199,13 @@
   max-width: 100%;
   overflow-x: auto;
 }
+/* Code background is always dark, so keep code text light in both themes.
+   Un-highlighted blocks (no/unknown language) would otherwise inherit the
+   light-theme dark text color and become unreadable. hljs token colors
+   still override this for highlighted spans. */
+.prose-answer pre,
 .prose-answer pre code {
+  color: #c9d1d9;
   font-family: var(--font-mono), monospace;
 }
 .prose-answer table {
