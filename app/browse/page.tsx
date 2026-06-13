@@ -57,12 +57,12 @@ function BrowseInner() {
         <Icon name="list" size={16} /> {showFilters ? 'Hide' : 'Show'} filters
       </button>
 
-      <div className="grid gap-8 md:grid-cols-[220px_1fr]">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-[220px_minmax(0,1fr)]">
         <aside className={`${showFilters ? 'block' : 'hidden'} md:block md:sticky md:top-20 md:h-fit`}>
           <FilterBar filter={filter} onChange={onChange} />
         </aside>
 
-        <div>
+        <div className="min-w-0">
           <div className="mb-4 flex items-center justify-between text-sm">
             <span className="text-muted">
               Showing <span className="font-semibold text-[var(--text)]">{results.length}</span> question{results.length !== 1 ? 's' : ''}
@@ -90,6 +90,8 @@ function BrowseInner() {
                   entry={progress[q.id]}
                   bookmarked={isBookmarked(q.id)}
                   onToggleBookmark={toggle}
+                  showType={false}
+                  showOptions={false}
                 />
               ))}
             </div>

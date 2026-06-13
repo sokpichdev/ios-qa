@@ -20,11 +20,15 @@ export default function QuestionCard({
   entry,
   bookmarked,
   onToggleBookmark,
+  showType = true,
+  showOptions = true,
 }: {
   question: Question;
   entry?: ProgressEntry;
   bookmarked: boolean;
   onToggleBookmark: (id: string) => void;
+  showType?: boolean;
+  showOptions?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const dot = statusColor(entry);
@@ -32,13 +36,13 @@ export default function QuestionCard({
   return (
     <div className="glass glass-hover rounded-xl p-4" style={dot ? { borderColor: `${dot}55` } : undefined}>
       <div className="flex items-start gap-3">
-        <button onClick={() => setOpen((o) => !o)} className="flex-1 text-left">
+        <button onClick={() => setOpen((o) => !o)} className="min-w-0 flex-1 text-left">
           <div className="mb-2 flex flex-wrap items-center gap-1.5">
             <TopicBadge topic={question.topic} />
             <DifficultyBadge difficulty={question.difficulty} />
-            <TypeBadge type={question.type} />
+            {showType && <TypeBadge type={question.type} />}
           </div>
-          <p className="pr-2 text-sm font-medium leading-snug">{question.question}</p>
+          <p className="break-words pr-2 text-sm font-medium leading-snug">{question.question}</p>
         </button>
 
         <div className="flex shrink-0 items-center gap-2">
@@ -58,8 +62,8 @@ export default function QuestionCard({
       </div>
 
       {open && (
-        <div className="mt-4 border-t border-app pt-4">
-          {question.type === 'mcq' && question.options && (
+        <div className="mt-4 min-w-0 overflow-hidden border-t border-app pt-4">
+          {showOptions && question.type === 'mcq' && question.options && (
             <ul className="mb-4 space-y-1.5">
               {question.options.map((opt) => {
                 const isCorrect = opt === question.correct;
