@@ -23,10 +23,10 @@ export default function Nav() {
     href === '/' ? pathname === '/' : pathname.startsWith(href);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-app bg-[var(--bg)]/70 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 bg-[var(--bg)]/80 backdrop-blur-xl">
       <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2 font-bold">
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 text-white">
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-accent to-accent-dark text-white">
             <Icon name="sparkles" size={15} />
           </span>
           <span className="heading-gradient text-base tracking-tight">iOS QA</span>
@@ -39,7 +39,7 @@ export default function Nav() {
               key={l.href}
               href={l.href}
               className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                isActive(l.href) ? 'text-[var(--text)]' : 'text-muted hover:text-[var(--text)]'
+                isActive(l.href) ? 'text-[var(--accent)]' : 'text-muted hover:text-[var(--text)]'
               }`}
             >
               {l.label}

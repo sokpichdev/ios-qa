@@ -18,7 +18,7 @@ export default function ProgressPage() {
   const weak = weakQuestions(progress);
 
   const stats = [
-    { value: overall.answered, label: 'Answered', color: '#a5b4fc' },
+    { value: overall.answered, label: 'Answered', color: '#ff014f' },
     { value: overall.correct, label: 'Correct', color: '#34d399' },
     { value: overall.missed, label: 'Missed', color: '#f87171' },
     { value: `${overall.percent}%`, label: 'Complete', color: '#fb923c' },
@@ -31,7 +31,7 @@ export default function ProgressPage() {
   if (overall.answered === 0) {
     return (
       <div className="py-20 text-center">
-        <span className="mx-auto grid h-16 w-16 place-items-center rounded-full" style={{ background: 'rgba(124,58,237,0.18)', color: '#a78bfa' }}>
+        <span className="mx-auto grid h-16 w-16 place-items-center rounded-full" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}>
           <Icon name="bar-chart" size={28} />
         </span>
         <h1 className="mt-4 text-2xl font-bold">No progress yet</h1>
