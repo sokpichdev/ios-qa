@@ -1,18 +1,11 @@
-// Fixed decorative gradient blobs behind all content.
+// Subtle ambient glow behind all content. Neumorphism reads best on a near-flat
+// surface, so we keep a single faint red radial rather than multi-color blobs.
 export default function AuroraBackground() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
       <div
-        className="absolute -top-32 left-1/4 h-[40rem] w-[40rem] rounded-full blur-3xl animate-float"
-        style={{ background: 'radial-gradient(circle, var(--bg-grad-1), transparent 70%)' }}
-      />
-      <div
-        className="absolute top-1/3 -right-32 h-[32rem] w-[32rem] rounded-full blur-3xl animate-float"
-        style={{ background: 'radial-gradient(circle, var(--bg-grad-2), transparent 70%)', animationDelay: '3s' }}
-      />
-      <div
-        className="absolute bottom-0 left-0 h-[28rem] w-[28rem] rounded-full blur-3xl animate-float"
-        style={{ background: 'radial-gradient(circle, var(--bg-grad-3), transparent 70%)', animationDelay: '6s' }}
+        className="absolute -top-40 left-1/2 h-[45rem] w-[45rem] -translate-x-1/2 rounded-full blur-3xl"
+        style={{ background: 'radial-gradient(circle, var(--bg-glow), transparent 70%)' }}
       />
     </div>
   );

@@ -10,6 +10,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Primary brand accent (inbio red)
+        accent: {
+          DEFAULT: '#ff014f',
+          dark: '#d11414',
+        },
         // Topic accent palette (shared light/dark)
         topic: {
           swift: '#f05a28',
@@ -26,7 +31,14 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        secondary: ['var(--font-secondary)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
+      },
+      boxShadow: {
+        neu: 'var(--neu-raised)',
+        'neu-lg': 'var(--neu-raised-lg)',
+        'neu-pressed': 'var(--neu-pressed)',
+        'neu-sm': 'var(--neu-sm)',
       },
       keyframes: {
         'fade-up': {

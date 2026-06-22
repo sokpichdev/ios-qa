@@ -14,7 +14,7 @@ export default function HomePage() {
   const topicByName = (name: string) => topics.find((t) => t.name === name);
 
   const heroStats = [
-    { value: `${STATS.total}`, label: 'Questions', color: '#a5b4fc' },
+    { value: `${STATS.total}`, label: 'Questions', color: '#ff014f' },
     { value: `${STATS.topics}`, label: 'Topics', color: '#34d399' },
     { value: `${DIFFICULTIES.length}`, label: 'Levels', color: '#f472b6' },
     { value: hydrated ? `${overall.percent}%` : '—', label: 'Your Progress', color: '#fb923c' },
@@ -105,7 +105,7 @@ export default function HomePage() {
           style={{ borderStyle: 'dashed' }}
         >
           <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-lg" style={{ background: 'rgba(124,58,237,0.18)', color: '#a78bfa' }}>
+            <span className="grid h-10 w-10 place-items-center rounded-lg" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}>
               <Icon name="shuffle" size={20} />
             </span>
             <div>

@@ -97,7 +97,7 @@ function QuizInner() {
         <button onClick={newQuiz} className="text-faint hover:text-[var(--text)] text-xs">Exit</button>
       </div>
       <div className="mb-6 h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--border)' }}>
-        <div className="h-full rounded-full transition-all" style={{ width: `${progressPct}%`, background: 'linear-gradient(90deg,#7c3aed,#06b6d4)' }} />
+        <div className="h-full rounded-full transition-all" style={{ width: `${progressPct}%`, background: 'var(--accent-grad)' }} />
       </div>
 
       <div className="mb-3 flex flex-wrap items-center gap-1.5">

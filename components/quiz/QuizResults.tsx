@@ -31,7 +31,7 @@ export default function QuizResults({
 
   return (
     <div className="glass mx-auto max-w-md rounded-2xl p-8 text-center animate-fade-up">
-      <span className="mx-auto grid h-16 w-16 place-items-center rounded-full" style={{ background: 'rgba(124,58,237,0.18)', color: '#a78bfa' }}>
+      <span className="mx-auto grid h-16 w-16 place-items-center rounded-full" style={{ background: 'var(--accent-soft)', color: 'var(--accent)' }}>
         <Icon name="trophy" size={30} />
       </span>
       <h1 className="mt-4 text-2xl font-bold">Quiz Complete</h1>
