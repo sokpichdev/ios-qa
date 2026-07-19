@@ -15,10 +15,29 @@ const poppins = Poppins({
 const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-secondary', display: 'swap' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
 
+const title = 'iOS Reference & Practice';
+const description =
+  'Browse, quiz, and track your progress across Swift, SwiftUI, Concurrency, Architecture, Networking, Testing, UIKit and Xcode. Everything saved locally in your browser.';
+
 export const metadata: Metadata = {
-  title: 'iOS QA — Developer Interview Prep',
-  description:
-    'Browse, filter, and quiz yourself on iOS developer interview questions across Swift, SwiftUI, Concurrency, Architecture and more. Track your progress locally.',
+  metadataBase: new URL('https://ios.sokpich.dev'),
+  title,
+  description,
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    url: '/',
+    siteName: 'iOS Reference & Practice',
+    title,
+    description,
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: title }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title,
+    description,
+    images: ['/og.png'],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -1,10 +1,10 @@
 <div align="center">
 
-# 📱 iOS QA — Developer Interview Prep
+# 📱 iOS Reference & Practice
 
-### Browse, quiz yourself, and track progress on iOS interview questions — all in the browser.
+### Browse, quiz yourself, and track progress across the iOS stack — all in the browser.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-2EA44F?style=for-the-badge&logo=githubpages&logoColor=white)](https://sokpichdev.github.io/ios-qa/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-2EA44F?style=for-the-badge&logo=githubpages&logoColor=white)](https://ios.sokpich.dev)
 [![License: MIT](https://img.shields.io/badge/License-MIT-58A6FF?style=for-the-badge)](./LICENSE)
 
 <br/>
@@ -19,11 +19,11 @@
 
 ---
 
-A **static, no-backend** website for practicing iOS developer interview questions. Browse and filter
+A **static, no-backend** website for learning and revising iOS development. Browse and filter
 questions, quiz yourself (MCQ with instant feedback or open-ended with self-rating), and track your
 progress — all stored locally in your browser.
 
-> 🔗 **Live:** <https://sokpichdev.github.io/ios-qa/> · Built with **Next.js** (App Router, static export) + **Tailwind CSS**.
+> 🔗 **Live:** <https://ios.sokpich.dev> · Built with **Next.js** (App Router, static export) + **Tailwind CSS**.
 
 ## ✨ Features
 
