@@ -29,7 +29,7 @@ export default function Nav() {
           <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-accent to-accent-dark text-white">
             <Icon name="sparkles" size={15} />
           </span>
-          <span className="heading-gradient text-base tracking-tight">iOS QA</span>
+          <span className="heading-gradient text-base tracking-tight">iOS Reference</span>
         </Link>
 
         {/* Desktop links */}

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Icon from '@/components/Icon';
 
-export const metadata = { title: 'Contribute — iOS QA' };
+export const metadata = { title: 'Contribute — iOS Reference & Practice' };
 
 export default function ContributePage() {
   return (
