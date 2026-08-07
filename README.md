@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📱 iOS Reference & Practice
+# iOS Reference & Practice
 
 ### Browse, quiz yourself, and track progress across the iOS stack — all in the browser.
 
@@ -20,67 +20,125 @@
 ---
 
 A **static, no-backend** website for learning and revising iOS development. Browse and filter
-questions, quiz yourself (MCQ with instant feedback or open-ended with self-rating), and track your
-progress — all stored locally in your browser.
+questions, quiz yourself (MCQ with instant feedback, or open-ended with self-rating), and track your
+progress. There is no auth and no database — progress and bookmarks live in `localStorage`.
 
-> 🔗 **Live:** <https://ios.sokpich.dev> · Built with **Next.js** (App Router, static export) + **Tailwind CSS**.
+<!-- > **Live:** <https://ios.sokpich.dev> · Built with **Next.js** (App Router, static export) + **TypeScript** + **Tailwind CSS**. -->
 
-## ✨ Features
+## Features
 
-|     | Feature |
-| :-: | :------ |
-| 🏠 | **Home** — hero, quick stats, topic cards with per-topic completion |
-| 🔍 | **Browse** — filter all questions by topic, difficulty, and type; expand to reveal answers |
-| 🧠 | **Quiz** — answer one at a time; MCQs give instant feedback, open-ended questions reveal the answer and let you self-rate (Got it / Almost / Missed it) |
-| 📈 | **Progress** — overall stats, per-topic completion, and a Weak Areas list to review |
-| 🎯 | **Spin Wheel** — spin for a random topic to drill |
-| 🔖 | **Bookmarks** — save questions for later |
-| 🌗 | **Light & dark mode** — glassmorphism dark theme, soft light theme, follows system preference |
+| Page | What it does |
+| :--- | :----------- |
+| Home | Hero, quick stats, topic cards with per-topic completion |
+| Browse | Filter all questions by topic, difficulty, and type; expand to reveal answers |
+| Quiz | One question at a time — MCQs give instant feedback; open-ended questions reveal the answer and let you self-rate (Got it / Almost / Missed it) |
+| Progress | Overall stats, per-topic completion, and a Weak Areas list to review |
+| Spin Wheel | Spin for a random topic to drill |
+| Bookmarks | Save questions for later |
 
-> No backend, no auth, no database — all progress and bookmarks live in `localStorage`.
+Light and dark themes are both supported and follow the system preference by default.
 
-## 🧩 Topics
+## Content
 
-`Swift` · `SwiftUI` · `Concurrency` · `Architecture` · `OOP` · `Networking` · `Testing` · `UIKit` · `Xcode Tools` · `Interview Prep`
+124 questions across 10 topics — 88 multiple-choice and 36 open-ended.
 
-## 🗂️ Data
+| Topic | Questions |
+| :---- | --------: |
+| SwiftUI | 19 |
+| Xcode Tools | 17 |
+| Swift | 15 |
+| UIKit | 15 |
+| Concurrency | 13 |
+| Architecture | 12 |
+| Networking | 10 |
+| Testing | 10 |
+| OOP | 8 |
+| Interview Prep | 5 |
 
-Questions are authored as Markdown in [`content/questions/`](./content/questions/), grouped by topic
-folder. Each `## Q:` block becomes one question with an answer, optional code example, key points,
-tags, and a difficulty.
+## How the data works
+
+Questions are authored as Markdown in [`content/questions/`](./content/questions/), grouped into one
+folder per topic. The folder name is the topic slug, registered in
+[`lib/topics.ts`](./lib/topics.ts). Each `## Q:` heading starts one question:
+
+````markdown
+## Q: What is `intrinsicContentSize`?
+
+**Answer:**
+A complete standalone sentence, then any further prose.
+
+**Code Example:**
+```swift
+label.intrinsicContentSize
+```
+
+**Key Points:**
+- Optional bullet list
+
+**Tags:** `#uikit` `#autolayout`
+**Difficulty:** Intermediate
+````
 
 At build time, [`scripts/build-data.mjs`](./scripts/build-data.mjs) converts the Markdown into
 `lib/generated/questions.json`:
 
-- Maps difficulty (`Beginner → junior`, `Intermediate → mid`, `Advanced → senior`).
-- Classifies each question as **MCQ** (factual recall) or **open-ended**.
-- For MCQs, generates 3 distractor options deterministically from other answers in the same topic.
+- Derives a stable `id` from the topic slug, the question text, and the question's index within its
+  file. Progress and bookmarks are keyed by this `id`, so **inserting a question in the middle of an
+  existing file renumbers the ones after it and resets saved progress for them.** Append to the end
+  of a file, or add a new file.
+- Maps difficulty: `Beginner` to `junior`, `Intermediate` to `mid`, `Advanced` to `senior`. Any other
+  value silently falls back to `mid`.
+- Classifies each question as **MCQ** or **open-ended**. A question becomes an MCQ only if it opens
+  with a recall phrase (`What is`, `Which`, `When should`, and similar) *and* the first sentence of
+  its answer is clean standalone prose. That first sentence becomes the correct option, capped at
+  200 characters — write it to stand on its own.
+- For MCQs, generates three distractor options from other answers, preferring the same topic. The
+  shuffle is seeded from the question `id`, so builds are reproducible.
+
+There is no schema validation: a block missing its question or answer is skipped silently, and a
+folder that is not registered in `lib/topics.ts` produces questions that never appear in the filters.
+Check your additions with `npm run build-data` and confirm the reported count went up as expected.
 
 The generated JSON is git-ignored and rebuilt automatically before `dev` and `build`.
 
-## 🛠️ Development
+## Development
+
+Requires Node 18.17.1 or newer.
 
 ```bash
 npm install
-npm run dev        # runs build-data, then starts the dev server at http://localhost:3000
+npm run dev          # runs build-data, then serves at http://localhost:3000
 ```
 
 Other scripts:
 
 ```bash
-npm run build      # build-data + static export to ./out
-npm run build-data # regenerate questions.json from content/ only
+npm run build        # build-data + static export to ./out
+npm run build-data   # regenerate questions.json from content/ only
+npm run lint         # next lint
 ```
 
-To add or edit questions, change the Markdown in `content/questions/` and restart the dev server
-(or run `npm run build-data`).
+To add or edit questions, change the Markdown in `content/questions/` and restart the dev server, or
+run `npm run build-data` on its own.
 
-## 🚀 Deployment
+## Project layout
+
+```text
+app/           Next.js App Router pages (browse, quiz, progress, spin, bookmarks, contribute)
+components/    QuestionCard, MarkdownRenderer, FilterBar, badges, quiz flow, spin wheel
+content/       Question Markdown, one folder per topic
+hooks/         useProgress and useBookmarks (localStorage)
+lib/           Types, topic registry, question queries, generated JSON
+scripts/       build-data.mjs — Markdown to JSON
+```
+
+## Deployment
 
 Pushing to `main` triggers [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml), which
-builds the static export and publishes `out/` to GitHub Pages. The site is served under the
-`/ios-qa` base path (configured in [`next.config.mjs`](./next.config.mjs)).
+runs the static export and publishes `out/` to GitHub Pages. The site is served from the custom
+domain in [`public/CNAME`](./public/CNAME) at the root path, so
+[`next.config.mjs`](./next.config.mjs) sets no `basePath`.
 
-## 📄 License
+## License
 
-[MIT](./LICENSE) © Sok Pich
+[MIT](./LICENSE) — Sok Pich
