@@ -277,6 +277,8 @@ class Downloader {
 
 **Tags:** `#architecture` `#observer` `#combine` `#patterns` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Observation — Apple Developer](https://developer.apple.com/documentation/observation)
 
 ---
 
@@ -418,3 +420,5 @@ struct CounterView: View {
 
 **Tags:** `#architecture` `#tca` `#advanced` `#swiftui`
 **Difficulty:** Intermediate
+**References:**
+- [pointfreeco/swift-composable-architecture — GitHub](https://github.com/pointfreeco/swift-composable-architecture)

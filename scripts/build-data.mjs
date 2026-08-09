@@ -34,6 +34,28 @@ const DIFFICULTY_MAP = {
   advanced: 'senior',
 };
 
+// Approved "Further reading" sources. A host outside this list is a warning,
+// not an error — adding a source should never break a deploy. Matches the host
+// itself or any subdomain of it.
+const REFERENCE_HOSTS = [
+  // Apple official
+  'developer.apple.com',
+  'support.apple.com',
+  'swift.org',
+  // Tooling & repos
+  'github.com',
+  'docs.fastlane.tools',
+  'firebase.google.com',
+  // Curated community
+  'swiftbysundell.com',
+  'pointfree.co',
+  'objc.io',
+  'kodeco.com',
+  'hackingwithswift.com',
+  // Q&A
+  'stackoverflow.com',
+];
+
 // Questions opening with these become candidate MCQs (factual recall).
 const MCQ_OPENERS = /^(what is|what are|what does|what's|which|when should|name the|true or false)/i;
 
@@ -107,6 +129,60 @@ function extractAnswerProse(body) {
   return para ? para.trim() : body.trim();
 }
 
+// The whole "**References:**" meta block: header plus the list under it, up to
+// the next "**Meta:**" line or end of body. Matched once per question block and
+// reused to strip the block out of `answer`, so the links don't render twice.
+const REFERENCE_BLOCK =
+  /\n?[ \t]*\*\*References:\*\*[ \t]*\r?\n([\s\S]*?)(?=\n[ \t]*\*\*[A-Z][^*\n]*:\*\*|$)/;
+const REFERENCE_LINE = /^[-*]\s+\[([^\]]+)\]\((\S+)\)$/;
+
+function lineOf(text, offset) {
+  let n = 1;
+  for (let i = 0; i < offset && i < text.length; i++) if (text[i] === '\n') n++;
+  return n;
+}
+
+function hostAllowed(host) {
+  return REFERENCE_HOSTS.some((h) => host === h || host.endsWith(`.${h}`));
+}
+
+// Parse a matched reference block into [{ label, url }], pushing any problems
+// onto `errors` / `warnings` with file:line context.
+function parseReferences(match, startLine, where, errors, warnings) {
+  const refs = [];
+  match[0].split('\n').forEach((raw, idx) => {
+    const line = raw.trim();
+    if (!line || line.startsWith('**References:**')) return;
+
+    const at = `${where}:${startLine + idx}`;
+    const m = line.match(REFERENCE_LINE);
+    if (!m) {
+      errors.push(`${at} — malformed reference, expected "- [label](https://…)": ${line}`);
+      return;
+    }
+
+    const [, label, url] = m;
+    if (!url.startsWith('https://')) {
+      errors.push(`${at} — reference URL must be https://: ${url}`);
+      return;
+    }
+
+    let host;
+    try {
+      host = new URL(url).hostname.replace(/^www\./, '');
+    } catch {
+      errors.push(`${at} — unparseable reference URL: ${url}`);
+      return;
+    }
+    if (!hostAllowed(host)) {
+      warnings.push(`${at} — host '${host}' not in allowlist`);
+    }
+
+    refs.push({ label: label.trim(), url });
+  });
+  return refs;
+}
+
 async function walk(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
   const files = [];
@@ -121,6 +197,8 @@ async function walk(dir) {
 async function main() {
   const files = (await walk(CONTENT_DIR)).sort();
   const raw = [];
+  const errors = [];
+  const warnings = [];
 
   for (const file of files) {
     const rel = file.slice(CONTENT_DIR.length + 1);
@@ -128,12 +206,21 @@ async function main() {
     const topic = TOPIC_NAMES[topicSlug] || topicSlug;
     const text = await readFile(file, 'utf8');
 
-    // Split on "## Q:" headings.
-    const blocks = text.split(/^##\s+Q:\s*/m).slice(1);
-    blocks.forEach((block, i) => {
+    // Split on "## Q:" headings, keeping offsets so reference diagnostics can
+    // report a real file:line instead of just a filename.
+    const heads = [...text.matchAll(/^##\s+Q:\s*/gm)];
+    heads.forEach((head, i) => {
+      const start = head.index + head[0].length;
+      const end = i + 1 < heads.length ? heads[i + 1].index : text.length;
+      const block = text.slice(start, end);
+
       const nl = block.indexOf('\n');
       const question = (nl === -1 ? block : block.slice(0, nl)).trim();
-      let body = (nl === -1 ? '' : block.slice(nl + 1)).trim();
+      const rawBody = nl === -1 ? '' : block.slice(nl + 1);
+      // Offset of the trimmed body within `text`, for line numbering.
+      const bodyOffset =
+        start + (nl === -1 ? block.length : nl + 1) + (rawBody.length - rawBody.trimStart().length);
+      let body = rawBody.trim();
 
       // Drop trailing horizontal rule and any following block leakage.
       body = body.replace(/\n\s*---\s*$/g, '').trim();
@@ -148,8 +235,22 @@ async function main() {
         ? DIFFICULTY_MAP[diffMatch[1].toLowerCase()] || 'mid'
         : 'mid';
 
-      // Answer field = full body minus the Tags/Difficulty meta lines.
+      const refMatch = body.match(REFERENCE_BLOCK);
+      const references = refMatch
+        ? parseReferences(
+            refMatch,
+            lineOf(text, bodyOffset + refMatch.index),
+            rel,
+            errors,
+            warnings
+          )
+        : [];
+
+      // Answer field = full body minus the References block and the
+      // Tags/Difficulty meta lines. References is a multi-line block, so it
+      // needs a block-level strip — otherwise its links render twice.
       const answer = body
+        .replace(REFERENCE_BLOCK, '')
         .replace(/\n?\*\*Tags:\*\*.*$/m, '')
         .replace(/\n?\*\*Difficulty:\*\*.*$/m, '')
         .trim();
@@ -165,6 +266,7 @@ async function main() {
         difficulty,
         answer,
         tags,
+        references,
         summary,
       });
     });
@@ -180,6 +282,9 @@ async function main() {
     (byTopic[q.topicSlug] ||= []).push(q.summary);
   }
   const allSummaries = raw.map((q) => q.summary).filter(isClean);
+
+  // Omit the key entirely when a question has no references.
+  const refField = (q) => (q.references.length ? { references: q.references } : {});
 
   const questions = raw.map((q) => {
     const rng = mulberry32(hashSeed(q.id));
@@ -209,6 +314,7 @@ async function main() {
           correct: q.summary,
           answer: q.answer,
           tags: q.tags,
+          ...refField(q),
         };
       }
     }
@@ -221,17 +327,30 @@ async function main() {
       difficulty: q.difficulty,
       answer: q.answer,
       tags: q.tags,
+      ...refField(q),
     };
   });
+
+  // Malformed references are a content bug, not a rendering quirk — fail the
+  // build rather than shipping a broken "Further reading" panel.
+  if (errors.length) {
+    for (const e of errors) console.error(`✗ ${e}`);
+    console.error(`✗ build-data failed: ${errors.length} invalid reference(s)`);
+    process.exit(1);
+  }
 
   await mkdir(OUT_DIR, { recursive: true });
   await writeFile(OUT_FILE, JSON.stringify(questions, null, 2));
 
   const mcq = questions.filter((q) => q.type === 'mcq').length;
   const open = questions.length - mcq;
+  const withRefs = questions.filter((q) => q.references);
+  const refCount = withRefs.reduce((n, q) => n + q.references.length, 0);
   console.log(
     `✓ build-data: ${questions.length} questions (${mcq} MCQ, ${open} open-ended) → lib/generated/questions.json`
   );
+  console.log(`✓ references: ${refCount} links across ${withRefs.length} questions`);
+  for (const w of warnings) console.warn(`⚠ ${w}`);
 }
 
 main().catch((err) => {

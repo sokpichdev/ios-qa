@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Icon from '@/components/Icon';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
+import ReferenceList from '@/components/ReferenceList';
 import type { Question } from '@/lib/types';
 
 export default function MCQQuestion({
@@ -74,6 +75,7 @@ export default function MCQQuestion({
             {showAnswer && (
               <div className="mt-3 border-t border-app pt-3">
                 <MarkdownRenderer content={question.answer} />
+                <ReferenceList references={question.references} />
               </div>
             )}
           </div>

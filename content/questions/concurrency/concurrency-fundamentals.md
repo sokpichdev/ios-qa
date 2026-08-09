@@ -34,6 +34,8 @@ Task.detached(priority: .background) {
 
 **Tags:** `#concurrency` `#task` `#async-await` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Task — Apple Developer](https://developer.apple.com/documentation/swift/task)
 
 ---
 
@@ -221,6 +223,8 @@ actor MyActor {
 
 **Tags:** `#concurrency` `#sendable` `#thread-safety` `#advanced`
 **Difficulty:** Intermediate
+**References:**
+- [Sendable — Apple Developer](https://developer.apple.com/documentation/swift/sendable)
 
 ---
 

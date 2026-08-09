@@ -387,3 +387,8 @@ build/
 
 **Tags:** fastlane, firebase, distribution, ci-cd, ad-hoc, automation, testing
 **Difficulty:** Intermediate
+**References:**
+- [Fastlane Documentation](https://docs.fastlane.tools)
+- [Firebase App Distribution](https://firebase.google.com/docs/app-distribution)
+- [fastlane-plugin-firebase_app_distribution — GitHub](https://github.com/fastlane/fastlane-plugin-firebase_app_distribution)
+- [Apple Developer Portal](https://developer.apple.com/account)

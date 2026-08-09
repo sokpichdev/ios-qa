@@ -43,6 +43,9 @@ ContentView()
 
 **Tags:** `#swiftui` `#environment` `#state` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Environment — Apple Developer](https://developer.apple.com/documentation/swiftui/environment)
+- [EnvironmentObject — Apple Developer](https://developer.apple.com/documentation/swiftui/environmentobject)
 
 ---
 
@@ -226,6 +229,8 @@ path = NavigationPath()    // pop to root
 
 **Tags:** `#swiftui` `#navigation` `#navigationstack` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [NavigationStack — Apple Developer](https://developer.apple.com/documentation/swiftui/navigationstack)
 
 ---
 

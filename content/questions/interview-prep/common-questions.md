@@ -27,6 +27,8 @@ func applicationWillTerminate(_:)                   // cleanup
 
 **Tags:** `#interview` `#lifecycle` `#uikit`
 **Difficulty:** Intermediate
+**References:**
+- [Managing your app's life cycle — Apple Developer](https://developer.apple.com/documentation/uikit/managing-your-app-s-life-cycle)
 
 ---
 
@@ -57,6 +59,8 @@ viewModel.onUpdate = { [unowned self] in
 
 **Tags:** `#interview` `#memory` `#arc` `#retain-cycle`
 **Difficulty:** Intermediate
+**References:**
+- [Automatic Reference Counting — The Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/automaticreferencecounting/)
 
 ---
 

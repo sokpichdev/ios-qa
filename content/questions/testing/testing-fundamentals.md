@@ -41,6 +41,9 @@ class CheckoutUITests: XCTestCase {
 
 **Tags:** `#testing` `#unit-tests` `#ui-tests` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [XCTest — Apple Developer](https://developer.apple.com/documentation/xctest)
+- [XCUIElement — Apple Developer](https://developer.apple.com/documentation/xctest/xcuielement)
 
 ---
 
@@ -122,6 +125,9 @@ class UserServiceTests: XCTestCase {
 
 **Tags:** `#testing` `#async-await` `#xctest` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Asynchronous tests and expectations — Apple Developer](https://developer.apple.com/documentation/xctest/asynchronous-tests-and-expectations)
+- [Swift Testing — Apple Developer](https://developer.apple.com/documentation/testing)
 
 ---
 
@@ -164,6 +170,8 @@ func test_multipleDownloads() {
 
 **Tags:** `#testing` `#xctest` `#async` `#expectation`
 **Difficulty:** Intermediate
+**References:**
+- [XCTestExpectation — Apple Developer](https://developer.apple.com/documentation/xctest/xctestexpectation)
 
 ---
 

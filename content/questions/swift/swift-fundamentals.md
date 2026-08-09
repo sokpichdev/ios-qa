@@ -31,6 +31,8 @@ let count = name?.count  // returns Int? not Int
 
 **Tags:** `#swift` `#optional` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [The Basics: Optionals — The Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics/)
 
 ---
 
@@ -106,6 +108,8 @@ struct Article: Codable {
 
 **Tags:** `#swift` `#codable` `#json` `#networking` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Codable — Apple Developer](https://developer.apple.com/documentation/swift/codable)
 
 ---
 
@@ -314,6 +318,8 @@ func makeShape() -> some Shape {
 
 **Tags:** `#swift` `#opaque-types` `#swiftui` `#advanced`
 **Difficulty:** Intermediate
+**References:**
+- [Opaque and Boxed Protocol Types — The Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/opaquetypes/)
 
 ---
 

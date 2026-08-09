@@ -36,6 +36,8 @@ func createUser(_ user: User) async throws {
 
 **Tags:** `#networking` `#urlsession` `#async-await` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [URLSession — Apple Developer](https://developer.apple.com/documentation/foundation/urlsession)
 
 ---
 
@@ -284,6 +286,8 @@ URLCache.shared.storeCachedResponse(cachedResponse, for: request)
 
 **Tags:** `#networking` `#caching` `#urlcache` `#performance`
 **Difficulty:** Intermediate
+**References:**
+- [URLCache — Apple Developer](https://developer.apple.com/documentation/foundation/urlcache)
 
 ---
 
@@ -415,3 +419,5 @@ service.fetchArticles()
 
 **Tags:** `#networking` `#combine` `#reactive` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Combine — Apple Developer](https://developer.apple.com/documentation/combine)

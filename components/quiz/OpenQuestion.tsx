@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Icon from '@/components/Icon';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
+import ReferenceList from '@/components/ReferenceList';
 import type { Question, SelfRating } from '@/lib/types';
 
 const RATINGS: { value: SelfRating; label: string; color: string; icon: 'check' | 'circle-dot' | 'x' }[] = [
@@ -36,6 +37,7 @@ export default function OpenQuestion({
         <div className="animate-fade-up">
           <div className="glass rounded-xl p-5">
             <MarkdownRenderer content={question.answer} />
+            <ReferenceList references={question.references} />
           </div>
 
           <p className="label-caps mb-2 mt-5">How did you do?</p>
