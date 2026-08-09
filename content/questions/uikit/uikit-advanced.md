@@ -281,6 +281,5 @@ animator.startAnimation()
 **Tags:** `#uikit` `#animation` `#uiviewpropertyanimator` `#interactive` `#interview`
 **Difficulty:** Advanced
 **References:**
-- [UIViewPropertyAnimator — Apple Developer](https://developer.apple.com/documentation/uikit/uiviewpropertyanimator)
 
 ---
