@@ -71,6 +71,9 @@ await cache.store(image, for: url)
 
 **Tags:** `#concurrency` `#actor` `#thread-safety` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Actor — Apple Developer](https://developer.apple.com/documentation/swift/actor)
+- [Concurrency — The Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/)
 
 ---
 
@@ -104,3 +107,5 @@ func updateUI() async {
 
 **Tags:** `#concurrency` `#mainactor` `#swiftui` `#thread-safety`
 **Difficulty:** Intermediate
+**References:**
+- [MainActor — Apple Developer](https://developer.apple.com/documentation/swift/mainactor)

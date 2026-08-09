@@ -66,6 +66,8 @@ account.deposit(100)
 
 **Tags:** `#oop` `#encapsulation` `#access-control`
 **Difficulty:** Beginner
+**References:**
+- [Access Control — The Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/accesscontrol/)
 
 ---
 
@@ -165,6 +167,8 @@ A struct can adopt ten protocols and get default behavior from each — somethin
 
 **Tags:** `#oop` `#protocol-oriented` `#protocols` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Protocols — The Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/protocols/)
 
 ---
 

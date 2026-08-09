@@ -4,6 +4,7 @@ import { useState } from 'react';
 import type { Question, ProgressEntry } from '@/lib/types';
 import Icon from './Icon';
 import MarkdownRenderer from './MarkdownRenderer';
+import ReferenceList from './ReferenceList';
 import { TopicBadge, DifficultyBadge, TypeBadge } from './Badges';
 
 function statusColor(entry?: ProgressEntry): string | null {
@@ -85,6 +86,7 @@ export default function QuestionCard({
             </ul>
           )}
           <MarkdownRenderer content={question.answer} />
+          <ReferenceList references={question.references} />
           {question.tags.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
               {question.tags.map((t) => (

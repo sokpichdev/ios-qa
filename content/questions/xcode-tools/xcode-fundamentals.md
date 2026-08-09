@@ -44,6 +44,9 @@ let package = Package(
 
 **Tags:** `#xcode` `#spm` `#dependencies`
 **Difficulty:** Intermediate
+**References:**
+- [Swift Packages — Apple Developer](https://developer.apple.com/documentation/xcode/swift-packages)
+- [Swift Package Manager — Swift.org](https://www.swift.org/documentation/package-manager/)
 
 ---
 
@@ -254,6 +257,8 @@ override func viewDidDisappear(_ animated: Bool) {
 
 **Tags:** `#xcode` `#instruments` `#memory-leak` `#debugging` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Gathering information about memory use — Apple Developer](https://developer.apple.com/documentation/xcode/gathering-information-about-memory-use)
 
 ---
 
@@ -284,6 +289,8 @@ READ of size 4 at 0x... thread T0
 
 **Tags:** `#xcode` `#address-sanitizer` `#debugging` `#memory`
 **Difficulty:** Intermediate
+**References:**
+- [Diagnosing memory, thread, and crash issues early — Apple Developer](https://developer.apple.com/documentation/xcode/diagnosing-memory-thread-and-crash-issues-early)
 
 ---
 
@@ -330,6 +337,8 @@ class NetworkManager {
 
 **Tags:** `#xcode` `#logging` `#oslog` `#debugging`
 **Difficulty:** Intermediate
+**References:**
+- [Logging — Apple Developer](https://developer.apple.com/documentation/os/logging)
 
 ---
 
@@ -366,6 +375,8 @@ let apiURL = Bundle.main.infoDictionary?["API_BASE_URL"] as? String ?? ""
 
 **Tags:** `#xcode` `#xcconfig` `#build-settings` `#environments`
 **Difficulty:** Intermediate
+**References:**
+- [Adding a build configuration file to your project — Apple Developer](https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project)
 
 ---
 

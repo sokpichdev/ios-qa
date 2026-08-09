@@ -85,6 +85,8 @@ struct FlowLayout: Layout {
 
 **Tags:** swiftui, layout, flowlayout, ios16
 **Difficulty:** Intermediate
+**References:**
+- [Layout — Apple Developer](https://developer.apple.com/documentation/swiftui/layout)
 
 ---
 

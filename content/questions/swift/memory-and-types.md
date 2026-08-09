@@ -36,6 +36,8 @@ class ViewModel {
 
 **Tags:** `#swift` `#arc` `#memory` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Automatic Reference Counting — The Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/automaticreferencecounting/)
 
 ---
 
@@ -104,6 +106,8 @@ func performOperation(action: () -> Void) {
 
 **Tags:** `#swift` `#closures` `#async` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Closures: Escaping Closures — The Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/closures/)
 
 ---
 
@@ -127,3 +131,5 @@ The core difference is value type vs reference type.
 
 **Tags:** `#swift` `#struct` `#class` `#memory` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Structures and Classes — The Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/classesandstructures/)

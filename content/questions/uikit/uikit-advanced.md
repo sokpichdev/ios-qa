@@ -46,6 +46,9 @@ payButton.addAction(UIAction { [weak self] _ in self?.processPayment() }, for: .
 
 **Tags:** `#uikit` `#delegation` `#closures` `#patterns` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Using delegates to customize object behavior — Apple Developer](https://developer.apple.com/documentation/swift/using-delegates-to-customize-object-behavior)
+- [UIControl — Apple Developer](https://developer.apple.com/documentation/uikit/uicontrol)
 
 ---
 
@@ -108,6 +111,9 @@ let layout = UICollectionViewCompositionalLayout { _, environment in
 
 **Tags:** `#uikit` `#collectionview` `#diffabledatasource` `#compositionallayout` `#interview`
 **Difficulty:** Advanced
+**References:**
+- [UICollectionViewDiffableDataSource — Apple Developer](https://developer.apple.com/documentation/uikit/uicollectionviewdiffabledatasource)
+- [NSDiffableDataSourceSnapshot — Apple Developer](https://developer.apple.com/documentation/uikit/nsdiffabledatasourcesnapshot)
 
 ---
 
@@ -151,6 +157,10 @@ print(label.frame.height)             // now correct; without layoutIfNeeded it'
 
 **Tags:** `#uikit` `#layout` `#autolayout` `#rendering` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [setNeedsLayout() — Apple Developer](https://developer.apple.com/documentation/uikit/uiview/setneedslayout())
+- [layoutIfNeeded() — Apple Developer](https://developer.apple.com/documentation/uikit/uiview/layoutifneeded())
+- [setNeedsDisplay() — Apple Developer](https://developer.apple.com/documentation/uikit/uiview/setneedsdisplay())
 
 ---
 
@@ -202,6 +212,9 @@ add(host, to: containerView)
 
 **Tags:** `#uikit` `#viewcontroller` `#containment` `#architecture` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [Creating a custom container view controller — Apple Developer](https://developer.apple.com/documentation/uikit/creating-a-custom-container-view-controller)
+- [addChild(_:) — Apple Developer](https://developer.apple.com/documentation/uikit/uiviewcontroller/addchild(_:))
 
 ---
 
@@ -267,5 +280,7 @@ animator.startAnimation()
 
 **Tags:** `#uikit` `#animation` `#uiviewpropertyanimator` `#interactive` `#interview`
 **Difficulty:** Advanced
+**References:**
+- [UIViewPropertyAnimator — Apple Developer](https://developer.apple.com/documentation/uikit/uiviewpropertyanimator)
 
 ---

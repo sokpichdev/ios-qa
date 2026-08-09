@@ -42,6 +42,10 @@ struct ChildView: View {
 
 **Tags:** `#swiftui` `#state` `#binding` `#stateobject` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [State — Apple Developer](https://developer.apple.com/documentation/swiftui/state)
+- [StateObject — Apple Developer](https://developer.apple.com/documentation/swiftui/stateobject)
+- [Managing model data in your app — Apple Developer](https://developer.apple.com/documentation/swiftui/managing-model-data-in-your-app)
 
 ---
 

@@ -2,6 +2,11 @@ export type QuestionType = 'mcq' | 'open-ended';
 export type Difficulty = 'junior' | 'mid' | 'senior';
 export type SelfRating = 'got-it' | 'almost' | 'missed';
 
+export interface Reference {
+  label: string;
+  url: string;
+}
+
 export interface Question {
   id: string;
   question: string;
@@ -12,6 +17,7 @@ export interface Question {
   correct?: string;
   answer: string;
   tags: string[];
+  references?: Reference[];
 }
 
 export interface ProgressEntry {

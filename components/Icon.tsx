@@ -144,6 +144,13 @@ const PATHS: Record<string, JSX.Element> = {
       <line x1="4" y1="18" x2="20" y2="18" />
     </>
   ),
+  'external-link': (
+    <>
+      <path d="M15 3h6v6" />
+      <path d="M10 14 21 3" />
+      <path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5" />
+    </>
+  ),
   'circle-dot': (
     <>
       <circle cx="12" cy="12" r="10" />

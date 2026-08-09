@@ -77,6 +77,8 @@ label.intrinsicContentSize
 
 **Tags:** `#uikit` `#autolayout`
 **Difficulty:** Intermediate
+**References:**
+- [intrinsicContentSize — Apple Developer](https://developer.apple.com/documentation/uikit/uiview/intrinsiccontentsize)
 ````
 
 At build time, [`scripts/build-data.mjs`](./scripts/build-data.mjs) converts the Markdown into
@@ -94,10 +96,38 @@ At build time, [`scripts/build-data.mjs`](./scripts/build-data.mjs) converts the
   200 characters — write it to stand on its own.
 - For MCQs, generates three distractor options from other answers, preferring the same topic. The
   shuffle is seeded from the question `id`, so builds are reproducible.
+- Lifts the `**References:**` block out of the answer into a `references` array, rendered as a
+  "Further reading" panel below the answer. See below.
 
 There is no schema validation: a block missing its question or answer is skipped silently, and a
 folder that is not registered in `lib/topics.ts` produces questions that never appear in the filters.
 Check your additions with `npm run build-data` and confirm the reported count went up as expected.
+
+## References
+
+`**References:**` is optional, goes last in a question block, and holds one Markdown link per line:
+
+```markdown
+**References:**
+- [State — Apple Developer](https://developer.apple.com/documentation/swiftui/state)
+```
+
+Rules enforced by `npm run build-data`:
+
+| Rule | Result if broken |
+| :--- | :--- |
+| Every line matches `- [label](url)` | **Build fails** |
+| URLs are `https://` | **Build fails** |
+| Host is in `REFERENCE_HOSTS` in [`scripts/build-data.mjs`](./scripts/build-data.mjs) | Warning only |
+
+The host allowlist is a nudge, not a gate — add a host to that array when you start citing a new
+source. Links render with the host shown next to the label so readers can judge the source, and open
+in a new tab.
+
+**Validation checks shape, not reachability.** Nothing in the build fetches these URLs, so a
+well-formed link to a page that no longer exists passes silently. Open a URL before committing it —
+Apple reorganizes documentation and retires WWDC session links regularly, and plausible-looking
+`developer.apple.com` paths are easy to get wrong.
 
 The generated JSON is git-ignored and rebuilt automatically before `dev` and `build`.
 

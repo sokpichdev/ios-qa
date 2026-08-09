@@ -49,6 +49,9 @@ class MyViewController: UIViewController {
 
 **Tags:** `#uikit` `#lifecycle` `#viewcontroller` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [UIViewController — Apple Developer](https://developer.apple.com/documentation/uikit/uiviewcontroller)
+- [Managing your app's life cycle — Apple Developer](https://developer.apple.com/documentation/uikit/managing-your-app-s-life-cycle)
 
 ---
 
@@ -113,6 +116,8 @@ label.setContentCompressionResistancePriority(.required, for: .horizontal)
 
 **Tags:** `#uikit` `#autolayout` `#constraints` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [NSLayoutConstraint — Apple Developer](https://developer.apple.com/documentation/uikit/nslayoutconstraint)
 
 ---
 
@@ -152,6 +157,8 @@ class MyViewController: UIViewController, UITableViewDataSource {
 
 **Tags:** `#uikit` `#tableview` `#reuse` `#performance` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [UITableView — Apple Developer](https://developer.apple.com/documentation/uikit/uitableview)
 
 ---
 
@@ -185,6 +192,8 @@ textField.resignFirstResponder()  // hide keyboard
 
 **Tags:** `#uikit` `#responder-chain` `#events` `#interview`
 **Difficulty:** Intermediate
+**References:**
+- [UIResponder — Apple Developer](https://developer.apple.com/documentation/uikit/uiresponder)
 
 ---
 
@@ -290,6 +299,8 @@ view.layer.add(animation, forKey: "fade")
 
 **Tags:** `#uikit` `#calayer` `#animation` `#drawing`
 **Difficulty:** Intermediate
+**References:**
+- [CALayer — Apple Developer](https://developer.apple.com/documentation/quartzcore/calayer)
 
 ---
 
