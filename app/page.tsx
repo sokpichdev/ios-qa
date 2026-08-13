@@ -25,7 +25,7 @@ export default function HomePage() {
       {/* Hero */}
       <section className="text-center">
         <span className="chip mx-auto mb-5 inline-flex">
-          <Icon name="sparkles" size={13} />
+          <Icon name="logo" size={15} />
           iOS Reference &amp; Practice
         </span>
         <h1 className="mx-auto max-w-3xl text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-6xl">
