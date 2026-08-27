@@ -21,6 +21,7 @@ export default function QuestionCard({
   entry,
   bookmarked,
   onToggleBookmark,
+  onSelectTag,
   showType = true,
   showOptions = true,
 }: {
@@ -28,6 +29,7 @@ export default function QuestionCard({
   entry?: ProgressEntry;
   bookmarked: boolean;
   onToggleBookmark: (id: string) => void;
+  onSelectTag?: (tag: string) => void;
   showType?: boolean;
   showOptions?: boolean;
 }) {
@@ -90,7 +92,14 @@ export default function QuestionCard({
           {question.tags.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
               {question.tags.map((t) => (
-                <span key={t} className="text-faint text-[11px]">#{t}</span>
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => onSelectTag?.(t)}
+                  className="rounded-md border border-[var(--border)] bg-[var(--surface-solid)] px-2 py-0.5 text-[11px] text-muted hover:border-[var(--border-strong)] hover:text-[var(--text)] transition-colors"
+                >
+                  #{t}
+                </button>
               ))}
             </div>
           )}
