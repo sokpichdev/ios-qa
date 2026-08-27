@@ -153,6 +153,13 @@
     @apply text-[11px] font-medium uppercase tracking-[0.15em];
     color: var(--text-faint);
   }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 /* Markdown answer styling */
