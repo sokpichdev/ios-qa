@@ -26,6 +26,7 @@ export default function QuestionCard({
   showType = true,
   showOptions = true,
   initialOpen = false,
+  defaultOpen = false,
   highlight = false,
 }: {
   question: Question;
@@ -36,15 +37,16 @@ export default function QuestionCard({
   showType?: boolean;
   showOptions?: boolean;
   initialOpen?: boolean;
+  defaultOpen?: boolean;
   highlight?: boolean;
 }) {
-  const [open, setOpen] = useState(initialOpen);
+  const [open, setOpen] = useState(initialOpen || defaultOpen);
   const [copied, setCopied] = useState(false);
   const dot = statusColor(entry);
 
   useEffect(() => {
-    if (initialOpen) setOpen(true);
-  }, [initialOpen]);
+    if (initialOpen || defaultOpen) setOpen(true);
+  }, [initialOpen, defaultOpen]);
 
   const copyLink = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -120,7 +122,6 @@ export default function QuestionCard({
           >
             <Icon name="bookmark" size={16} filled={bookmarked} />
           </button>
-          
           <button onClick={() => setOpen((o) => !o)} aria-label="Toggle answer" className="p-1 text-faint">
             <Icon name="chevron-down" size={17} className={open ? 'rotate-180 transition-transform' : 'transition-transform'} />
           </button>

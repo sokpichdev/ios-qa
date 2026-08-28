@@ -1,12 +1,12 @@
 import type { MetadataRoute } from 'next';
-import { QUESTIONS } from '@/lib/questions';
+import { QUESTIONS, questionSlug } from '@/lib/questions';
 
 const SITE = 'https://ios.sokpich.dev';
 const staticRoutes = ['', '/browse', '/quiz', '/spin', '/bookmarks', '/progress', '/contribute'];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
-  
+
   const mainPages: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
     url: `${SITE}${route}`,
     lastModified,
@@ -21,5 +21,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...mainPages, ...questionPages];
+  const browseSlugPages: MetadataRoute.Sitemap = QUESTIONS.map((q) => ({
+    url: `${SITE}/browse/${questionSlug(q.question)}`,
+    lastModified,
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }));
+
+  return [...mainPages, ...questionPages, ...browseSlugPages];
 }

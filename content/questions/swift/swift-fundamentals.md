@@ -350,3 +350,71 @@ print(array2) // [1, 2, 3, 4, 5, 6]
 
 **Tags:** `#swift` `#memory` `#performance` `#cow` `#interview`
 **Difficulty:** Intermediate
+
+---
+
+## Q: What is the difference between `static` and `class` functions and variables in Swift?
+
+**Answer:**
+Both `static` and `class` define type-level properties and methods, but `static` members cannot be overridden by subclasses (final), whereas `class` members allow dynamic dispatch and can be overridden.
+
+| Feature | `static` | `class` |
+|---|---|---|
+| **Can be overridden?** | No (implicitly `final`) | Yes (supports polymorphism) |
+| **Supported types** | `class`, `struct`, `enum`, `actor`, `protocol` | `class` only (and class-bound protocols) |
+| **Stored properties** | Yes (`static let` / `static var`) | No (computed properties only) |
+| **Dispatch mechanism** | Static / direct dispatch (fast) | Dynamic / table dispatch |
+| **Equivalence** | `static func` is equivalent to `class final func` | `class func` |
+
+**Code Example:**
+```swift
+class Vehicle {
+    // static stored property (lazy & thread-safe)
+    static let defaultWheelCount = 4
+
+    // static method — CANNOT be overridden
+    static func generalInfo() -> String {
+        return "Vehicles are used for transportation."
+    }
+
+    // class computed property — CAN be overridden
+    class var category: String {
+        return "Generic Vehicle"
+    }
+
+    // class method — CAN be overridden
+    class func maxSpeed() -> Int {
+        return 120
+    }
+}
+
+class SportsCar: Vehicle {
+    // ❌ Error: Cannot override static method
+    // override static func generalInfo() -> String { ... }
+
+    // ✅ OK: Overriding class computed property
+    override class var category: String {
+        return "High Performance Vehicle"
+    }
+
+    // ✅ OK: Overriding class method
+    override class func maxSpeed() -> Int {
+        return 300
+    }
+}
+```
+
+**Key Points:**
+- `static` is available across structs, enums, actors, and classes; `class` is strictly for class types.
+- `static let / var` stored properties are lazily initialized on first access and guaranteed thread-safe (via `dispatch_once` under the hood).
+- In protocols, type requirements are always declared using `static`. Conforming classes can implement them with either `static` (to prevent subclass overrides) or `class` (to allow subclass overrides).
+- Prefer `static` by default unless you explicitly intend for subclasses to override the behavior.
+
+**Tags:** `#swift` `#oop` `#static` `#class` `#methods` `#properties` `#interview`
+**Difficulty:** Intermediate
+**References:**
+- [Methods: Type Methods — The Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/methods/)
+- [Properties: Type Properties — The Swift Programming Language](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/properties/)
+- [What's the difference between a static variable and a class variable? — Hacking with Swift](https://www.hackingwithswift.com/example-code/language/whats-the-difference-between-a-static-variable-and-a-class-variable)
+- [What is the difference between static func and class func in Swift? — Stack Overflow](https://stackoverflow.com/questions/25156377/what-is-the-difference-between-static-func-and-class-func-in-swift)
+- [The difference between static vs class function in Swift — Medium](https://medium.com/@nguyentrongbang/the-difference-between-static-vs-class-function-in-swift-can-screw-you-c2501b494ff6)

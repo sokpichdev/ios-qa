@@ -4,15 +4,28 @@ import { TOPICS } from './topics';
 
 export const QUESTIONS = data as Question[];
 
+export function questionSlug(question: string): string {
+  return question
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 export function getById(id: string): Question | undefined {
   return QUESTIONS.find((q) => q.id === id);
 }
 
+export function getBySlug(slug: string): Question | undefined {
+  return QUESTIONS.find((q) => q.id === slug || questionSlug(q.question) === slug);
+}
+
 export function getAdjacentQuestions(id: string): { prev?: Question; next?: Question } {
-  const current = getById(id);
+  const current = getById(id) || getBySlug(id);
   if (!current) return {};
   const inTopic = QUESTIONS.filter((q) => q.topic === current.topic);
-  const idx = inTopic.findIndex((q) => q.id === id);
+  const idx = inTopic.findIndex((q) => q.id === current.id);
   if (idx === -1) return {};
   return {
     prev: idx > 0 ? inTopic[idx - 1] : undefined,
