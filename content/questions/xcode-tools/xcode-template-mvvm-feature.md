@@ -244,5 +244,8 @@ final class ProfileViewModelTests: XCTestCase {
 **Difficulty:** Intermediate
 **References:**
 - [Managing model data in your app — Apple Developer](https://developer.apple.com/documentation/swiftui/managing-model-data-in-your-app)
+- [Create Xcode Templates: A Comprehensive Guide — Fabio Giannelli](https://medium.com/@fabiogiannelli/create-xcode-templates-a-comprehensive-guide-part-1-introduction-0e077352de9a)
+- [How to create a custom Xcode template for coordinators — Hacking with Swift](https://www.hackingwithswift.com/articles/158/how-to-create-a-custom-xcode-template-for-coordinators)
 - [How to create custom Xcode templates — Hacking with Swift](https://www.hackingwithswift.com/articles/230/how-to-create-custom-xcode-templates)
+
 

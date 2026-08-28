@@ -219,5 +219,8 @@ final class ProfilePresenterTests: XCTestCase {
 **Tags:** `#xcode` `#templates` `#mvp` `#uikit` `#architecture` `#testing`
 **Difficulty:** Intermediate
 **References:**
+- [Create Custom Xcode Templates — Mindful Engineering](https://medium.com/mindful-engineering/create-custom-xcode-templates-908fdd14fbd8)
+- [Xcode Templates Tutorial — ITCraft](https://itcraftapps.com/blog/xcode-templates-tutorial/)
 - [How to create custom Xcode templates — Hacking with Swift](https://www.hackingwithswift.com/articles/230/how-to-create-custom-xcode-templates)
+
 

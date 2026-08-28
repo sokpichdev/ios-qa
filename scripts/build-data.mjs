@@ -52,6 +52,8 @@ const REFERENCE_HOSTS = [
   'objc.io',
   'kodeco.com',
   'hackingwithswift.com',
+  'medium.com',
+  'itcraftapps.com',
   // Q&A
   'stackoverflow.com',
 ];

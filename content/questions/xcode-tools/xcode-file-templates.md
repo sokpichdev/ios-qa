@@ -94,5 +94,9 @@ Xcode locates custom templates inside your home directory:
 **Tags:** `#xcode` `#templates` `#tooling` `#architecture` `#code-generation`
 **Difficulty:** Intermediate
 **References:**
+- [Create Custom Xcode Templates — Mindful Engineering](https://medium.com/mindful-engineering/create-custom-xcode-templates-908fdd14fbd8)
+- [Create Xcode Templates: A Comprehensive Guide — Fabio Giannelli](https://medium.com/@fabiogiannelli/create-xcode-templates-a-comprehensive-guide-part-1-introduction-0e077352de9a)
+- [Xcode Templates Tutorial — ITCraft](https://itcraftapps.com/blog/xcode-templates-tutorial/)
 - [How to create custom Xcode templates — Hacking with Swift](https://www.hackingwithswift.com/articles/230/how-to-create-custom-xcode-templates)
+
 
