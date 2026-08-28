@@ -2,23 +2,31 @@ import type { MetadataRoute } from 'next';
 import { QUESTIONS, questionSlug } from '@/lib/questions';
 
 const SITE = 'https://ios.sokpich.dev';
-const routes = ['', '/browse', '/quiz', '/spin', '/bookmarks', '/progress', '/contribute'];
+const staticRoutes = ['', '/browse', '/quiz', '/spin', '/bookmarks', '/progress', '/contribute'];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
-  const pages: MetadataRoute.Sitemap = routes.map((route) => ({
+
+  const mainPages: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
     url: `${SITE}${route}`,
     lastModified,
     changeFrequency: 'weekly',
     priority: route === '' ? 1 : 0.8,
   }));
 
-  const questions = QUESTIONS.map((question) => ({
-    url: `${SITE}/browse/${questionSlug(question.question)}`,
+  const questionPages: MetadataRoute.Sitemap = QUESTIONS.map((q) => ({
+    url: `${SITE}/questions/${q.id}`,
     lastModified,
-    changeFrequency: 'weekly' as const,
+    changeFrequency: 'monthly',
     priority: 0.7,
   }));
 
-  return [...pages, ...questions];
+  const browseSlugPages: MetadataRoute.Sitemap = QUESTIONS.map((q) => ({
+    url: `${SITE}/browse/${questionSlug(q.question)}`,
+    lastModified,
+    changeFrequency: 'monthly',
+    priority: 0.7,
+  }));
+
+  return [...mainPages, ...questionPages, ...browseSlugPages];
 }

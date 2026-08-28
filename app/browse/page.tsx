@@ -1,11 +1,11 @@
 'use client';
 
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import FilterBar, { type BrowseFilter } from '@/components/FilterBar';
 import QuestionCard from '@/components/QuestionCard';
 import Icon from '@/components/Icon';
-import { filterQuestions } from '@/lib/questions';
+import { filterQuestions, getById } from '@/lib/questions';
 import { useProgress } from '@/hooks/useProgress';
 import { useBookmarks } from '@/hooks/useBookmarks';
 
@@ -13,7 +13,9 @@ const PAGE_SIZE = 12;
 
 function BrowseInner() {
   const params = useSearchParams();
-  const initialTopic = params.get('topic');
+  const targetQuestionId = params.get('question') || params.get('q');
+  const targetQuestion = targetQuestionId ? getById(targetQuestionId) : undefined;
+  const initialTopic = params.get('topic') || (targetQuestion ? targetQuestion.topic : null);
   const initialTag = params.get('tag');
 
   const [filter, setFilter] = useState<BrowseFilter>({
@@ -23,7 +25,7 @@ function BrowseInner() {
     search: '',
   });
   const [limit, setLimit] = useState(PAGE_SIZE);
-  const [showFilters, setShowFilters] = useState(false);
+  const [highlightedId, setHighlightedId] = useState<string | null>(targetQuestionId);
 
   const { progress } = useProgress();
   const { isBookmarked, toggle } = useBookmarks();
@@ -38,6 +40,33 @@ function BrowseInner() {
       }),
     [filter]
   );
+
+  // If deep linking to a question, make sure it is loaded in the visible limit and scrolled to
+  useEffect(() => {
+    const idToFind = targetQuestionId || (typeof window !== 'undefined' ? window.location.hash.replace('#', '') : '');
+    if (!idToFind) return;
+
+    const idx = results.findIndex((q) => q.id === idToFind);
+    if (idx !== -1) {
+      if (idx >= limit) {
+        setLimit(idx + 1);
+      }
+      setHighlightedId(idToFind);
+      const timer = setTimeout(() => {
+        const el = document.getElementById(idToFind);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+      const clearHighlight = setTimeout(() => {
+        setHighlightedId(null);
+      }, 4000);
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(clearHighlight);
+      };
+    }
+  }, [targetQuestionId, results, limit]);
 
   const visible = results.slice(0, limit);
 
@@ -133,13 +162,13 @@ function BrowseInner() {
 
       {/* Questions List */}
       {visible.length === 0 ? (
-        <div className="glass rounded-2xl p-10 text-center text-muted space-y-2">
+        <div className="glass rounded-2xl p-10 text-center text-muted space-y-2 min-h-[240px] flex flex-col items-center justify-center">
           <p className="text-base font-medium">No questions match your selected filters.</p>
           <p className="text-xs text-faint">Try adjusting your search query, topic, or tags.</p>
           {hasActiveFilters && (
             <button
               onClick={() => onChange({ topic: null, difficulty: null, tag: null, search: '' })}
-              className="btn-ghost mt-2"
+              className="btn-ghost mt-3"
             >
               Reset all filters
             </button>
@@ -157,6 +186,8 @@ function BrowseInner() {
               onSelectTag={(t) => onChange({ ...filter, tag: t })}
               showType={false}
               showOptions={false}
+              initialOpen={q.id === targetQuestionId}
+              highlight={q.id === highlightedId}
             />
           ))}
         </div>

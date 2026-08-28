@@ -18,7 +18,25 @@ export function getById(id: string): Question | undefined {
 }
 
 export function getBySlug(slug: string): Question | undefined {
-  return QUESTIONS.find((q) => questionSlug(q.question) === slug);
+  return QUESTIONS.find((q) => q.id === slug || questionSlug(q.question) === slug);
+}
+
+export function getAdjacentQuestions(id: string): { prev?: Question; next?: Question } {
+  const current = getById(id) || getBySlug(id);
+  if (!current) return {};
+  const inTopic = QUESTIONS.filter((q) => q.topic === current.topic);
+  const idx = inTopic.findIndex((q) => q.id === current.id);
+  if (idx === -1) return {};
+  return {
+    prev: idx > 0 ? inTopic[idx - 1] : undefined,
+    next: idx < inTopic.length - 1 ? inTopic[idx + 1] : undefined,
+  };
+}
+
+export function getRelatedQuestions(question: Question, limit = 3): Question[] {
+  return QUESTIONS.filter(
+    (q) => q.id !== question.id && (q.topic === question.topic || q.tags.some((t) => question.tags.includes(t)))
+  ).slice(0, limit);
 }
 
 export interface TopicStat {

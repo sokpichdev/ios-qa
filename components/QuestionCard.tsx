@@ -1,13 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import type { Question, ProgressEntry } from '@/lib/types';
 import Icon from './Icon';
 import MarkdownRenderer from './MarkdownRenderer';
 import ReferenceList from './ReferenceList';
 import { TopicBadge, DifficultyBadge, TypeBadge } from './Badges';
-import { questionSlug } from '@/lib/questions';
 
 function statusColor(entry?: ProgressEntry): string | null {
   if (!entry?.answered) return null;
@@ -26,7 +25,9 @@ export default function QuestionCard({
   onSelectTag,
   showType = true,
   showOptions = true,
+  initialOpen = false,
   defaultOpen = false,
+  highlight = false,
 }: {
   question: Question;
   entry?: ProgressEntry;
@@ -35,13 +36,47 @@ export default function QuestionCard({
   onSelectTag?: (tag: string) => void;
   showType?: boolean;
   showOptions?: boolean;
+  initialOpen?: boolean;
   defaultOpen?: boolean;
+  highlight?: boolean;
 }) {
-  const [open, setOpen] = useState(defaultOpen);
+  const [open, setOpen] = useState(initialOpen || defaultOpen);
+  const [copied, setCopied] = useState(false);
   const dot = statusColor(entry);
 
+  useEffect(() => {
+    if (initialOpen || defaultOpen) setOpen(true);
+  }, [initialOpen, defaultOpen]);
+
+  const copyLink = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = `${window.location.origin}/questions/${question.id}`;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const input = document.createElement('input');
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // ignore
+    }
+  };
+
   return (
-    <div className="glass glass-hover rounded-xl p-4" style={dot ? { borderColor: `${dot}55` } : undefined}>
+    <div
+      id={question.id}
+      className={`glass glass-hover rounded-xl p-4 transition-all scroll-mt-24 ${
+        highlight ? 'ring-2 ring-[var(--accent)] shadow-lg shadow-[var(--accent)]/10' : ''
+      }`}
+      style={dot ? { borderColor: `${dot}55` } : undefined}
+    >
       <div className="flex items-start gap-3">
         <button onClick={() => setOpen((o) => !o)} className="min-w-0 flex-1 text-left">
           <div className="mb-2 flex flex-wrap items-center gap-1.5">
@@ -52,25 +87,43 @@ export default function QuestionCard({
           <p className="break-words pr-2 text-sm font-medium leading-snug">{question.question}</p>
         </button>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           {dot && <span className="h-2 w-2 rounded-full" style={{ background: dot }} title="Answered" />}
+          
+          <button
+            onClick={copyLink}
+            aria-label="Copy direct link to question"
+            title={copied ? 'Copied to clipboard!' : 'Copy link to question'}
+            className="relative p-1 text-muted hover:text-[var(--accent)] transition-colors"
+          >
+            {copied ? (
+              <span className="flex items-center gap-1 text-xs text-[var(--accent)] font-medium">
+                <Icon name="check" size={15} />
+              </span>
+            ) : (
+              <Icon name="link" size={15} />
+            )}
+          </button>
+
+          <Link
+            href={`/questions/${question.id}`}
+            aria-label="Open dedicated question page"
+            title="Open dedicated page"
+            className="p-1 text-muted hover:text-[var(--text)] transition-colors hidden sm:inline-flex"
+          >
+            <Icon name="external-link" size={15} />
+          </Link>
+
           <button
             onClick={() => onToggleBookmark(question.id)}
             aria-label={bookmarked ? 'Remove bookmark' : 'Add bookmark'}
-            className="transition-colors"
+            className="p-1 transition-colors"
             style={{ color: bookmarked ? '#f59e0b' : 'var(--text-faint)' }}
           >
-            <Icon name="bookmark" size={17} filled={bookmarked} />
+            <Icon name="bookmark" size={16} filled={bookmarked} />
           </button>
-          <Link
-            href={`/browse/${questionSlug(question.question)}`}
-            aria-label="Open question page"
-            className="text-faint transition-colors hover:text-[var(--accent)]"
-          >
-            <Icon name="external-link" size={17} />
-          </Link>
-          <button onClick={() => setOpen((o) => !o)} aria-label="Toggle answer" className="text-faint">
-            <Icon name="chevron-down" size={18} className={open ? 'rotate-180 transition-transform' : 'transition-transform'} />
+          <button onClick={() => setOpen((o) => !o)} aria-label="Toggle answer" className="p-1 text-faint">
+            <Icon name="chevron-down" size={17} className={open ? 'rotate-180 transition-transform' : 'transition-transform'} />
           </button>
         </div>
       </div>
