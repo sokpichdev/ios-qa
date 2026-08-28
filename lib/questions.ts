@@ -8,6 +8,24 @@ export function getById(id: string): Question | undefined {
   return QUESTIONS.find((q) => q.id === id);
 }
 
+export function getAdjacentQuestions(id: string): { prev?: Question; next?: Question } {
+  const current = getById(id);
+  if (!current) return {};
+  const inTopic = QUESTIONS.filter((q) => q.topic === current.topic);
+  const idx = inTopic.findIndex((q) => q.id === id);
+  if (idx === -1) return {};
+  return {
+    prev: idx > 0 ? inTopic[idx - 1] : undefined,
+    next: idx < inTopic.length - 1 ? inTopic[idx + 1] : undefined,
+  };
+}
+
+export function getRelatedQuestions(question: Question, limit = 3): Question[] {
+  return QUESTIONS.filter(
+    (q) => q.id !== question.id && (q.topic === question.topic || q.tags.some((t) => question.tags.includes(t)))
+  ).slice(0, limit);
+}
+
 export interface TopicStat {
   slug: string;
   name: string;

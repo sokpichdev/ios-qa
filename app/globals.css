@@ -61,6 +61,8 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
   }
   body {
     background-color: var(--bg);

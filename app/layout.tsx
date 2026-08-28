@@ -43,11 +43,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${montserrat.variable} ${mono.variable}`}>
-      <body className="font-sans">
+      <body className="font-sans flex min-h-screen flex-col">
         <Providers>
           <AuroraBackground />
           <Nav />
-          <main className="mx-auto w-full max-w-6xl px-4 sm:px-6">{children}</main>
+          <main className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6">{children}</main>
           <Footer />
         </Providers>
       </body>
