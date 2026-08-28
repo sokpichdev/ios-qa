@@ -243,6 +243,6 @@ final class ProfileViewModelTests: XCTestCase {
 **Tags:** `#xcode` `#templates` `#mvvm` `#swiftui` `#architecture` `#testing`
 **Difficulty:** Intermediate
 **References:**
-- [Customizing Xcode file templates — Apple Developer](https://developer.apple.com/documentation/xcode)
 - [Managing model data in your app — Apple Developer](https://developer.apple.com/documentation/swiftui/managing-model-data-in-your-app)
-- [Creating custom Xcode project and file templates — Swift by Sundell](https://swiftbysundell.com/articles/creating-custom-xcode-project-and-file-templates/)
+- [How to create custom Xcode templates — Hacking with Swift](https://www.hackingwithswift.com/articles/230/how-to-create-custom-xcode-templates)
+

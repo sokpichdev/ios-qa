@@ -219,6 +219,5 @@ final class ProfilePresenterTests: XCTestCase {
 **Tags:** `#xcode` `#templates` `#mvp` `#uikit` `#architecture` `#testing`
 **Difficulty:** Intermediate
 **References:**
-- [Customizing Xcode file templates — Apple Developer](https://developer.apple.com/documentation/xcode)
-- [Creating custom Xcode project and file templates — Swift by Sundell](https://swiftbysundell.com/articles/creating-custom-xcode-project-and-file-templates/)
-- [Model-View-Presenter in Swift — objc.io](https://www.objc.io/issues/13-architecture/mvp-in-swift/)
+- [How to create custom Xcode templates — Hacking with Swift](https://www.hackingwithswift.com/articles/230/how-to-create-custom-xcode-templates)
+
