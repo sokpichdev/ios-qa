@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import type { Question, ProgressEntry } from '@/lib/types';
 import Icon from './Icon';
 import MarkdownRenderer from './MarkdownRenderer';
 import ReferenceList from './ReferenceList';
 import { TopicBadge, DifficultyBadge, TypeBadge } from './Badges';
+import { questionSlug } from '@/lib/questions';
 
 function statusColor(entry?: ProgressEntry): string | null {
   if (!entry?.answered) return null;
@@ -24,6 +26,7 @@ export default function QuestionCard({
   onSelectTag,
   showType = true,
   showOptions = true,
+  defaultOpen = false,
 }: {
   question: Question;
   entry?: ProgressEntry;
@@ -32,8 +35,9 @@ export default function QuestionCard({
   onSelectTag?: (tag: string) => void;
   showType?: boolean;
   showOptions?: boolean;
+  defaultOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const dot = statusColor(entry);
 
   return (
@@ -58,6 +62,13 @@ export default function QuestionCard({
           >
             <Icon name="bookmark" size={17} filled={bookmarked} />
           </button>
+          <Link
+            href={`/browse/${questionSlug(question.question)}`}
+            aria-label="Open question page"
+            className="text-faint transition-colors hover:text-[var(--accent)]"
+          >
+            <Icon name="external-link" size={17} />
+          </Link>
           <button onClick={() => setOpen((o) => !o)} aria-label="Toggle answer" className="text-faint">
             <Icon name="chevron-down" size={18} className={open ? 'rotate-180 transition-transform' : 'transition-transform'} />
           </button>

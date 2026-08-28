@@ -4,8 +4,21 @@ import { TOPICS } from './topics';
 
 export const QUESTIONS = data as Question[];
 
+export function questionSlug(question: string): string {
+  return question
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 export function getById(id: string): Question | undefined {
   return QUESTIONS.find((q) => q.id === id);
+}
+
+export function getBySlug(slug: string): Question | undefined {
+  return QUESTIONS.find((q) => questionSlug(q.question) === slug);
 }
 
 export interface TopicStat {
