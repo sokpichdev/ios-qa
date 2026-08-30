@@ -40,14 +40,15 @@ Light and dark themes are both supported and follow the system preference by def
 
 ## Content
 
-135 questions across 10 topics — 90 multiple-choice and 45 open-ended.
+154 questions across 11 topics — 102 multiple-choice and 52 open-ended.
 
 | Topic | Questions |
 | :---- | --------: |
-| Swift | 23 |
+| Swift | 24 |
+| Xcode Tools | 23 |
 | SwiftUI | 19 |
-| Xcode Tools | 19 |
 | UIKit | 15 |
+| Security | 14 |
 | Concurrency | 13 |
 | Architecture | 12 |
 | Testing | 11 |

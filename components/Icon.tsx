@@ -54,6 +54,12 @@ const PATHS: Record<string, JSX.Element> = {
       <circle cx="12" cy="12" r="2" />
     </>
   ),
+  shield: (
+    <>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="M9.5 12.5l1.8 1.8 3.4-3.6" />
+    </>
+  ),
   sun: (
     <>
       <circle cx="12" cy="12" r="4" />

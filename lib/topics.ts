@@ -19,6 +19,7 @@ export const TOPICS: TopicMeta[] = [
   { slug: 'testing', name: 'Testing', color: '#ec4899', icon: 'flask', blurb: 'Unit tests, mocking, XCTest, test doubles, TDD.' },
   { slug: 'uikit', name: 'UIKit', color: '#8b5cf6', icon: 'smartphone', blurb: 'View controllers, Auto Layout, lifecycle, delegation.' },
   { slug: 'xcode-tools', name: 'Xcode Tools', color: '#6366f1', icon: 'wrench', blurb: 'Fastlane, Firebase, build configs, CI/CD tooling.' },
+  { slug: 'security', name: 'Security', color: '#ef4444', icon: 'shield', blurb: 'Cryptography, key management, Keychain, payload encryption, threat modelling.' },
   { slug: 'interview-prep', name: 'Interview Prep', color: '#14b8a6', icon: 'target', blurb: 'Coding frameworks, behavioral, common interview questions.' },
 ];
 
