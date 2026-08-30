@@ -25,6 +25,7 @@ const TOPIC_NAMES = {
   testing: 'Testing',
   uikit: 'UIKit',
   'xcode-tools': 'Xcode Tools',
+  security: 'Security',
   'interview-prep': 'Interview Prep',
 };
 
@@ -46,6 +47,7 @@ const REFERENCE_HOSTS = [
   'github.com',
   'docs.fastlane.tools',
   'firebase.google.com',
+  'docs.cossacklabs.com',
   // Curated community
   'swiftbysundell.com',
   'pointfree.co',
